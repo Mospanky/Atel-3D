@@ -24,16 +24,16 @@
 </head>
 <body class="bg-dark-950 text-slate-100 min-h-screen">
     <div id="lockScreen" class="fixed inset-0 z-50 bg-dark-950/95 backdrop-blur-md flex items-center justify-center p-4">
-    <form onsubmit="unlockTaller(event)" class="bg-dark-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 text-xs shadow-2xl">
-        <div>
-            <h2 class="text-base font-bold text-white">Acceso Taller — ATEL 3D</h2>
-            <p class="text-slate-400 mt-1">Ingresa la contraseña para abrir cotizador, pedidos e inventario.</p>
-        </div>
-        <input type="password" id="tallerPassInput" required placeholder="Contraseña del taller" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-brand-500">
-        <p id="tallerPassError" class="hidden text-rose-400 font-semibold">Contraseña incorrecta.</p>
-        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl transition">Entrar al Taller</button>
-    </form>
-</div>
+        <form onsubmit="unlockTaller(event)" class="bg-dark-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 text-xs shadow-2xl">
+            <div>
+                <h2 class="text-base font-bold text-white">Acceso Taller — ATEL 3D</h2>
+                <p class="text-slate-400 mt-1">Ingresa la contraseña para abrir cotizador, pedidos e inventario.</p>
+            </div>
+            <input type="password" id="tallerPassInput" required placeholder="Contraseña del taller" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-brand-500">
+            <p id="tallerPassError" class="hidden text-rose-400 font-semibold">Contraseña incorrecta.</p>
+            <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl transition">Entrar al Taller</button>
+        </form>
+    </div>
     <header class="bg-dark-900 border-b border-slate-800 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -328,4 +328,407 @@
     <button type="button" onclick="closeOrderModal()" class="flex-1 bg-slate-800 text-slate-300 py-2 rounded-xl font-semibold">Cancelar</button>
     <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2 rounded-xl font-semibold">Guardar Pedido</button>
 </div>
+                </form>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'atel3d_taller_v1';
+        const TALLER_PASS = "ATEL3D2026";
+        let products = [];
+        let orders = [];
+        let storeUrl = localStorage.getItem('atel3d_store_url') || 'index.html';
+        let keepClientAfterSave = false;
+        let lastQuoteCalc = null;
+        let firestoreDb = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkTallerLock();
+            loadLocalData();
+            applyStoreLinks();
+            initFirebaseSync();
+            calcularCotizacion3D();
+            renderOrders();
+            renderInventory();
+            lucide.createIcons();
+        });
+
+        function checkTallerLock() {
+            const unlocked = sessionStorage.getItem("atel3d_taller_unlocked") === "1";
+            const screen = document.getElementById("lockScreen");
+            if (screen) screen.classList.toggle("hidden", unlocked);
+        }
+
+        function unlockTaller(e) {
+            e.preventDefault();
+            const val = document.getElementById("tallerPassInput").value;
+            const err = document.getElementById("tallerPassError");
+            if (val === TALLER_PASS) {
+                sessionStorage.setItem("atel3d_taller_unlocked", "1");
+                if (err) err.classList.add("hidden");
+                checkTallerLock();
+            } else if (err) {
+                err.classList.remove("hidden");
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+            const activeSec = document.getElementById(`tab-${tabName}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const isActive = btn.dataset.tab === tabName;
+                btn.classList.toggle('bg-brand-600', isActive);
+                btn.classList.toggle('text-white', isActive);
+                btn.classList.toggle('bg-slate-800', !isActive);
+                btn.classList.toggle('text-slate-300', !isActive);
+            });
+            lucide.createIcons();
+        }
+
+        function parseDurationToHours(raw) {
+            const str = String(raw || '').trim();
+            if (!str) return 0;
+            if (str.includes(':')) {
+                const parts = str.split(':').map(Number);
+                return (parts[0] || 0) + ((parts[1] || 0) / 60) + ((parts[2] || 0) / 3600);
+            }
+            return parseFloat(str.replace(',', '.')) || 0;
+        }
+
+        function toggleCotConfig() {
+            const el = document.getElementById('cotConfigPanel');
+            if (el) el.classList.toggle('hidden');
+        }
+
+        function calcularCotizacion3D() {
+            const hours = Math.max(0, parseDurationToHours(document.getElementById('cotTiempo').value));
+            const units = Math.max(1, parseInt(document.getElementById('cotPiezasCama').value) || 1);
+            const pkgU = Math.max(0, parseFloat(document.getElementById('cotEmpaqueU').value) || 0);
+            const othU = Math.max(0, parseFloat(document.getElementById('cotOtrosU').value) || 0);
+            const mayorDesc = Math.min(80, Math.max(0, parseFloat(document.getElementById('cotMayorDesc').value) || 0));
+
+            const elecKwh = Math.max(0, parseFloat(document.getElementById('cfgElecKwh').value) || 0);
+            const watts = Math.max(0, parseFloat(document.getElementById('cfgWatts').value) || 0);
+            const printerCost = Math.max(0, parseFloat(document.getElementById('cfgPrinterCost').value) || 0);
+            const lifeHours = Math.max(1, parseFloat(document.getElementById('cfgLifeHours').value) || 5000);
+            const maintHr = Math.max(0, parseFloat(document.getElementById('cfgMaintHr').value) || 0);
+            const laborHr = Math.max(0, parseFloat(document.getElementById('cfgLaborHr').value) || 0);
+            const marginPct = Math.min(0.85, Math.max(0, (parseFloat(document.getElementById('cfgMarginPct').value) || 0) / 100));
+            const wastePct = Math.max(0, (parseFloat(document.getElementById('cfgWastePct').value) || 0) / 100);
+            const commPct = Math.min(0.85, Math.max(0, (parseFloat(document.getElementById('cfgCommPct').value) || 0) / 100));
+            const otherFixed = Math.max(0, parseFloat(document.getElementById('cfgOtherFixed').value) || 0);
+
+            const slots = [1, 2, 3, 4].map(i => {
+                const name = (document.getElementById(`cotNameC${i}`).value || '').trim();
+                const grams = Math.max(0, parseFloat(document.getElementById(`cotGramsC${i}`).value) || 0);
+                const kgPrice = Math.max(0, parseFloat(document.getElementById(`cotKgC${i}`).value) || 0);
+                const cost = (kgPrice * grams) / 1000;
+                document.getElementById(`cotCostC${i}`).textContent = `$${cost.toFixed(2)}`;
+                return { name, grams, cost };
+            });
+
+            const totalGrams = slots.reduce((acc, s) => acc + s.grams, 0);
+            const filCost = slots.reduce((acc, s) => acc + s.cost, 0);
+            const elecCost = (watts / 1000) * hours * elecKwh;
+            const maintCost = hours * maintHr;
+            const deprCost = hours * (printerCost / lifeHours);
+            const laborCost = hours * laborHr;
+
+            const totalJobCost = (elecCost + filCost + maintCost + deprCost + laborCost + pkgU * units + othU * units) * (1 + wastePct) + otherFixed * units;
+            const costPerUnit = totalJobCost / units;
+            const denom = Math.max(0.05, 1 - marginPct - commPct);
+            const suggestedPrice = costPerUnit / denom;
+
+            const gananciaUnit = suggestedPrice - costPerUnit - (suggestedPrice * commPct);
+            const realMargin = suggestedPrice > 0 ? (gananciaUnit / suggestedPrice) * 100 : 0;
+            const gananciaTotal = gananciaUnit * units;
+
+            const pack6Price = suggestedPrice * 6 * (1 - mayorDesc / 100);
+            const extraUnitPrice = suggestedPrice * (1 - mayorDesc / 100);
+
+            const aporteRecuperacion = Math.max(0, gananciaTotal);
+            const trabajosRecuperacion = aporteRecuperacion > 0 ? Math.ceil(printerCost / aporteRecuperacion) : 0;
+
+            document.getElementById('cotAutoSummary').textContent = `${totalGrams.toFixed(1)} g total • ${(totalGrams / units).toFixed(1)} g/u.`;
+            document.getElementById('bdElec').textContent = `$${elecCost.toFixed(2)}`;
+            document.getElementById('bdFil').textContent = `$${filCost.toFixed(2)}`;
+            document.getElementById('bdMaint').textContent = `$${maintCost.toFixed(2)}`;
+            document.getElementById('bdDepr').textContent = `$${deprCost.toFixed(2)}`;
+            document.getElementById('bdLabor').textContent = `$${laborCost.toFixed(2)}`;
+
+            document.getElementById('resCostoUnit').textContent = `$${costPerUnit.toFixed(2)}`;
+            document.getElementById('resCostoTotalImp').textContent = `Total trabajo: $${totalJobCost.toFixed(2)}`;
+            document.getElementById('resPrecioPVP').textContent = `$${suggestedPrice.toFixed(2)}`;
+            document.getElementById('resGananciaUnit').textContent = `Ganancia/u.: $${gananciaUnit.toFixed(2)} (${realMargin.toFixed(0)}%)`;
+            document.getElementById('resPack6').textContent = `$${pack6Price.toFixed(2)}`;
+            document.getElementById('resGananciaTotal').textContent = `Ganancia trabajo: $${gananciaTotal.toFixed(2)}`;
+            document.getElementById('resExtraUnit').textContent = `$${extraUnitPrice.toFixed(2)}`;
+            document.getElementById('resRecovery').textContent = trabajosRecuperacion > 0 ? `Recupera imp.: ${trabajosRecuperacion} trab.` : 'Recupera imp.: —';
+
+            const activeColors = slots.map(s => s.name).filter(Boolean);
+            lastQuoteCalc = {
+                units,
+                totalGrams,
+                costPerUnit,
+                suggestedPrice: Number(suggestedPrice.toFixed(2)),
+                pack6Price: Number(pack6Price.toFixed(2)),
+                extraUnitPrice: Number(extraUnitPrice.toFixed(2)),
+                colors: [slots[0].name, slots[1].name, slots[2].name, slots[3].name],
+                filament: activeColors.length ? activeColors.join(' / ') : 'PLA'
+            };
+        }
+
+        function guardarCotizacionEnInventario() {
+            calcularCotizacion3D();
+            const prodName = prompt('Nombre del producto para la tienda e inventario:', 'Producto 3D ATEL 3D');
+            if (!prodName || !prodName.trim()) return;
+
+            const stockInput = prompt('Stock inicial (unidades):', String(lastQuoteCalc.units || 6));
+            const stock = Math.max(0, parseInt(stockInput, 10) || 0);
+
+            const newProd = {
+                id: 'prod_' + Date.now(),
+                name: prodName.trim(),
+                filament: lastQuoteCalc.filament,
+                colors: lastQuoteCalc.colors,
+                stock,
+                basePrice: lastQuoteCalc.suggestedPrice,
+                pack6Price: lastQuoteCalc.pack6Price,
+                extraUnitPrice: lastQuoteCalc.extraUnitPrice,
+                image: 'https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80',
+                packs: [
+                    { qty: 6, price: lastQuoteCalc.pack6Price },
+                    { qty: 10, price: Number((lastQuoteCalc.pack6Price + (4 * lastQuoteCalc.extraUnitPrice)).toFixed(2)) }
+                ]
+            };
+
+            products.unshift(newProd);
+            persistAll();
+            renderInventory();
+            alert(`"${newProd.name}" guardado en inventario y sincronizado con la tienda.`);
+        }
+
+        function addManualProduct() {
+            const name = prompt('Nombre del producto:');
+            if (!name || !name.trim()) return;
+            const basePrice = Math.max(0.1, parseFloat(prompt('Precio unitario ($):', '2.00')) || 2.00);
+            const stock = Math.max(0, parseInt(prompt('Stock disponible:', '10'), 10) || 0);
+
+            products.unshift({
+                id: 'prod_' + Date.now(),
+                name: name.trim(),
+                filament: 'PLA',
+                colors: ['Rojo', 'Blanco', '', ''],
+                stock,
+                basePrice,
+                pack6Price: Number((basePrice * 6 * 0.8).toFixed(2)),
+                extraUnitPrice: Number((basePrice * 0.7).toFixed(2)),
+                image: 'https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80',
+                packs: []
+            });
+            persistAll();
+            renderInventory();
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            persistAll();
+            renderInventory();
+        }
+
+        function renderInventory() {
+            const container = document.getElementById('inventoryList');
+            if (!container) return;
+            if (!products.length) {
+                container.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400">No hay productos registrados todavía.</div>`;
+                return;
+            }
+            container.innerHTML = products.map(p => `
+                <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between gap-3">
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="font-bold text-white text-sm">${escapeHtml(p.name)}</h3>
+                            <span class="bg-brand-600/20 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-lg font-bold">$${Number(p.basePrice).toFixed(2)}</span>
+                        </div>
+                        <p class="text-slate-400">Stock: <strong class="text-white">${p.stock} u.</strong> • ${escapeHtml(p.filament || 'PLA')}</p>
+                        <p class="text-slate-400">Set 6 u.: <span class="text-emerald-400 font-semibold">$${Number(p.pack6Price || p.basePrice * 6).toFixed(2)}</span></p>
+                    </div>
+                    <button type="button" onclick="deleteProduct('${p.id}')" class="self-end text-rose-400 hover:text-rose-300 text-[11px] font-semibold">Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        function openOrderModal(prefill = null) {
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModalTitle').textContent = prefill?.client ? `Agregar Producto — ${prefill.client}` : 'Nuevo Pedido';
+            document.getElementById('ordEditId').value = '';
+            document.getElementById('ordClient').value = prefill?.client || '';
+            document.getElementById('ordContact').value = prefill?.contact || '';
+            document.getElementById('ordDate').value = prefill?.date || '';
+            document.getElementById('ordProduct').value = '';
+            document.getElementById('ordQty').value = '6';
+            document.getElementById('ordTotal').value = '0';
+            document.getElementById('ordNotes').value = '';
+        }
+
+        function closeOrderModal() {
+            keepClientAfterSave = false;
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+
+        function saveOrderAndAddAnother() {
+            keepClientAfterSave = true;
+            document.querySelector('#orderModal form').requestSubmit();
+        }
+
+        function saveOrder(e) {
+            e.preventDefault();
+            const orderData = {
+                id: 'ord_' + Date.now(),
+                client: document.getElementById('ordClient').value.trim(),
+                contact: document.getElementById('ordContact').value.trim(),
+                date: document.getElementById('ordDate').value,
+                product: document.getElementById('ordProduct').value.trim(),
+                qty: Math.max(1, parseInt(document.getElementById('ordQty').value, 10) || 1),
+                total: Math.max(0, parseFloat(document.getElementById('ordTotal').value) || 0),
+                notes: document.getElementById('ordNotes').value.trim(),
+                status: 'Pendiente'
+            };
+
+            orders.unshift(orderData);
+            persistAll();
+            renderOrders();
+
+            if (keepClientAfterSave) {
+                keepClientAfterSave = false;
+                openOrderModal({ client: orderData.client, contact: orderData.contact, date: orderData.date });
+            } else {
+                closeOrderModal();
+            }
+        }
+
+        function toggleOrderStatus(id) {
+            const ord = orders.find(o => o.id === id);
+            if (!ord) return;
+            ord.status = ord.status === 'Pendiente' ? 'Entregado' : 'Pendiente';
+            persistAll();
+            renderOrders();
+        }
+
+        function deleteOrder(id) {
+            orders = orders.filter(o => o.id !== id);
+            persistAll();
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersList');
+            if (!container) return;
+            if (!orders.length) {
+                container.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400">No hay pedidos registrados aún.</div>`;
+                return;
+            }
+            container.innerHTML = orders.map(o => `
+                <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start gap-2">
+                        <div>
+                            <h3 class="font-bold text-white text-sm">${escapeHtml(o.client)}</h3>
+                            <p class="text-slate-400">${escapeHtml(o.contact || 'Sin contacto')} ${o.date ? `• Entrega: ${escapeHtml(o.date)}` : ''}</p>
+                        </div>
+                        <button type="button" onclick="toggleOrderStatus('${o.id}')" class="px-2.5 py-1 rounded-lg font-semibold ${o.status === 'Entregado' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}">
+                            ${o.status}
+                        </button>
+                    </div>
+                    <p class="text-slate-200 font-semibold">${escapeHtml(o.product)} <span class="text-slate-400 font-normal">(${o.qty} u.)</span> — <span class="text-brand-400">$${Number(o.total).toFixed(2)}</span></p>
+                    ${o.notes ? `<p class="text-slate-400">Notas: ${escapeHtml(o.notes)}</p>` : ''}
+                    <div class="flex justify-end gap-3 pt-1">
+                        <button type="button" onclick="deleteOrder('${o.id}')" class="text-rose-400 hover:text-rose-300 font-semibold">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function configureStoreUrl() {
+            const nextUrl = prompt('Ingresa la URL o ruta de tu tienda pública (ej. index.html o https://mospanky.github.io/Atel-3D/):', storeUrl);
+            if (!nextUrl || !nextUrl.trim()) return;
+            storeUrl = nextUrl.trim();
+            localStorage.setItem('atel3d_store_url', storeUrl);
+            applyStoreLinks();
+        }
+
+        function applyStoreLinks() {
+            const btn1 = document.getElementById('storeLinkBtn');
+            const btn2 = document.getElementById('storeLinkInventory');
+            if (btn1) btn1.href = storeUrl;
+            if (btn2) btn2.href = storeUrl;
+        }
+
+        function configureFirebase() {
+            const current = localStorage.getItem('atel_firebase_cfg') || '';
+            const raw = prompt('Pega aquí tu objeto firebaseConfig de Firebase Console:', current);
+            if (raw === null) return;
+            localStorage.setItem('atel_firebase_cfg', raw.trim());
+            initFirebaseSync();
+            persistAll();
+        }
+
+        function initFirebaseSync() {
+            const statusEl = document.getElementById('syncStatus');
+            const rawCfg = localStorage.getItem('atel_firebase_cfg');
+            if (!rawCfg || typeof firebase === 'undefined') {
+                if (statusEl) statusEl.textContent = 'Local listo';
+                return;
+            }
+            try {
+                const match = rawCfg.match(/\{[\s\S]*\}/);
+                if (!match) return;
+                const cfg = (new Function('return ' + match[0]))();
+                if (!firebase.apps.length) firebase.initializeApp(cfg);
+                firestoreDb = firebase.firestore();
+                if (statusEl) {
+                    statusEl.textContent = 'Firebase conectado';
+                    statusEl.className = 'text-[11px] text-emerald-400 px-2 font-semibold';
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.textContent = 'Error Firebase';
+                    statusEl.className = 'text-[11px] text-rose-400 px-2';
+                }
+            }
+        }
+
+        function loadLocalData() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                products = Array.isArray(saved.products) ? saved.products : [];
+                orders = Array.isArray(saved.orders) ? saved.orders : [];
+            } catch (e) {
+                products = [];
+                orders = [];
+            }
+        }
+
+        function persistAll() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ products, orders }));
+            if (firestoreDb) {
+                firestoreDb.collection('atel3d').doc('store').set({
+                    products,
+                    orders,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true }).catch(err => console.warn('Error guardando en Firestore:', err));
+            }
+        }
+
+        function escapeHtml(text) {
+            return String(text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
                     
