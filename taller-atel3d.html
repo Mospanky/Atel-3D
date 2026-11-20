@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATEL 3D — Taller e Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { 900: '#0f172a', 950: '#070b14' },
+                        brand: { 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark-950 text-slate-100 min-h-screen">
+    <header class="bg-dark-900 border-b border-slate-800 sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-black text-lg tracking-tight text-white">ATEL 3D</span>
+                    <span class="text-[11px] bg-brand-600/20 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">Taller</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Ideas que toman forma • Cuenca</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+                <a id="storeLinkBtn" href="index.html" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition">
+                    <i data-lucide="store" class="w-3.5 h-3.5"></i> Ir a la Tienda
+                </a>
+                <button type="button" onclick="configureStoreUrl()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl font-semibold">
+                    Enlace Tienda
+                </button>
+                <button type="button" onclick="configureFirebase()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl font-semibold">
+                    Firebase
+                </button>
+                <span id="syncStatus" class="text-[11px] text-slate-400 px-2">Local listo</span>
+            </div>
+        </div>
+
+        <nav class="max-w-6xl mx-auto px-4 flex gap-2 overflow-x-auto pb-2.5 text-xs">
+            <button type="button" data-tab="cotizador" onclick="switchTab('cotizador')" class="tab-btn px-3.5 py-2 rounded-xl font-semibold bg-brand-600 text-white">Cotizador (4 Colores)</button>
+            <button type="button" data-tab="pedidos" onclick="switchTab('pedidos')" class="tab-btn px-3.5 py-2 rounded-xl font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Pedidos</button>
+            <button type="button" data-tab="inventario" onclick="switchTab('inventario')" class="tab-btn px-3.5 py-2 rounded-xl font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Productos e Inventario</button>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+        <section id="tab-cotizador" class="tab-content space-y-5">
+            <div class="bg-dark-900 border border-slate-800 p-5 rounded-2xl space-y-4">
+                <div class="flex flex-wrap justify-between items-start gap-2">
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="calculator" class="w-5 h-5 text-brand-400"></i> Cotizador ATEL 3D (Hasta 4 Colores)
+                        </h2>
+                        <p class="text-xs text-slate-400">Ingresa color/filamento, gramos y $/kg de cada color, tiempo, unidades y descuento por mayor. El resto se calcula automáticamente.</p>
+                    </div>
+                    <button type="button" onclick="toggleCotConfig()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold">
+                        Configuración Taller
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-brand-400">Color / Filamento 1</span>
+                            <span id="cotCostC1" class="text-slate-300 font-semibold">$0.00</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="cotNameC1" value="PLA Rojo" oninput="calcularCotizacion3D()" placeholder="Color/Tipo" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotGramsC1" value="35" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="Gramos (g)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotKgC1" value="18" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="$/kg" title="Precio $/kg" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sky-400">Color / Filamento 2</span>
+                            <span id="cotCostC2" class="text-slate-300 font-semibold">$0.00</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="cotNameC2" value="PLA Blanco" oninput="calcularCotizacion3D()" placeholder="Color/Tipo" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotGramsC2" value="25" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="Gramos (g)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotKgC2" value="18" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="$/kg" title="Precio $/kg" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-emerald-400">Color / Filamento 3</span>
+                            <span id="cotCostC3" class="text-slate-300 font-semibold">$0.00</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="cotNameC3" value="" oninput="calcularCotizacion3D()" placeholder="Opcional" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotGramsC3" value="0" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="Gramos (g)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotKgC3" value="18" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="$/kg" title="Precio $/kg" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-amber-400">Color / Filamento 4</span>
+                            <span id="cotCostC4" class="text-slate-300 font-semibold">$0.00</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="cotNameC4" value="" oninput="calcularCotizacion3D()" placeholder="Opcional" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotGramsC4" value="0" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="Gramos (g)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            <input type="number" id="cotKgC4" value="18" min="0" step="0.5" oninput="calcularCotizacion3D()" placeholder="$/kg" title="Precio $/kg" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Tiempo (h / HH:MM)</label>
+                        <input type="text" id="cotTiempo" value="2.5" oninput="calcularCotizacion3D()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Unidades por trabajo</label>
+                        <input type="number" id="cotPiezasCama" value="6" min="1" step="1" oninput="calcularCotizacion3D()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Empaque / u. ($)</label>
+                        <input type="number" id="cotEmpaqueU" value="0" min="0" step="0.05" oninput="calcularCotizacion3D()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Otros costos / u. ($)</label>
+                        <input type="number" id="cotOtrosU" value="0" min="0" step="0.05" oninput="calcularCotizacion3D()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Descuento Mayor (%)</label>
+                        <input type="number" id="cotMayorDesc" value="20" min="0" max="80" step="1" oninput="calcularCotizacion3D()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold">
+                    </div>
+                </div>
+
+                <div id="cotConfigPanel" class="hidden bg-slate-800/40 border border-slate-700/70 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Electricidad ($/kWh)</label>
+                        <input type="number" id="cfgElecKwh" value="0.10" min="0" step="0.005" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Potencia (W)</label>
+                        <input type="number" id="cfgWatts" value="150" min="10" step="5" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Costo impresora ($)</label>
+                        <input type="number" id="cfgPrinterCost" value="552.67" min="0" step="1" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Vida útil (h)</label>
+                        <input type="number" id="cfgLifeHours" value="5000" min="100" step="100" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Mantenimiento ($/h)</label>
+                        <input type="number" id="cfgMaintHr" value="0.10" min="0" step="0.05" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Mano de obra ($/h)</label>
+                        <input type="number" id="cfgLaborHr" value="0" min="0" step="0.5" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Margen deseado (%)</label>
+                        <input type="number" id="cfgMarginPct" value="35" min="0" max="85" step="1" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Fallos / desperdicio (%)</label>
+                        <input type="number" id="cfgWastePct" value="5" min="0" max="60" step="1" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Comisión venta (%)</label>
+                        <input type="number" id="cfgCommPct" value="0" min="0" max="50" step="0.5" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Otros fijos / prod. ($)</label>
+                        <input type="number" id="cfgOtherFixed" value="0" min="0" step="0.05" oninput="calcularCotizacion3D()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-dark-900 border border-slate-800 p-5 rounded-2xl space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <h3 class="text-sm font-bold text-white">Desglose y Precios Automáticos</h3>
+                    <span id="cotAutoSummary" class="text-xs text-slate-400">60.0 g total • 10.0 g/u.</span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
+                    <div class="bg-slate-800/60 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400 block">Electricidad ($)</span>
+                        <span id="bdElec" class="text-sm font-bold text-white mt-0.5 block">$0.00</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400 block">Filamento 4 col. ($)</span>
+                        <span id="bdFil" class="text-sm font-bold text-white mt-0.5 block">$0.00</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400 block">Mantenimiento ($)</span>
+                        <span id="bdMaint" class="text-sm font-bold text-white mt-0.5 block">$0.00</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400 block">Depreciación ($)</span>
+                        <span id="bdDepr" class="text-sm font-bold text-white mt-0.5 block">$0.00</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl">
+                        <span class="text-[11px] text-slate-400 block">Mano de obra ($)</span>
+                        <span id="bdLabor" class="text-sm font-bold text-white mt-0.5 block">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="bg-slate-800/60 p-3.5 rounded-xl">
+                        <span class="text-[11px] text-slate-400 block">Costo / Unidad</span>
+                        <span id="resCostoUnit" class="text-lg font-bold text-white mt-0.5 block">$0.00</span>
+                        <span id="resCostoTotalImp" class="text-[10px] text-slate-400">Total trabajo: $0.00</span>
+                    </div>
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 p-3.5 rounded-xl">
+                        <span class="text-[11px] text-emerald-300 block">Precio Sugerido / u.</span>
+                        <span id="resPrecioPVP" class="text-xl font-black text-emerald-400 mt-0.5 block">$0.00</span>
+                        <span id="resGananciaUnit" class="text-[10px] text-emerald-200/80">Ganancia/u.: $0.00 (0%)</span>
+                    </div>
+                    <div class="bg-brand-500/10 border border-brand-500/30 p-3.5 rounded-xl">
+                        <span class="text-[11px] text-brand-300 block">Precio por Set (6 u.)</span>
+                        <span id="resPack6" class="text-xl font-black text-brand-400 mt-0.5 block">$0.00</span>
+                        <span id="resGananciaTotal" class="text-[10px] text-brand-200/80">Ganancia trabajo: $0.00</span>
+                    </div>
+                    <div class="bg-sky-500/10 border border-sky-500/30 p-3.5 rounded-xl">
+                        <span class="text-[11px] text-sky-300 block">Unidad por Mayor</span>
+                        <span id="resExtraUnit" class="text-xl font-black text-sky-400 mt-0.5 block">$0.00</span>
+                        <span id="resRecovery" class="text-[10px] text-sky-200/80">Recupera imp.: 0 trab.</span>
+                    </div>
+                </div>
+
+                <button type="button" onclick="guardarCotizacionEnInventario()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl text-xs transition shadow-lg shadow-brand-600/20">
+                    Guardar Producto en Tienda e Inventario con Estos Precios
+                </button>
+            </div>
+        </section>
+
+        <section id="tab-pedidos" class="tab-content hidden space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Pedidos de Clientes</h2>
+                    <p class="text-xs text-slate-400">Si un cliente pide dos productos diferentes, usa "Guardar y Agregar Otro Producto" para añadirlo manteniendo sus datos.</p>
+                </div>
+                <button type="button" onclick="openOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold">+ Nuevo Pedido</button>
+            </div>
+            <div id="ordersList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs"></div>
+        </section>
+
+        <section id="tab-inventario" class="tab-content hidden space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Productos e Inventario</h2>
+                    <p class="text-xs text-slate-400">Productos creados desde el cotizador o agregados manualmente.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="addManualProduct()" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 px-3 py-2 rounded-xl text-xs font-semibold">+ Producto Manual</button>
+                    <a id="storeLinkInventory" href="index.html" target="_blank" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3 py-2 rounded-xl text-xs font-semibold">Abrir Tienda Pública</a>
+                </div>
+            </div>
+            <div id="inventoryList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs"></div>
+        </section>
+    </main>
+
+    <div id="orderModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-3 text-xs">
+            <div class="flex justify-between items-center">
+                <h3 id="orderModalTitle" class="text-base font-bold text-white">Nuevo Pedido</h3>
+                <button type="button" onclick="closeOrderModal()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <form onsubmit="saveOrder(event)" class="space-y-2.5">
+                <input type="hidden" id="ordEditId">
+                <div>
+                    <label class="block text-slate-300 mb-1">Cliente</label>
+                    <input type="text" id="ordClient" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-slate-300 mb-1">WhatsApp / Contacto</label>
+                        <input type="text" id="ordContact" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Fecha entrega</label>
+                        <input type="date" id="ordDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Producto</label>
+                    <input type="text" id="ordProduct" required placeholder="Ej: Servilletero navideño" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Cantidad (u.)</label>
+                        <input type="number" id="ordQty" value="6" min="1" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Total ($)</label>
+                        <input type="number" id="ordTotal" value="0" min="0" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Colores / Notas</label>
+                    <input type="text" id="ordNotes" placeholder="Ej: Rojo + Blanco + Dorado" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                </div>
+                <button type="button" onclick="saveOrderAndAddAnother()" class="w-full bg-sky-600/20 hover:bg-sky-600/30 text-sky-300 border border-sky-500/30 py-2 rounded-xl font-semibold">
+                    Guardar y Agregar Otro Producto al Mismo Cliente
+                </button>
+                <div class="flex gap-2 pt-1">
+                    <button type="button" onclick="closeOrderModal
