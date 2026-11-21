@@ -236,14 +236,14 @@
             <div class="space-y-3" id="ordersListContainer"></div>
         </div>
 
-        <!-- 5. TIENDA WEB: CATÁLOGO CON HASTA 3 FOTOS POR PRODUCTO -->
+        <!-- 5. TIENDA WEB: CATÁLOGO CON HASTA 3 FOTOS Y COLORES CONFIGURABLES -->
         <div id="tab-webcontrol" class="tab-content space-y-5">
             <div class="bg-dark-900 border border-slate-800 p-5 rounded-2xl space-y-4">
                 <div class="flex flex-wrap justify-between items-center gap-3 border-b border-slate-800 pb-4">
                     <div>
                         <span class="text-[11px] uppercase tracking-wider text-brand-400 font-bold">Vista del Catálogo de Tienda Web</span>
                         <h2 class="text-xl font-extrabold text-white mt-0.5">Catálogo de Productos (Hasta 3 Fotos c/u)</h2>
-                        <p class="text-xs text-slate-400">Agrega, modifica o borra hasta 3 fotos y la información de cada producto. Los cambios se sincronizan con la web.</p>
+                        <p class="text-xs text-slate-400">Agrega, modifica o borra hasta 3 fotos, cantidad de colores y etiquetas de cada producto.</p>
                     </div>
                     <button onclick="openCatalogModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-4 py-3 rounded-xl font-bold flex items-center gap-1.5 shadow-lg shadow-brand-600/25">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i> Agregar Producto al Catálogo
@@ -282,11 +282,11 @@
         </div>
     </div>
 
-    <!-- MODAL CATÁLOGO WEB (3 FOTOS + TODA LA INFORMACIÓN DE LA TARJETA) -->
+    <!-- MODAL CATÁLOGO WEB (3 FOTOS + CANTIDAD Y ETIQUETAS DE COLORES) -->
     <div id="catalogModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
             <h3 id="catalogModalTitle" class="text-lg font-bold text-white mb-1">Producto en Catálogo de la Tienda</h3>
-            <p class="text-xs text-slate-400 mb-4">Agrega o edita hasta 3 fotos y la información que aparece en la tarjeta del catálogo.</p>
+            <p class="text-xs text-slate-400 mb-4">Agrega o edita hasta 3 fotos, la cantidad de colores y el nombre de cada color en la web.</p>
             <form onsubmit="saveCatalogProduct(event)" class="space-y-3 text-sm">
                 <input type="hidden" id="catProdId">
 
@@ -325,7 +325,7 @@
 
                 <div>
                     <label class="block text-xs text-slate-300 mb-1">Nombre del Producto *</label>
-                    <input type="text" id="catProdName" required placeholder="Ej: Servilleteros Navideños" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    <input type="text" id="catProdName" required placeholder="Ej: Bombillos 3D Personalizados" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
@@ -375,13 +375,41 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs text-slate-300 mb-1">Colores predeterminados (según rollos disponibles en inventario)</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        <select id="catProdC1" class="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-white"></select>
-                        <select id="catProdC2" class="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-white"></select>
-                        <select id="catProdC3" class="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-white"></select>
-                        <select id="catProdC4" class="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-white"></select>
+                <!-- CANTIDAD DE COLORES EN WEB + ETIQUETAS + COLOR DE INVENTARIO -->
+                <div class="bg-slate-800/40 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="text-xs font-bold text-slate-200">Configuración de Colores en la Tienda Web</label>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-slate-400">Colores a mostrar:</span>
+                            <select id="catProdColorCount" onchange="toggleCatalogColorSlots()" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-white font-bold">
+                                <option value="1">1 color</option>
+                                <option value="2" selected>2 colores</option>
+                                <option value="3">3 colores</option>
+                                <option value="4">4 colores</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                        <div id="catSlotWrap1" class="bg-slate-900/80 border border-slate-700 rounded-xl p-2 space-y-1.5">
+                            <input type="text" id="catProdLabel1" value="Color 1" placeholder="Ej: Bombillo color" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-brand-300 font-semibold">
+                            <select id="catProdC1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+
+                        <div id="catSlotWrap2" class="bg-slate-900/80 border border-slate-700 rounded-xl p-2 space-y-1.5">
+                            <input type="text" id="catProdLabel2" value="Color 2" placeholder="Ej: Nombre color" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-sky-300 font-semibold">
+                            <select id="catProdC2" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+
+                        <div id="catSlotWrap3" class="bg-slate-900/80 border border-slate-700 rounded-xl p-2 space-y-1.5 hidden">
+                            <input type="text" id="catProdLabel3" value="Color 3" placeholder="Etiqueta color 3" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-emerald-300 font-semibold">
+                            <select id="catProdC3" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+
+                        <div id="catSlotWrap4" class="bg-slate-900/80 border border-slate-700 rounded-xl p-2 space-y-1.5 hidden">
+                            <input type="text" id="catProdLabel4" value="Color 4" placeholder="Etiqueta color 4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-amber-300 font-semibold">
+                            <select id="catProdC4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
                     </div>
                 </div>
 
@@ -419,7 +447,7 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIDO (SIRVE TANTO PARA NUEVO/EDITAR COMO PARA CONFIRMAR ALERTAS WEB) -->
+    <!-- MODAL PEDIDO -->
     <div id="orderModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <h3 id="orderModalTitle" class="text-lg font-bold text-white mb-1">Nuevo Pedido</h3>
@@ -470,17 +498,17 @@
         ];
 
         const defaultProducts = [
-            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", description: "Pasadas 6 unidades aplica descuento automático por cantidad (ej. 10 u. = $12.00 en referencia base).", featured: true, filament: "PLA", gramsPerUnit: 5.4, colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
-            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", description: "Pasadas 6 unidades aplica descuento automático por cantidad (ej. 10 u. = $12.00 en referencia base).", featured: true, filament: "PLA", gramsPerUnit: 4.0, colors: ["Blanco", "Rojo", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
-            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", description: "Adornos 3D personalizados con nombres o diseños exclusivos.", featured: true, filament: "PLA", gramsPerUnit: 12.0, colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=600&q=80", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
-            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", description: "Sets temáticos impresos en 3D con descuento por cantidad.", featured: true, filament: "PLA", gramsPerUnit: 3.5, colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
+            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", description: "Pasadas 6 unidades aplica descuento automático por cantidad (ej. 10 u. = $12.00 en referencia base).", featured: true, filament: "PLA", gramsPerUnit: 5.4, colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
+            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", description: "Pasadas 6 unidades aplica descuento automático por cantidad (ej. 10 u. = $12.00 en referencia base).", featured: true, filament: "PLA", gramsPerUnit: 4.0, colorCount: 1, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Blanco", "", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
+            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", description: "Adornos 3D personalizados con nombres o diseños exclusivos.", featured: true, filament: "PLA", gramsPerUnit: 12.0, colorCount: 2, colorLabels: ["Bombillo color", "Nombre color", "Color 3", "Color 4"], colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=600&q=80", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
+            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", description: "Sets temáticos impresos en 3D con descuento por cantidad.", featured: true, filament: "PLA", gramsPerUnit: 3.5, colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
         ];
 
         const defaultOrders = [
             { id: "ord_1", client: "Estefi Cru", contact: "0987139449", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 8, total: 8.5, paid: 8.5, status: "entregado", deliveryDate: "2026-11-12", notes: "Con grabado Casa Ma" },
             { id: "ord_2", client: "Manolo", contact: "0998400131", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Rojo", "", "", ""], qty: 8, total: 10.0, paid: 10.0, status: "entregado", deliveryDate: "2026-11-12", notes: "" },
             { id: "ord_22", client: "Ely (hija Ceci)", contact: "0998400131", productId: "prod_bombillos", productName: "Bombillos 3D Personalizados", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], qty: 6, total: 18.0, paid: 0.0, status: "pedido", deliveryDate: "2026-11-19", notes: "Cecilia, Belén, Javi, Javier, Cristian, Elizabeth" },
-            { id: "ord_23", client: "Mónica Ordóñez", contact: "0998400614", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "Rojo", "", ""], qty: 2, total: 1.75, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Nombres: NICOL, ESTEFANIA" },
+            { id: "ord_23", client: "Mónica Ordóñez", contact: "0998400614", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 2, total: 1.75, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Nombres: NICOL, ESTEFANIA" },
             { id: "ord_25", client: "Amiga suca", contact: "", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Rojo", "", "", ""], qty: 6, total: 9.5, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Reno bebé" },
             { id: "ord_26", client: "Freed Ordoñez", contact: "0998400131", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 12, total: 22.5, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Envío a Guayaquil" },
             { id: "ord_27", client: "Patricia Molina", contact: "0998400131", productId: "prod_bombillos", productName: "Bombillos 3D Personalizados", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], qty: 4, total: 10.0, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Con nombres" }
@@ -648,6 +676,14 @@
             return opts.join('');
         }
 
+        function toggleCatalogColorSlots() {
+            const count = Math.max(1, Math.min(4, parseInt(document.getElementById('catProdColorCount').value) || 2));
+            [1, 2, 3, 4].forEach(i => {
+                const wrap = document.getElementById(`catSlotWrap${i}`);
+                if (wrap) wrap.classList.toggle('hidden', i > count);
+            });
+        }
+
         function refreshCatalogColorSelects(presetCols) {
             const mat = document.getElementById('catProdFilament').value;
             const list = getInventoryColorsByMaterial(mat);
@@ -660,7 +696,8 @@
             ['catProdC1', 'catProdC2', 'catProdC3', 'catProdC4'].forEach((id, idx) => {
                 const el = document.getElementById(id);
                 if (!el) return;
-                el.innerHTML = buildColorOptionsHtml(list, current[idx] || (idx === 0 ? list[0] : ''), idx === 0 ? null : `Color ${idx + 1} (Opcional)`);
+                const labelHint = (document.getElementById(`catProdLabel${idx + 1}`)?.value || '').trim() || `Color ${idx + 1}`;
+                el.innerHTML = buildColorOptionsHtml(list, current[idx] || (idx === 0 ? list[0] : ''), idx === 0 ? null : `${labelHint} (Opcional)`);
             });
         }
 
@@ -680,7 +717,7 @@
             });
         }
 
-        /* ================= CATÁLOGO EN TIENDA WEB (3 FOTOS) ================= */
+        /* ================= CATÁLOGO EN TIENDA WEB (3 FOTOS + COLORES CONFIGURABLES) ================= */
         function parsePacksString(str) {
             if (!str || !str.trim()) return [];
             return str.split(',').map(pair => {
@@ -711,6 +748,8 @@
             grid.innerHTML = products.map(p => {
                 const base = Number(p.basePrice || 1);
                 const cols = p.colors || ["", "", "", ""];
+                const count = Math.max(1, Math.min(4, parseInt(p.colorCount) || (cols.filter(Boolean).length || 2)));
+                const labels = Array.isArray(p.colorLabels) && p.colorLabels.length ? p.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
                 const isPublished = p.featured !== false;
                 const imgs = getProdImagesList(p);
                 const curIdx = Math.min(mirrorPhotoIdx[p.id] || 0, imgs.length - 1);
@@ -732,6 +771,15 @@
                             </button>
                         `).join('')}
                     </div>` : '';
+
+                const activeColorBoxes = Array.from({ length: count }, (_, i) => {
+                    const lbl = labels[i] || `Color ${i + 1}`;
+                    const val = cols[i] || 'A elegir';
+                    return `<div class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5">
+                        <span class="text-[10px] text-slate-400 block truncate">${lbl}</span>
+                        <span class="text-[11px] text-white font-semibold truncate block">${val}</span>
+                    </div>`;
+                }).join('');
 
                 return `
                 <div class="bg-[#111827] border ${isPublished ? 'border-slate-700/80' : 'border-rose-500/40 opacity-75'} rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
@@ -756,11 +804,11 @@
                             ${packsHtml ? `<div class="flex flex-wrap gap-1.5">${packsHtml}</div>` : ''}
                             <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 space-y-2 text-xs">
                                 <div class="flex justify-between items-center text-emerald-400 font-semibold">
-                                    <span>Colores predeterminados (hasta 4 colores)</span>
+                                    <span>Colores en web (${count} selector${count > 1 ? 'es' : ''})</span>
                                     <span class="bg-slate-800 text-white px-2.5 py-0.5 rounded-md font-bold">Total: $${base.toFixed(2)}</span>
                                 </div>
-                                <div class="grid grid-cols-4 gap-1.5">
-                                    ${[0,1,2,3].map(i => `<div class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-slate-200 truncate">${cols[i] || 'Color ' + (i+1)}</div>`).join('')}
+                                <div class="grid grid-cols-${Math.min(count, 2)} gap-1.5">
+                                    ${activeColorBoxes}
                                 </div>
                             </div>
                         </div>
@@ -795,6 +843,13 @@
             document.getElementById('catProdExtraUnit').value = p ? Number(p.extraUnitPrice || 0.625) : '0.625';
 
             const cols = p ? (p.colors || []) : ['Rojo', 'Blanco', '', ''];
+            const count = p ? Math.max(1, Math.min(4, parseInt(p.colorCount) || (cols.filter(Boolean).length || 2))) : 2;
+            document.getElementById('catProdColorCount').value = String(count);
+            const labels = p && Array.isArray(p.colorLabels) ? p.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+            [1, 2, 3, 4].forEach(i => {
+                document.getElementById(`catProdLabel${i}`).value = labels[i - 1] || `Color ${i}`;
+            });
+            toggleCatalogColorSlots();
             refreshCatalogColorSelects(cols);
 
             document.getElementById('catProdFeatured').checked = p ? (p.featured !== false) : true;
@@ -841,6 +896,14 @@
             const packsParsed = parsePacksString(document.getElementById('catProdPacks').value);
             const imgs = [1, 2, 3].map(s => document.getElementById(`catProdImage${s}`).value.trim());
             const firstNonEmpty = imgs.find(Boolean) || '';
+            const colorCount = Math.max(1, Math.min(4, parseInt(document.getElementById('catProdColorCount').value) || 2));
+            const colorLabels = [1, 2, 3, 4].map(i => (document.getElementById(`catProdLabel${i}`).value || '').trim() || `Color ${i}`);
+            const rawColors = [
+                document.getElementById('catProdC1').value.trim(),
+                document.getElementById('catProdC2').value.trim(),
+                document.getElementById('catProdC3').value.trim(),
+                document.getElementById('catProdC4').value.trim()
+            ].map((c, idx) => (idx < colorCount ? c : ''));
 
             const item = {
                 id,
@@ -851,12 +914,9 @@
                 filament: document.getElementById('catProdFilament').value,
                 gramsPerUnit: existing ? (existing.gramsPerUnit || 5.4) : 5.4,
                 stock: existing ? (existing.stock || 10) : 10,
-                colors: [
-                    document.getElementById('catProdC1').value.trim(),
-                    document.getElementById('catProdC2').value.trim(),
-                    document.getElementById('catProdC3').value.trim(),
-                    document.getElementById('catProdC4').value.trim()
-                ],
+                colorCount,
+                colorLabels,
+                colors: rawColors,
                 basePrice: parseFloat(document.getElementById('catProdBasePrice').value) || 2.00,
                 pack6Price: p6,
                 extraUnitPrice: parseFloat(document.getElementById('catProdExtraUnit').value) || 0.625,
@@ -1098,6 +1158,9 @@
             document.getElementById('catProdPack6').value = window.lastCot.p6.toFixed(2);
             document.getElementById('catProdExtraUnit').value = window.lastCot.extra.toFixed(3);
             document.getElementById('catProdPacks').value = `6:${window.lastCot.p6.toFixed(2)}`;
+            const activeCount = Math.max(1, window.lastCot.cols.filter(Boolean).length);
+            document.getElementById('catProdColorCount').value = String(activeCount);
+            toggleCatalogColorSlots();
             refreshCatalogColorSelects(window.lastCot.cols);
         }
 
