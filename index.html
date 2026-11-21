@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATEL 3D — Ideas que toman forma | Tienda y Catálogo</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -30,9 +32,7 @@
     <header class="bg-dark-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
             <a href="#inicio-tienda" class="flex items-center space-x-3">
-                <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-lg shadow-brand-600/30">
-                    <i data-lucide="box" class="w-6 h-6"></i>
-                </div>
+                <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-11 h-11 rounded-xl object-cover shadow-lg shadow-brand-600/30 border border-brand-500/40">
                 <div>
                     <span class="font-black text-lg tracking-wide text-white block leading-none">ATEL 3D</span>
                     <span class="text-xs text-brand-400 font-medium">Ideas que toman forma • Cuenca, Ecuador</span>
@@ -129,7 +129,10 @@
     </section>
 
     <footer class="bg-dark-900 border-t border-slate-800 py-5 px-4 text-center text-xs text-slate-400">
-        <p class="font-semibold text-slate-200">ATEL 3D • Ideas que toman forma</p>
+        <div class="flex items-center justify-center gap-2 mb-1">
+            <img src="icon.png" alt="ATEL 3D" onerror="this.style.display='none'" class="w-5 h-5 rounded-md object-cover">
+            <p class="font-semibold text-slate-200">ATEL 3D • Ideas que toman forma</p>
+        </div>
         <p class="mt-0.5">Cuenca, Ecuador — Fabricación Digital e Impresión 3D</p>
     </footer>
 
@@ -160,20 +163,20 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Color 1</label>
-                        <input type="text" id="custC1" placeholder="Ej: Rojo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        <label class="block text-xs text-slate-300 mb-1">Color 1 (Inventario)</label>
+                        <select id="custC1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Color 2</label>
-                        <input type="text" id="custC2" placeholder="Ej: Blanco" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        <label class="block text-xs text-slate-300 mb-1">Color 2 (Inventario)</label>
+                        <select id="custC2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Color 3</label>
-                        <input type="text" id="custC3" placeholder="Opcional" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        <label class="block text-xs text-slate-300 mb-1">Color 3 (Inventario)</label>
+                        <select id="custC3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Color 4</label>
-                        <input type="text" id="custC4" placeholder="Opcional" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        <label class="block text-xs text-slate-300 mb-1">Color 4 (Inventario)</label>
+                        <select id="custC4" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
                     </div>
                 </div>
                 <div>
@@ -198,30 +201,130 @@
             description: "En ATEL 3D transformamos ideas en piezas reales: decoraciones de temporada, detalles personalizados, sets por cantidad y modelos exclusivos fabricados con precisión.",
             about: "Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos.",
             gallery: [
+                "icon.png",
                 "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80",
                 "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80",
-                "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80",
-                "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80"
+                "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80"
             ]
         };
 
         const defaultProducts = [
-            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
-            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", filament: "PLA", colors: ["Blanco", "Rojo", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
-            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
-            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", filament: "PLA", colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
+            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
+            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", filament: "PLA", colors: ["Blanco", "Rojo", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
+            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
+            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", filament: "PLA", colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
         ];
+
+        const fallbackInventoryColors = ["Rojo", "Blanco", "Dorado"];
 
         let storeConfig = JSON.parse(localStorage.getItem('atel_store_config')) || defaultStoreConfig;
         let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
+        let inventoryFilaments = JSON.parse(localStorage.getItem('atel_available_filaments')) || [];
         let activeFilter = 'Todo';
+        let activeCardPhotoIdx = {};
+        let dbRef = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             initFirebaseSyncIfConfigured();
             renderStoreHero();
             renderCatalog();
+            populateCustomModalColors();
             lucide.createIcons();
         });
+
+        function initFirebaseSyncIfConfigured() {
+            const rawCfg = localStorage.getItem('atel_firebase_cfg');
+            if (!rawCfg || typeof firebase === 'undefined') return;
+            try {
+                const match = rawCfg.match(/\{[\s\S]*\}/);
+                if (!match) return;
+                const cfg = (new Function('return ' + match[0]))();
+                if (!firebase.apps.length) firebase.initializeApp(cfg);
+                dbRef = firebase.firestore();
+                dbRef.collection('atel3d').doc('store').onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.storeConfig) {
+                            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
+                            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
+                            renderStoreHero();
+                        }
+                        if (Array.isArray(data.availableFilaments)) {
+                            inventoryFilaments = data.availableFilaments;
+                            localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
+                        }
+                        if (Array.isArray(data.products)) {
+                            products = data.products;
+                            localStorage.setItem('atel_products_v2', JSON.stringify(products));
+                            renderCatalog();
+                        }
+                        populateCustomModalColors();
+                    }
+                });
+            } catch (err) {
+                console.warn('Sincronización Firebase en espera:', err);
+            }
+        }
+
+        function getAvailableColorsForProduct(prod) {
+            const mat = (prod?.filament || 'PLA').toLowerCase().trim();
+            const inStock = inventoryFilaments.filter(f => Number(f.grams) > 0);
+            let matching = inStock.filter(f => (f.type || 'PLA').toLowerCase().trim() === mat).map(f => f.color).filter(Boolean);
+            if (!matching.length && inStock.length) {
+                matching = inStock.map(f => f.color).filter(Boolean);
+            }
+            if (!matching.length) {
+                const prodCols = (prod?.colors || []).map(c => (c || '').trim()).filter(Boolean);
+                matching = prodCols.length ? prodCols : fallbackInventoryColors;
+            }
+            return [...new Set(matching)];
+        }
+
+        function buildColorSelectOptions(optionsList, selectedVal, optionalLabel) {
+            const opts = [];
+            if (optionalLabel) {
+                opts.push(`<option value="" ${!selectedVal ? 'selected' : ''}>${optionalLabel}</option>`);
+            }
+            optionsList.forEach(col => {
+                const isSel = selectedVal && col.toLowerCase() === selectedVal.toLowerCase();
+                opts.push(`<option value="${col}" ${isSel ? 'selected' : ''}>${col}</option>`);
+            });
+            return opts.join('');
+        }
+
+        function populateCustomModalColors() {
+            const allCols = inventoryFilaments.length
+                ? [...new Set(inventoryFilaments.filter(f => Number(f.grams) > 0).map(f => f.color).filter(Boolean))]
+                : fallbackInventoryColors;
+            const list = allCols.length ? allCols : fallbackInventoryColors;
+            ['custC1', 'custC2', 'custC3', 'custC4'].forEach((id, idx) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.innerHTML = buildColorSelectOptions(list, idx === 0 ? list[0] : '', idx === 0 ? null : `Color ${idx + 1} (Opcional)`);
+            });
+        }
+
+        function getProductImages(prod, fallbackIdx = 0) {
+            const raw = Array.isArray(prod.images) ? prod.images.filter(u => u && u.trim()) : [];
+            if (raw.length) return raw.slice(0, 3);
+            if (prod.image && prod.image.trim()) return [prod.image.trim()];
+            return [defaultStoreConfig.gallery[fallbackIdx % defaultStoreConfig.gallery.length]];
+        }
+
+        function selectCardPhoto(productId, idx, fallbackIdx = 0) {
+            const prod = products.find(p => p.id === productId);
+            if (!prod) return;
+            const imgs = getProductImages(prod, fallbackIdx);
+            const safeIdx = Math.max(0, Math.min(idx, imgs.length - 1));
+            activeCardPhotoIdx[productId] = safeIdx;
+            const mainImg = document.getElementById(`cardMainImg_${productId}`);
+            if (mainImg) mainImg.src = imgs[safeIdx];
+            document.querySelectorAll(`.photo-thumb_${productId}`).forEach((btn, i) => {
+                btn.className = i === safeIdx
+                    ? `photo-thumb_${productId} w-11 h-11 rounded-lg overflow-hidden border-2 border-brand-500 ring-2 ring-brand-500/30 transition`
+                    : `photo-thumb_${productId} w-11 h-11 rounded-lg overflow-hidden border border-slate-700 opacity-75 hover:opacity-100 transition`;
+            });
+        }
 
         function setCatalogFilter(filterName) {
             activeFilter = filterName;
@@ -232,35 +335,6 @@
                     : "cat-filter-btn bg-dark-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-semibold px-3.5 py-1.5 rounded-full transition";
             });
             renderCatalog();
-        }
-
-        function initFirebaseSyncIfConfigured() {
-            const rawCfg = localStorage.getItem('atel_firebase_cfg');
-            if (!rawCfg || typeof firebase === 'undefined') return;
-            try {
-                const match = rawCfg.match(/\{[\s\S]*\}/);
-                if (!match) return;
-                const cfg = (new Function('return ' + match[0]))();
-                if (!firebase.apps.length) firebase.initializeApp(cfg);
-                const db = firebase.firestore();
-                db.collection('atel3d').doc('store').onSnapshot((doc) => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        if (data.storeConfig) {
-                            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
-                            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
-                            renderStoreHero();
-                        }
-                        if (Array.isArray(data.products) && data.products.length > 0) {
-                            products = data.products;
-                            localStorage.setItem('atel_products_v2', JSON.stringify(products));
-                            renderCatalog();
-                        }
-                    }
-                });
-            } catch (err) {
-                console.warn('Sincronización Firebase en espera:', err);
-            }
         }
 
         function renderStoreHero() {
@@ -320,7 +394,10 @@
             }
 
             list.forEach((p, index) => {
+                const imgs = getProductImages(p, index);
+                const curIdx = Math.min(activeCardPhotoIdx[p.id] || 0, imgs.length - 1);
                 const cList = p.colors && p.colors.length ? p.colors : [p.color || 'Rojo', 'Blanco', '', ''];
+                const availCols = getAvailableColorsForProduct(p);
                 const initialTotal = calculateProductPrice(p, 1);
                 const descText = (p.description && p.description.trim())
                     ? p.description.trim()
@@ -339,22 +416,33 @@
                     </div>`;
                 }
 
+                const thumbsHtml = imgs.length > 1 ? `
+                    <div class="flex items-center gap-2 mt-2">
+                        ${imgs.map((src, i) => `
+                            <button type="button" onclick="selectCardPhoto('${p.id}', ${i}, ${index})" class="${i === curIdx ? `photo-thumb_${p.id} w-11 h-11 rounded-lg overflow-hidden border-2 border-brand-500 ring-2 ring-brand-500/30 transition` : `photo-thumb_${p.id} w-11 h-11 rounded-lg overflow-hidden border border-slate-700 opacity-75 hover:opacity-100 transition`}">
+                                <img src="${src}" alt="${p.name} foto ${i + 1}" class="w-full h-full object-cover">
+                            </button>
+                        `).join('')}
+                    </div>` : '';
+
                 const card = document.createElement('article');
                 card.className = "bg-dark-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col";
                 card.innerHTML = `
                     <div class="h-48 sm:h-52 bg-slate-800 relative overflow-hidden">
-                        <img src="${p.image || defaultStoreConfig.gallery[index % defaultStoreConfig.gallery.length]}" alt="${p.name}" class="w-full h-full object-cover">
+                        <img id="cardMainImg_${p.id}" src="${imgs[curIdx]}" alt="${p.name}" class="w-full h-full object-cover">
                         <div class="absolute top-3 right-3 bg-slate-950/85 backdrop-blur-md border border-slate-700 px-3 py-1 rounded-full text-xs font-bold text-white">
                             Desde $${Number(p.basePrice).toFixed(2)} c/u
                         </div>
                         <div class="absolute bottom-3 left-3 bg-brand-600/90 text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold">
                             ${p.filament || 'PLA'}
                         </div>
+                        ${imgs.length > 1 ? `<div class="absolute bottom-3 right-3 bg-slate-950/80 text-slate-200 px-2 py-0.5 rounded-md text-[10px] font-semibold border border-slate-700">${imgs.length} fotos</div>` : ''}
                     </div>
 
                     <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
-                            <h3 class="text-base sm:text-lg font-bold text-white">${p.name}</h3>
+                            ${thumbsHtml}
+                            <h3 class="text-base sm:text-lg font-bold text-white mt-2">${p.name}</h3>
                             <p class="text-xs text-slate-400 mt-0.5">${descText}</p>
                             ${packsBadges}
                         </div>
@@ -385,12 +473,20 @@
                             </div>
 
                             <div>
-                                <label class="block text-[11px] text-slate-300 mb-1">Colores (hasta 4 colores)</label>
+                                <label class="block text-[11px] text-slate-300 mb-1">Colores en inventario del taller (hasta 4 colores)</label>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
-                                    <input type="text" id="waC1_${p.id}" value="${cList[0] || ''}" placeholder="Color 1" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                    <input type="text" id="waC2_${p.id}" value="${cList[1] || ''}" placeholder="Color 2" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                    <input type="text" id="waC3_${p.id}" value="${cList[2] || ''}" placeholder="Color 3" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                    <input type="text" id="waC4_${p.id}" value="${cList[3] || ''}" placeholder="Color 4" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                                    <select id="waC1_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                                        ${buildColorSelectOptions(availCols, cList[0] || availCols[0] || '', null)}
+                                    </select>
+                                    <select id="waC2_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                                        ${buildColorSelectOptions(availCols, cList[1] || '', 'Color 2')}
+                                    </select>
+                                    <select id="waC3_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                                        ${buildColorSelectOptions(availCols, cList[2] || '', 'Color 3')}
+                                    </select>
+                                    <select id="waC4_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                                        ${buildColorSelectOptions(availCols, cList[3] || '', 'Color 4')}
+                                    </select>
                                 </div>
                             </div>
 
@@ -427,6 +523,19 @@
             if (badge) badge.textContent = `Total: $${total.toFixed(2)}`;
         }
 
+        function registerPendingOrderAlert(alertPayload) {
+            const currentPending = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
+            const updatedPending = [alertPayload, ...currentPending];
+            localStorage.setItem('atel_pending_orders', JSON.stringify(updatedPending));
+
+            if (dbRef) {
+                dbRef.collection('atel3d').doc('workshop').set({
+                    pendingOrders: updatedPending,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true }).catch(() => {});
+            }
+        }
+
         function buildProductOrderMessage(productId) {
             const prod = products.find(p => p.id === productId);
             const clientName = (document.getElementById(`waName_${productId}`).value || '').trim();
@@ -437,33 +546,60 @@
                 document.getElementById(`waC2_${productId}`).value.trim(),
                 document.getElementById(`waC3_${productId}`).value.trim(),
                 document.getElementById(`waC4_${productId}`).value.trim()
-            ].filter(Boolean);
+            ];
+            const activeColors = colors.filter(Boolean);
             const total = calculateProductPrice(prod, qty);
 
-            return `Hola *ATEL 3D* 👋 Quiero confirmar el siguiente pedido:\n\n` +
-                   `• *Cliente:* ${clientName}\n` +
-                   `• *WhatsApp cliente:* ${clientPhone}\n` +
-                   `• *Producto:* ${prod.name}\n` +
-                   `• *Cantidad:* ${qty} unidades\n` +
-                   `• *Filamento:* ${prod.filament || 'PLA'}\n` +
-                   `• *Colores (${colors.length || 1}):* ${colors.length ? colors.join(', ') : 'A coordinar'}\n` +
-                   `• *Total estimado:* $${total.toFixed(2)}\n\n` +
-                   `¿Me ayudas confirmando disponibilidad y entrega?`;
+            return {
+                prod,
+                clientName,
+                clientPhone,
+                qty,
+                colors,
+                activeColors,
+                total,
+                text: `Hola *ATEL 3D* 👋 Quiero confirmar el siguiente pedido:\n\n` +
+                      `• *Cliente:* ${clientName}\n` +
+                      `• *WhatsApp cliente:* ${clientPhone}\n` +
+                      `• *Producto:* ${prod.name}\n` +
+                      `• *Cantidad:* ${qty} unidades\n` +
+                      `• *Filamento:* ${prod.filament || 'PLA'}\n` +
+                      `• *Colores (${activeColors.length || 1}):* ${activeColors.length ? activeColors.join(', ') : 'A coordinar'}\n` +
+                      `• *Total estimado:* $${total.toFixed(2)}\n\n` +
+                      `¿Me ayudas confirmando disponibilidad y entrega?`
+            };
         }
 
         function submitProductWhatsApp(e, productId) {
             e.preventDefault();
             const targetPhone = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '');
-            const msg = buildProductOrderMessage(productId);
-            window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            const data = buildProductOrderMessage(productId);
+            registerPendingOrderAlert({
+                id: 'alert_' + Date.now(),
+                source: 'WhatsApp Catálogo',
+                createdAt: new Date().toISOString(),
+                client: data.clientName,
+                contact: data.clientPhone,
+                productId: data.prod.id,
+                productName: data.prod.name,
+                filament: data.prod.filament || 'PLA',
+                colors: data.colors,
+                qty: data.qty,
+                total: Number(data.total.toFixed(2)),
+                paid: 0,
+                deliveryDate: new Date().toISOString().split('T')[0],
+                notes: `Pedido desde catálogo web (${data.activeColors.join(', ') || 'Color a coordinar'})`
+            });
+            window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(data.text)}`, '_blank');
         }
 
         function copyCardSummary(productId) {
-            const msg = buildProductOrderMessage(productId);
-            navigator.clipboard?.writeText(msg).then(() => alert('Resumen del pedido copiado.'));
+            const data = buildProductOrderMessage(productId);
+            navigator.clipboard?.writeText(data.text).then(() => alert('Resumen del pedido copiado.'));
         }
 
         function openCustomOrderModal() {
+            populateCustomModalColors();
             document.getElementById('customOrderModal').classList.remove('hidden');
             lucide.createIcons();
         }
@@ -478,21 +614,39 @@
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
             const item = document.getElementById('custItem').value.trim();
-            const qty = document.getElementById('custQty').value;
+            const qty = Math.max(1, parseInt(document.getElementById('custQty').value) || 1);
             const colors = [
                 document.getElementById('custC1').value.trim(),
                 document.getElementById('custC2').value.trim(),
                 document.getElementById('custC3').value.trim(),
                 document.getElementById('custC4').value.trim()
-            ].filter(Boolean);
+            ];
+            const activeColors = colors.filter(Boolean);
             const notes = document.getElementById('custNotes').value.trim();
+
+            registerPendingOrderAlert({
+                id: 'alert_' + Date.now(),
+                source: 'Pedido a Medida',
+                createdAt: new Date().toISOString(),
+                client: name,
+                contact: phone,
+                productId: '',
+                productName: item,
+                filament: 'PLA',
+                colors,
+                qty,
+                total: 0,
+                paid: 0,
+                deliveryDate: new Date().toISOString().split('T')[0],
+                notes: [notes, activeColors.length ? `Colores: ${activeColors.join(', ')}` : ''].filter(Boolean).join(' • ')
+            });
 
             const msg = `Hola *ATEL 3D* 👋 Quiero consultar/confirmar un pedido:\n\n` +
                         `• *Cliente:* ${name}\n` +
                         `• *WhatsApp cliente:* ${phone}\n` +
                         `• *Solicitud:* ${item}\n` +
                         `• *Cantidad:* ${qty}\n` +
-                        `• *Colores:* ${colors.length ? colors.join(', ') : 'A coordinar'}\n` +
+                        `• *Colores:* ${activeColors.length ? activeColors.join(', ') : 'A coordinar'}\n` +
                         (notes ? `• *Notas:* ${notes}\n` : '');
 
             window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`, '_blank');
