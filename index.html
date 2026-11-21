@@ -31,7 +31,7 @@
 
     <header class="bg-dark-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
-            <a href="#inicio-tienda" class="flex items-center space-x-3">
+            <a href="#catalogo-tienda" class="flex items-center space-x-3">
                 <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-11 h-11 rounded-xl object-cover shadow-lg shadow-brand-600/30 border border-brand-500/40">
                 <div>
                     <span class="font-black text-lg tracking-wide text-white block leading-none">ATEL 3D</span>
@@ -50,46 +50,17 @@
         </div>
     </header>
 
-    <section id="inicio-tienda" class="max-w-6xl w-full mx-auto px-4 pt-6 pb-4">
-        <div class="bg-gradient-to-br from-brand-900/40 via-dark-900 to-slate-900 border border-brand-500/25 rounded-3xl p-5 sm:p-8 shadow-2xl">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                <div class="lg:col-span-7 space-y-4">
-                    <span id="heroBadge" class="inline-flex items-center gap-1.5 bg-brand-500/15 text-brand-400 border border-brand-500/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
-                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Diseño y Fabricación Digital 3D
-                    </span>
-                    <h1 id="heroTitle" class="text-2xl sm:text-4xl font-black text-white leading-tight">
-                        Objetos únicos impresos en 3D con detalle y propósito
-                    </h1>
-                    <p id="heroDescription" class="text-sm sm:text-base text-slate-300 leading-relaxed">
-                        En ATEL 3D transformamos ideas en piezas reales: decoraciones de temporada, detalles personalizados, sets por cantidad y modelos exclusivos fabricados con precisión.
-                    </p>
-                    <div id="heroHighlights" class="flex flex-wrap gap-2 pt-1">
-                        <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Descuentos por set y mayor cantidad</span>
-                        <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Colores según inventario del taller</span>
-                        <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Envíos desde Cuenca a todo el Ecuador</span>
-                    </div>
-                    <div class="flex flex-wrap gap-3 pt-2">
-                        <a href="#catalogo-tienda" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-5 py-3 rounded-xl transition shadow-lg shadow-brand-600/30 flex items-center gap-2">
-                            <i data-lucide="shopping-bag" class="w-4 h-4"></i> Explorar Catálogo
-                        </a>
-                        <button onclick="openCustomOrderModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm px-5 py-3 rounded-xl border border-slate-700 transition flex items-center gap-2">
-                            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i> Consultar por WhatsApp
-                        </button>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5">
-                    <div id="heroGalleryGrid" class="grid grid-cols-2 gap-3"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="catalogo-tienda" class="max-w-6xl w-full mx-auto px-4 py-6 flex-1">
+    <section id="catalogo-tienda" class="max-w-6xl w-full mx-auto px-4 pt-6 pb-8 flex-1">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
             <div>
-                <h2 class="text-xl sm:text-2xl font-bold text-white">Catálogo de Productos</h2>
-                <p class="text-xs sm:text-sm text-slate-400">Indica tu nombre, tu WhatsApp, cantidad y colores disponibles en el producto que elijas.</p>
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                    <span id="heroBadge" class="inline-flex items-center gap-1.5 bg-brand-500/15 text-brand-400 border border-brand-500/30 text-[11px] font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        <i data-lucide="sparkles" class="w-3 h-3"></i> Diseño y Fabricación Digital 3D
+                    </span>
+                    <span class="text-[11px] text-slate-400">✓ Descuentos por set • ✓ Colores en inventario • ✓ Envíos a todo el Ecuador</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black text-white">Catálogo de Productos</h1>
+                <p class="text-xs sm:text-sm text-slate-400">Indica tu nombre, tu WhatsApp, cantidad, colores disponibles y observaciones en el producto que elijas.</p>
             </div>
             <div class="flex flex-col items-stretch md:items-end gap-2 w-full md:w-auto">
                 <div id="catalogFilterButtons" class="flex flex-wrap items-center gap-2">
@@ -172,8 +143,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-300 mb-1">Detalles adicionales</label>
-                    <input type="text" id="custNotes" placeholder="Nombres, fecha de entrega, ciudad..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    <label class="block text-xs text-slate-300 mb-1">Observaciones / Detalles adicionales</label>
+                    <textarea id="custNotes" rows="2" placeholder="Nombres para bombillos, si deseas un solo modelo, fecha de entrega, ciudad..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"></textarea>
                 </div>
                 <div class="flex space-x-2 pt-2">
                     <button type="button" onclick="closeCustomOrderModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-medium">Cancelar</button>
@@ -189,16 +160,10 @@
         const defaultStoreConfig = {
             whatsapp: "593998400131",
             badge: "Diseño y Fabricación Digital 3D",
-            title: "Objetos únicos impresos en 3D con detalle y propósito",
-            description: "En ATEL 3D transformamos ideas en piezas reales: decoraciones de temporada, detalles personalizados, sets por cantidad y modelos exclusivos fabricados con precisión.",
-            about: "Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos.",
-            gallery: [
-                "icon.png",
-                "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80",
-                "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80",
-                "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80"
-            ]
+            about: "Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos."
         };
+
+        const FALLBACK_CARD_IMG = "icon.png";
 
         const defaultProducts = [
             { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
@@ -218,7 +183,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             initFirebaseSyncIfConfigured();
-            renderStoreHero();
+            renderStoreInfo();
             renderCatalog();
             populateCustomModalColors();
             lucide.createIcons();
@@ -239,7 +204,7 @@
                         if (data.storeConfig) {
                             storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
                             localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
-                            renderStoreHero();
+                            renderStoreInfo();
                         }
                         if (Array.isArray(data.availableFilaments)) {
                             inventoryFilaments = data.availableFilaments;
@@ -296,17 +261,17 @@
             });
         }
 
-        function getProductImages(prod, fallbackIdx = 0) {
+        function getProductImages(prod) {
             const raw = Array.isArray(prod.images) ? prod.images.filter(u => u && u.trim()) : [];
             if (raw.length) return raw.slice(0, 3);
             if (prod.image && prod.image.trim()) return [prod.image.trim()];
-            return [defaultStoreConfig.gallery[fallbackIdx % defaultStoreConfig.gallery.length]];
+            return [FALLBACK_CARD_IMG];
         }
 
-        function selectCardPhoto(productId, idx, fallbackIdx = 0) {
+        function selectCardPhoto(productId, idx) {
             const prod = products.find(p => p.id === productId);
             if (!prod) return;
-            const imgs = getProductImages(prod, fallbackIdx);
+            const imgs = getProductImages(prod);
             const safeIdx = Math.max(0, Math.min(idx, imgs.length - 1));
             activeCardPhotoIdx[productId] = safeIdx;
             const mainImg = document.getElementById(`cardMainImg_${productId}`);
@@ -329,20 +294,10 @@
             renderCatalog();
         }
 
-        function renderStoreHero() {
-            document.getElementById('heroBadge').innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> ${storeConfig.badge || defaultStoreConfig.badge}`;
-            document.getElementById('heroTitle').textContent = storeConfig.title || defaultStoreConfig.title;
-            document.getElementById('heroDescription').textContent = storeConfig.description || defaultStoreConfig.description;
+        function renderStoreInfo() {
+            document.getElementById('heroBadge').innerHTML = `<i data-lucide="sparkles" class="w-3 h-3"></i> ${storeConfig.badge || defaultStoreConfig.badge}`;
             document.getElementById('aboutText').textContent = storeConfig.about || defaultStoreConfig.about;
             document.getElementById('displayStorePhone').textContent = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-
-            const gallery = document.getElementById('heroGalleryGrid');
-            const imgs = (storeConfig.gallery && storeConfig.gallery.length > 0) ? storeConfig.gallery : defaultStoreConfig.gallery;
-            gallery.innerHTML = imgs.slice(0, 4).map((url, idx) => `
-                <div class="aspect-square rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-800 shadow-md ${idx === 0 ? 'ring-2 ring-brand-500/40' : ''}">
-                    <img src="${url || defaultStoreConfig.gallery[idx % defaultStoreConfig.gallery.length]}" alt="ATEL 3D muestra ${idx + 1}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
-                </div>
-            `).join('');
             lucide.createIcons();
         }
 
@@ -363,14 +318,71 @@
             }
         }
 
-        function getProductColorCount(prod, cList) {
-            return Math.max(1, Math.min(4, parseInt(prod.colorCount) || ((cList || []).filter(Boolean).length || 2)));
+        function getBaseColorCount(prod, cList) {
+            return Math.max(1, Math.min(4, parseInt(prod.colorCount) || ((cList || []).filter(Boolean).length || 1)));
+        }
+
+        function getMinSetThreshold(prod) {
+            if (prod.packs && prod.packs.length > 0) {
+                return Math.min(...prod.packs.map(pk => parseInt(pk.qty) || 1));
+            }
+            return 1;
+        }
+
+        function getEffectiveColorCount(prod, qty) {
+            const cList = prod.colors && prod.colors.length ? prod.colors : [prod.color || 'Rojo', 'Blanco', '', ''];
+            const baseCount = getBaseColorCount(prod, cList);
+            if (baseCount >= 2) return baseCount;
+            const minSet = getMinSetThreshold(prod);
+            const q = Math.max(1, parseInt(qty) || 1);
+            // Si pide más de 1 set (o más de 1 unidad cuando no hay sets), habilita 2 colores
+            if (q > minSet) return 2;
+            return 1;
         }
 
         function getProductColorLabels(prod) {
             return Array.isArray(prod.colorLabels) && prod.colorLabels.length
                 ? prod.colorLabels
                 : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+        }
+
+        function renderProductColorSelectors(prod, qty = 1) {
+            const cList = prod.colors && prod.colors.length ? prod.colors : [prod.color || 'Rojo', 'Blanco', '', ''];
+            const effectiveCols = getEffectiveColorCount(prod, qty);
+            const colLabels = getProductColorLabels(prod);
+            const availCols = getAvailableColorsForProduct(prod);
+
+            // Preservar valores que el usuario ya haya elegido en esta tarjeta
+            const prevValues = [1, 2, 3, 4].map(slot => {
+                const existing = document.getElementById(`waC${slot}_${prod.id}`);
+                return existing ? existing.value : (cList[slot - 1] || '');
+            });
+
+            const container = document.getElementById(`colorGrid_${prod.id}`);
+            const labelTitle = document.getElementById(`colorSectionLabel_${prod.id}`);
+            if (!container) return;
+
+            if (labelTitle) {
+                labelTitle.textContent = effectiveCols === 1
+                    ? 'Color en inventario del taller (pide más de 1 set para elegir 2 colores)'
+                    : `Colores en inventario del taller (${effectiveCols} colores)`;
+            }
+
+            container.className = `grid ${effectiveCols === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2 text-xs`;
+            container.innerHTML = Array.from({ length: effectiveCols }, (_, i) => {
+                const slotNum = i + 1;
+                const labelTxt = (colLabels[i] || '').trim() || `Color ${slotNum}`;
+                const defaultVal = prevValues[i] || (slotNum === 1 ? (availCols[0] || '') : '');
+                const optText = slotNum === 1 ? null : `${labelTxt} (Opcional)`;
+                return `
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5 truncate" title="${labelTxt}">${labelTxt}</label>
+                        <select id="waC${slotNum}_${prod.id}" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                            ${buildColorSelectOptions(availCols, defaultVal, optText)}
+                        </select>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderCatalog() {
@@ -395,13 +407,9 @@
                 return;
             }
 
-            list.forEach((p, index) => {
-                const imgs = getProductImages(p, index);
+            list.forEach((p) => {
+                const imgs = getProductImages(p);
                 const curIdx = Math.min(activeCardPhotoIdx[p.id] || 0, imgs.length - 1);
-                const cList = p.colors && p.colors.length ? p.colors : [p.color || 'Rojo', 'Blanco', '', ''];
-                const maxCols = getProductColorCount(p, cList);
-                const colLabels = getProductColorLabels(p);
-                const availCols = getAvailableColorsForProduct(p);
                 const initialTotal = calculateProductPrice(p, 1);
                 const descText = (p.description && p.description.trim())
                     ? p.description.trim()
@@ -423,34 +431,17 @@
                 const thumbsHtml = imgs.length > 1 ? `
                     <div class="flex items-center gap-2 mt-2">
                         ${imgs.map((src, i) => `
-                            <button type="button" onclick="selectCardPhoto('${p.id}', ${i}, ${index})" class="${i === curIdx ? `photo-thumb_${p.id} w-11 h-11 rounded-lg overflow-hidden border-2 border-brand-500 ring-2 ring-brand-500/30 transition` : `photo-thumb_${p.id} w-11 h-11 rounded-lg overflow-hidden border border-slate-700 opacity-75 hover:opacity-100 transition`}">
+                            <button type="button" onclick="selectCardPhoto('${p.id}', ${i})" class="${i === curIdx ? `photo-thumb_${p.id} w-11 h-11 rounded-lg overflow-hidden border-2 border-brand-500 ring-2 ring-brand-500/30 transition` : `photo-thumb_${p.id} w-11 h-11 rounded-lg overflow-hidden border border-slate-700 opacity-75 hover:opacity-100 transition`}">
                                 <img src="${src}" alt="${p.name} foto ${i + 1}" class="w-full h-full object-cover">
                             </button>
                         `).join('')}
                     </div>` : '';
 
-                const colorSelectorsHtml = Array.from({ length: maxCols }, (_, i) => {
-                    const slotNum = i + 1;
-                    const labelTxt = (colLabels[i] || '').trim() || `Color ${slotNum}`;
-                    const defaultVal = cList[i] || (slotNum === 1 ? (availCols[0] || '') : '');
-                    const optText = slotNum === 1 ? null : `${labelTxt} (Opcional)`;
-                    return `
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-0.5 truncate" title="${labelTxt}">${labelTxt}</label>
-                            <select id="waC${slotNum}_${p.id}" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                ${buildColorSelectOptions(availCols, defaultVal, optText)}
-                            </select>
-                        </div>
-                    `;
-                }).join('');
-
-                const colorGridColsClass = maxCols === 1 ? 'grid-cols-1' : 'grid-cols-2';
-
                 const card = document.createElement('article');
                 card.className = "bg-dark-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col";
                 card.innerHTML = `
                     <div class="h-48 sm:h-52 bg-slate-800 relative overflow-hidden">
-                        <img id="cardMainImg_${p.id}" src="${imgs[curIdx]}" alt="${p.name}" class="w-full h-full object-cover">
+                        <img id="cardMainImg_${p.id}" src="${imgs[curIdx]}" alt="${p.name}" onerror="this.src='${FALLBACK_CARD_IMG}'" class="w-full h-full object-cover">
                         <div class="absolute top-3 right-3 bg-slate-950/85 backdrop-blur-md border border-slate-700 px-3 py-1 rounded-full text-xs font-bold text-white">
                             Desde $${Number(p.basePrice).toFixed(2)} c/u
                         </div>
@@ -489,15 +480,18 @@
                                 </div>
                                 <div>
                                     <label class="block text-[11px] text-slate-300 mb-1">Cantidad *</label>
-                                    <input type="number" id="waQty_${p.id}" min="1" value="1" required oninput="updateCardTotal('${p.id}')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-white font-semibold focus:outline-none focus:border-brand-500">
+                                    <input type="number" id="waQty_${p.id}" min="1" value="1" required oninput="onCardQtyInput('${p.id}')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-white font-semibold focus:outline-none focus:border-brand-500">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-[11px] text-slate-300 mb-1">${maxCols === 1 ? 'Color en inventario del taller' : `Colores en inventario del taller (${maxCols} opciones)`}</label>
-                                <div class="grid ${colorGridColsClass} gap-2 text-xs">
-                                    ${colorSelectorsHtml}
-                                </div>
+                                <label id="colorSectionLabel_${p.id}" class="block text-[11px] text-slate-300 mb-1">Colores en inventario del taller</label>
+                                <div id="colorGrid_${p.id}" class="grid grid-cols-1 gap-2 text-xs"></div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] text-slate-300 mb-1">Observaciones (opcional)</label>
+                                <textarea id="waNotes_${p.id}" rows="2" placeholder="Ej: Nombres para bombillos, si deseas un solo modelo o algún detalle especial..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500"></textarea>
                             </div>
 
                             <div class="flex gap-2 pt-1">
@@ -512,6 +506,7 @@
                     </div>
                 `;
                 grid.appendChild(card);
+                renderProductColorSelectors(p, 1);
             });
             lucide.createIcons();
         }
@@ -520,17 +515,18 @@
             const input = document.getElementById(`waQty_${productId}`);
             if (input) {
                 input.value = qty;
-                updateCardTotal(productId);
+                onCardQtyInput(productId);
             }
         }
 
-        function updateCardTotal(productId) {
+        function onCardQtyInput(productId) {
             const prod = products.find(p => p.id === productId);
             if (!prod) return;
-            const qty = parseInt(document.getElementById(`waQty_${productId}`).value) || 1;
+            const qty = Math.max(1, parseInt(document.getElementById(`waQty_${productId}`).value) || 1);
             const total = calculateProductPrice(prod, qty);
             const badge = document.getElementById(`cardTotal_${productId}`);
             if (badge) badge.textContent = `Total: $${total.toFixed(2)}`;
+            renderProductColorSelectors(prod, qty);
         }
 
         function registerPendingOrderAlert(alertPayload) {
@@ -548,16 +544,15 @@
 
         function buildProductOrderMessage(productId) {
             const prod = products.find(p => p.id === productId);
-            const cList = prod.colors && prod.colors.length ? prod.colors : [prod.color || 'Rojo', 'Blanco', '', ''];
-            const maxCols = getProductColorCount(prod, cList);
-            const colLabels = getProductColorLabels(prod);
-
             const clientName = (document.getElementById(`waName_${productId}`).value || '').trim();
             const clientPhone = (document.getElementById(`waPhone_${productId}`).value || '').trim();
             const qty = Math.max(1, parseInt(document.getElementById(`waQty_${productId}`).value) || 1);
+            const obs = (document.getElementById(`waNotes_${productId}`)?.value || '').trim();
+            const effectiveCols = getEffectiveColorCount(prod, qty);
+            const colLabels = getProductColorLabels(prod);
 
             const selectedValues = [1, 2, 3, 4].map(slot => {
-                if (slot > maxCols) return '';
+                if (slot > effectiveCols) return '';
                 const el = document.getElementById(`waC${slot}_${productId}`);
                 return el ? el.value.trim() : '';
             });
@@ -574,6 +569,7 @@
                 clientName,
                 clientPhone,
                 qty,
+                obs,
                 colors: selectedValues,
                 activeColors,
                 labeledColors,
@@ -585,6 +581,7 @@
                       `• *Cantidad:* ${qty} unidades\n` +
                       `• *Filamento:* ${prod.filament || 'PLA'}\n` +
                       `• *Colores:* ${labeledColors.length ? labeledColors.join(', ') : 'A coordinar'}\n` +
+                      (obs ? `• *Observaciones:* ${obs}\n` : '') +
                       `• *Total estimado:* $${total.toFixed(2)}\n\n` +
                       `¿Me ayudas confirmando disponibilidad y entrega?`
             };
@@ -594,6 +591,11 @@
             e.preventDefault();
             const targetPhone = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '');
             const data = buildProductOrderMessage(productId);
+            const combinedNotes = [
+                data.obs ? `Obs: ${data.obs}` : '',
+                data.labeledColors.join(' • ')
+            ].filter(Boolean).join(' | ');
+
             registerPendingOrderAlert({
                 id: 'alert_' + Date.now(),
                 source: 'WhatsApp Catálogo',
@@ -608,7 +610,7 @@
                 total: Number(data.total.toFixed(2)),
                 paid: 0,
                 deliveryDate: new Date().toISOString().split('T')[0],
-                notes: [data.labeledColors.join(' • '), 'Pedido desde catálogo web'].filter(Boolean).join(' | ')
+                notes: combinedNotes || 'Pedido desde catálogo web'
             });
             window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(data.text)}`, '_blank');
         }
@@ -667,7 +669,7 @@
                         `• *Solicitud:* ${item}\n` +
                         `• *Cantidad:* ${qty}\n` +
                         `• *Colores:* ${activeColors.length ? activeColors.join(', ') : 'A coordinar'}\n` +
-                        (notes ? `• *Notas:* ${notes}\n` : '');
+                        (notes ? `• *Observaciones:* ${notes}\n` : '');
 
             window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`, '_blank');
             closeCustomOrderModal();
