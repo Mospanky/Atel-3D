@@ -65,7 +65,7 @@
                     </p>
                     <div id="heroHighlights" class="flex flex-wrap gap-2 pt-1">
                         <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Descuentos por set y mayor cantidad</span>
-                        <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Combinación de hasta 4 colores</span>
+                        <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Colores según inventario del taller</span>
                         <span class="bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-xl">✓ Envíos desde Cuenca a todo el Ecuador</span>
                     </div>
                     <div class="flex flex-wrap gap-3 pt-2">
@@ -89,7 +89,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
             <div>
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Catálogo de Productos</h2>
-                <p class="text-xs sm:text-sm text-slate-400">Indica tu nombre, tu WhatsApp, cantidad y colores en el producto que elijas.</p>
+                <p class="text-xs sm:text-sm text-slate-400">Indica tu nombre, tu WhatsApp, cantidad y colores disponibles en el producto que elijas.</p>
             </div>
             <div class="flex flex-col items-stretch md:items-end gap-2 w-full md:w-auto">
                 <div id="catalogFilterButtons" class="flex flex-wrap items-center gap-2">
@@ -122,7 +122,7 @@
                     <i data-lucide="map-pin" class="w-4 h-4 text-brand-400"></i> Atención y Pedidos
                 </p>
                 <p><strong class="text-white">Ubicación:</strong> Cuenca, Ecuador</p>
-                <p><strong class="text-white">Colores:</strong> Hasta 4 colores combinables</p>
+                <p><strong class="text-white">Colores:</strong> Según configuración e inventario del taller</p>
                 <p><strong class="text-white">Confirmación:</strong> Directa por WhatsApp al <span id="displayStorePhone" class="text-emerald-400 font-semibold">0998400131</span></p>
             </div>
         </div>
@@ -170,14 +170,6 @@
                         <label class="block text-xs text-slate-300 mb-1">Color 2 (Inventario)</label>
                         <select id="custC2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
                     </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Color 3 (Inventario)</label>
-                        <select id="custC3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Color 4 (Inventario)</label>
-                        <select id="custC4" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
-                    </div>
                 </div>
                 <div>
                     <label class="block text-xs text-slate-300 mb-1">Detalles adicionales</label>
@@ -209,10 +201,10 @@
         };
 
         const defaultProducts = [
-            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
-            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", filament: "PLA", colors: ["Blanco", "Rojo", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
-            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
-            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", filament: "PLA", colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
+            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
+            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", filament: "PLA", colorCount: 1, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Blanco", "", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
+            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", filament: "PLA", colorCount: 2, colorLabels: ["Bombillo color", "Nombre color", "Color 3", "Color 4"], colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
+            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
         ];
 
         const fallbackInventoryColors = ["Rojo", "Blanco", "Dorado"];
@@ -297,10 +289,10 @@
                 ? [...new Set(inventoryFilaments.filter(f => Number(f.grams) > 0).map(f => f.color).filter(Boolean))]
                 : fallbackInventoryColors;
             const list = allCols.length ? allCols : fallbackInventoryColors;
-            ['custC1', 'custC2', 'custC3', 'custC4'].forEach((id, idx) => {
+            ['custC1', 'custC2'].forEach((id, idx) => {
                 const el = document.getElementById(id);
                 if (!el) return;
-                el.innerHTML = buildColorSelectOptions(list, idx === 0 ? list[0] : '', idx === 0 ? null : `Color ${idx + 1} (Opcional)`);
+                el.innerHTML = buildColorSelectOptions(list, idx === 0 ? list[0] : '', idx === 0 ? null : 'Color 2 (Opcional)');
             });
         }
 
@@ -371,6 +363,16 @@
             }
         }
 
+        function getProductColorCount(prod, cList) {
+            return Math.max(1, Math.min(4, parseInt(prod.colorCount) || ((cList || []).filter(Boolean).length || 2)));
+        }
+
+        function getProductColorLabels(prod) {
+            return Array.isArray(prod.colorLabels) && prod.colorLabels.length
+                ? prod.colorLabels
+                : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+        }
+
         function renderCatalog() {
             const grid = document.getElementById('catalogGrid');
             const term = (document.getElementById('storeSearch')?.value || '').toLowerCase().trim();
@@ -397,6 +399,8 @@
                 const imgs = getProductImages(p, index);
                 const curIdx = Math.min(activeCardPhotoIdx[p.id] || 0, imgs.length - 1);
                 const cList = p.colors && p.colors.length ? p.colors : [p.color || 'Rojo', 'Blanco', '', ''];
+                const maxCols = getProductColorCount(p, cList);
+                const colLabels = getProductColorLabels(p);
                 const availCols = getAvailableColorsForProduct(p);
                 const initialTotal = calculateProductPrice(p, 1);
                 const descText = (p.description && p.description.trim())
@@ -424,6 +428,23 @@
                             </button>
                         `).join('')}
                     </div>` : '';
+
+                const colorSelectorsHtml = Array.from({ length: maxCols }, (_, i) => {
+                    const slotNum = i + 1;
+                    const labelTxt = (colLabels[i] || '').trim() || `Color ${slotNum}`;
+                    const defaultVal = cList[i] || (slotNum === 1 ? (availCols[0] || '') : '');
+                    const optText = slotNum === 1 ? null : `${labelTxt} (Opcional)`;
+                    return `
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-0.5 truncate" title="${labelTxt}">${labelTxt}</label>
+                            <select id="waC${slotNum}_${p.id}" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
+                                ${buildColorSelectOptions(availCols, defaultVal, optText)}
+                            </select>
+                        </div>
+                    `;
+                }).join('');
+
+                const colorGridColsClass = maxCols === 1 ? 'grid-cols-1' : 'grid-cols-2';
 
                 const card = document.createElement('article');
                 card.className = "bg-dark-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col";
@@ -473,20 +494,9 @@
                             </div>
 
                             <div>
-                                <label class="block text-[11px] text-slate-300 mb-1">Colores en inventario del taller (hasta 4 colores)</label>
-                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
-                                    <select id="waC1_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                        ${buildColorSelectOptions(availCols, cList[0] || availCols[0] || '', null)}
-                                    </select>
-                                    <select id="waC2_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                        ${buildColorSelectOptions(availCols, cList[1] || '', 'Color 2')}
-                                    </select>
-                                    <select id="waC3_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                        ${buildColorSelectOptions(availCols, cList[2] || '', 'Color 3')}
-                                    </select>
-                                    <select id="waC4_${p.id}" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white">
-                                        ${buildColorSelectOptions(availCols, cList[3] || '', 'Color 4')}
-                                    </select>
+                                <label class="block text-[11px] text-slate-300 mb-1">${maxCols === 1 ? 'Color en inventario del taller' : `Colores en inventario del taller (${maxCols} opciones)`}</label>
+                                <div class="grid ${colorGridColsClass} gap-2 text-xs">
+                                    ${colorSelectorsHtml}
                                 </div>
                             </div>
 
@@ -538,16 +548,25 @@
 
         function buildProductOrderMessage(productId) {
             const prod = products.find(p => p.id === productId);
+            const cList = prod.colors && prod.colors.length ? prod.colors : [prod.color || 'Rojo', 'Blanco', '', ''];
+            const maxCols = getProductColorCount(prod, cList);
+            const colLabels = getProductColorLabels(prod);
+
             const clientName = (document.getElementById(`waName_${productId}`).value || '').trim();
             const clientPhone = (document.getElementById(`waPhone_${productId}`).value || '').trim();
             const qty = Math.max(1, parseInt(document.getElementById(`waQty_${productId}`).value) || 1);
-            const colors = [
-                document.getElementById(`waC1_${productId}`).value.trim(),
-                document.getElementById(`waC2_${productId}`).value.trim(),
-                document.getElementById(`waC3_${productId}`).value.trim(),
-                document.getElementById(`waC4_${productId}`).value.trim()
-            ];
-            const activeColors = colors.filter(Boolean);
+
+            const selectedValues = [1, 2, 3, 4].map(slot => {
+                if (slot > maxCols) return '';
+                const el = document.getElementById(`waC${slot}_${productId}`);
+                return el ? el.value.trim() : '';
+            });
+
+            const labeledColors = selectedValues
+                .map((val, idx) => val ? `${(colLabels[idx] || '').trim() || `Color ${idx + 1}`}: ${val}` : '')
+                .filter(Boolean);
+
+            const activeColors = selectedValues.filter(Boolean);
             const total = calculateProductPrice(prod, qty);
 
             return {
@@ -555,8 +574,9 @@
                 clientName,
                 clientPhone,
                 qty,
-                colors,
+                colors: selectedValues,
                 activeColors,
+                labeledColors,
                 total,
                 text: `Hola *ATEL 3D* 👋 Quiero confirmar el siguiente pedido:\n\n` +
                       `• *Cliente:* ${clientName}\n` +
@@ -564,7 +584,7 @@
                       `• *Producto:* ${prod.name}\n` +
                       `• *Cantidad:* ${qty} unidades\n` +
                       `• *Filamento:* ${prod.filament || 'PLA'}\n` +
-                      `• *Colores (${activeColors.length || 1}):* ${activeColors.length ? activeColors.join(', ') : 'A coordinar'}\n` +
+                      `• *Colores:* ${labeledColors.length ? labeledColors.join(', ') : 'A coordinar'}\n` +
                       `• *Total estimado:* $${total.toFixed(2)}\n\n` +
                       `¿Me ayudas confirmando disponibilidad y entrega?`
             };
@@ -588,7 +608,7 @@
                 total: Number(data.total.toFixed(2)),
                 paid: 0,
                 deliveryDate: new Date().toISOString().split('T')[0],
-                notes: `Pedido desde catálogo web (${data.activeColors.join(', ') || 'Color a coordinar'})`
+                notes: [data.labeledColors.join(' • '), 'Pedido desde catálogo web'].filter(Boolean).join(' | ')
             });
             window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(data.text)}`, '_blank');
         }
@@ -618,8 +638,8 @@
             const colors = [
                 document.getElementById('custC1').value.trim(),
                 document.getElementById('custC2').value.trim(),
-                document.getElementById('custC3').value.trim(),
-                document.getElementById('custC4').value.trim()
+                '',
+                ''
             ];
             const activeColors = colors.filter(Boolean);
             const notes = document.getElementById('custNotes').value.trim();
