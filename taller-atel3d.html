@@ -58,7 +58,7 @@
             <div class="text-center mb-4">
                 <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-16 h-16 rounded-2xl object-cover mx-auto mb-3 border border-brand-500/40 shadow-lg">
                 <h2 class="text-lg font-bold text-white">Acceso Privado al Taller</h2>
-                <p class="text-xs text-slate-400">Ingrese su contraseña</p>
+                <p class="text-xs text-slate-400">Clave por defecto: 1234</p>
             </div>
             <form onsubmit="verifyWorkshopPassword(event)" class="space-y-4">
                 <input type="password" id="workshopPasswordInput" placeholder="Clave" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-center tracking-widest text-lg" required>
@@ -215,7 +215,7 @@
                         <i data-lucide="bell-ring" class="w-5 h-5 text-amber-400"></i>
                         <div>
                             <h3 class="text-sm font-extrabold text-amber-300">Alertas de Pedidos Entrantes desde la Web</h3>
-                            <p class="text-[11px] text-slate-300">Revisa y edita cualquier dato antes de guardarlo en tu lista definitiva de Pedidos.</p>
+                            <p class="text-[11px] text-slate-300">Revisa y edita cualquier dato (incluidas las observaciones del cliente) antes de guardarlo en Pedidos.</p>
                         </div>
                     </div>
                     <span id="pendingAlertsCount" class="bg-amber-500 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full">0</span>
@@ -479,7 +479,7 @@
                     <div><label class="text-xs text-slate-300">Total ($)</label><input type="number" id="ordTotal" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
                     <div><label class="text-xs text-slate-300">Anticipo ($)</label><input type="number" id="ordPaid" step="0.01" value="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
                 </div>
-                <div><label class="text-xs text-slate-300">Notas</label><input type="text" id="ordNotes" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
+                <div><label class="text-xs text-slate-300">Observaciones / Notas</label><input type="text" id="ordNotes" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
                 <div class="flex space-x-2 pt-2">
                     <button type="button" onclick="closeOrderModal()" class="flex-1 bg-slate-800 text-slate-300 py-2.5 rounded-xl text-xs">Cancelar</button>
                     <button type="submit" id="btnSaveOrderSubmit" class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl text-xs font-semibold">Guardar Pedido</button>
@@ -518,7 +518,7 @@
         let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
         let orders = JSON.parse(localStorage.getItem('atel_orders_v2')) || defaultOrders;
         let pendingOrders = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-        let workshopPassword = localStorage.getItem('atel_pass') || 'Moschanky2026@';
+        let workshopPassword = localStorage.getItem('atel_pass') || '1234';
         let isUnlocked = sessionStorage.getItem('atel_session_unlocked') === '1';
         let currentFilter = 'todos';
         let mirrorPhotoIdx = {};
@@ -983,6 +983,7 @@
             countEl.textContent = count;
             listEl.innerHTML = pendingOrders.map(al => {
                 const cols = (al.colors || []).filter(Boolean).join(', ') || 'A coordinar';
+                const obsText = (al.observations || al.notes || '').trim();
                 return `
                 <div class="bg-dark-900 border border-amber-500/35 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="space-y-1 text-xs">
@@ -992,7 +993,7 @@
                             ${al.contact ? `<span class="text-emerald-400 font-semibold">(${al.contact})</span>` : ''}
                         </div>
                         <p class="text-slate-200"><b>${al.productName}</b> • Cantidad: <b>${al.qty} u.</b> • Colores: <b>${cols}</b> • Estimado: <b class="text-brand-400">$${Number(al.total || 0).toFixed(2)}</b></p>
-                        ${al.notes ? `<p class="text-[11px] text-slate-400">${al.notes}</p>` : ''}
+                        ${obsText ? `<p class="text-[11px] text-amber-200/90 bg-amber-500/10 border border-amber-500/20 rounded-lg px-2.5 py-1"><b>Observaciones:</b> ${obsText}</p>` : ''}
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <button type="button" onclick="reviewPendingAlert('${al.id}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5">
@@ -1032,7 +1033,7 @@
             refreshOrderColorSelects(al.colors || []);
             document.getElementById('ordTotal').value = Number(al.total || 0).toFixed(2);
             document.getElementById('ordPaid').value = Number(al.paid || 0).toFixed(2);
-            document.getElementById('ordNotes').value = al.notes || '';
+            document.getElementById('ordNotes').value = (al.observations || al.notes || '').trim();
         }
 
         function dismissPendingAlert(alertId) {
@@ -1175,6 +1176,7 @@
                         <div>
                             <h3 class="font-bold text-white text-sm">${o.client}</h3>
                             <p class="text-xs text-slate-300">${o.productName} (${o.qty} u.) ${cols ? `• ${cols}` : ''} • ${o.deliveryDate || '-'}</p>
+                            ${o.notes ? `<p class="text-[11px] text-slate-400 mt-0.5">Obs: ${o.notes}</p>` : ''}
                         </div>
                         <span class="text-[10px] px-2.5 py-1 rounded-full bg-slate-800 text-brand-400 font-bold">${o.status.toUpperCase()}</span>
                     </div>
