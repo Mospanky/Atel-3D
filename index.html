@@ -230,6 +230,16 @@
     </div>
 
     <script>
+        const ATEL_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
+            authDomain: "atel-3d.firebaseapp.com",
+            projectId: "atel-3d",
+            storageBucket: "atel-3d.firebasestorage.app",
+            messagingSenderId: "752951171722",
+            appId: "1:752951171722:web:767eda5bd4da9b33ff2b73",
+            measurementId: "G-091YZ26DFW"
+        };
+
         const defaultStoreConfig = {
             whatsapp: "593998400131",
             badge: "Diseño y Fabricación Digital 3D",
@@ -256,7 +266,8 @@
         let dbRef = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            initFirebaseSyncIfConfigured();
+            initFirebaseSync();
+            initCrossTabListeners();
             renderStoreInfo();
             renderCatalog();
             populateCustomModalColors();
@@ -264,67 +275,34 @@
             lucide.createIcons();
         });
 
-      const ATEL_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
-    authDomain: "atel-3d.firebaseapp.com",
-    projectId: "atel-3d",
-    storageBucket: "atel-3d.firebasestorage.app",
-    messagingSenderId: "752951171722",
-    appId: "1:752951171722:web:767eda5bd4da9b33ff2b73",
-    measurementId: "G-091YZ26DFW"
-};
-let dbStore = null;
-
-function initFirebaseSyncIfConfigured() {
-    if (typeof firebase === 'undefined') return;
-    try {
-        const rawCfg = localStorage.getItem('atel_firebase_cfg');
-        let cfg = ATEL_FIREBASE_CONFIG;
-        if (rawCfg) {
-            const match = rawCfg.match(/\{[\s\S]*\}/);
-            if (match) cfg = (new Function('return ' + match[0]))();
+        function resolveStoreFirebaseConfig() {
+            const rawCfg = localStorage.getItem('atel_firebase_cfg');
+            if (rawCfg) {
+                const match = rawCfg.match(/\{[\s\S]*\}/);
+                if (match) {
+                    return (new Function('return ' + match[0]))();
+                }
+            }
+            return ATEL_FIREBASE_CONFIG;
         }
-        if (!cfg || !cfg.apiKey) return;
-        if (!firebase.apps.length) firebase.initializeApp(cfg);
-        dbRef = firebase.firestore();
 
-        dbRef.collection('atel3d').doc('store').onSnapshot((doc) => {
-            if (!doc.exists) return;
-            const data = doc.data();
-            if (data.storeConfig) {
-                storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
-                localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
-                renderStoreInfo();
-            }
-            if (Array.isArray(data.availableFilaments)) {
-                inventoryFilaments = data.availableFilaments;
-                localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
-                populateCustomModalColors();
-            }
-            if (Array.isArray(data.products)) {
-                products = data.products;
-                localStorage.setItem('atel_products_v2', JSON.stringify(products));
-                renderCatalog();
-            }
-        });
-    } catch (err) {
-        console.warn('Error al conectar con Firebase:', err);
-    }
-}
-function pushOrderAlertsToWorkshop(newAlerts) {
-    const list = Array.isArray(newAlerts) ? newAlerts : [newAlerts];
-    if (!list.length) return;
+        function initFirebaseSync() {
+            if (typeof firebase === 'undefined') return;
+            try {
+                const cfg = resolveStoreFirebaseConfig();
+                if (!cfg || !cfg.apiKey) return;
+                if (!firebase.apps.length) firebase.initializeApp(cfg);
+                dbRef = firebase.firestore();
 
-    const currentLocal = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-    localStorage.setItem('atel_pending_orders', JSON.stringify([...list, ...currentLocal]));
-
-    if (dbStore && firebase.firestore && firebase.firestore.FieldValue) {
-        dbStore.collection('atel3d').doc('workshop').set({
-            pendingOrders: firebase.firestore.FieldValue.arrayUnion(...list),
-            updatedAt: new Date().toISOString()
-        }, { merge: true }).catch((err) => console.warn('Error enviando pedido a Firestore:', err));
-    }
-}                        if (Array.isArray(data.availableFilaments)) {
+                dbRef.collection('atel3d').doc('store').onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.storeConfig) {
+                            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
+                            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
+                            renderStoreInfo();
+                        }
+                        if (Array.isArray(data.availableFilaments)) {
                             inventoryFilaments = data.availableFilaments;
                             localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
                         }
@@ -339,6 +317,23 @@ function pushOrderAlertsToWorkshop(newAlerts) {
             } catch (err) {
                 console.warn('Sincronización Firebase en espera:', err);
             }
+        }
+
+        function initCrossTabListeners() {
+            window.addEventListener('storage', (event) => {
+                if (!event.key) return;
+                if (event.key === 'atel_available_filaments') {
+                    inventoryFilaments = JSON.parse(event.newValue || '[]');
+                    renderCatalog();
+                    populateCustomModalColors();
+                } else if (event.key === 'atel_products_v2') {
+                    products = JSON.parse(event.newValue || '[]');
+                    renderCatalog();
+                } else if (event.key === 'atel_store_config') {
+                    storeConfig = { ...defaultStoreConfig, ...JSON.parse(event.newValue || '{}') };
+                    renderStoreInfo();
+                }
+            });
         }
 
         function saveConsolidatedCart() {
@@ -854,16 +849,17 @@ function pushOrderAlertsToWorkshop(newAlerts) {
             }).join('');
         }
 
-        function registerPendingOrderAlert(alertPayload) {
+        function pushOrderAlertsToWorkshop(newAlerts) {
+            const list = Array.isArray(newAlerts) ? newAlerts : [newAlerts];
             const currentPending = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-            const updatedPending = [alertPayload, ...currentPending];
+            const updatedPending = [...list, ...currentPending];
             localStorage.setItem('atel_pending_orders', JSON.stringify(updatedPending));
 
-            if (dbRef) {
+            if (dbRef && typeof firebase !== 'undefined' && firebase.firestore && firebase.firestore.FieldValue) {
                 dbRef.collection('atel3d').doc('workshop').set({
-                    pendingOrders: updatedPending,
+                    pendingOrders: firebase.firestore.FieldValue.arrayUnion(...list),
                     updatedAt: new Date().toISOString()
-                }, { merge: true }).catch(() => {});
+                }, { merge: true }).catch((err) => console.warn('Error enviando alerta al taller:', err));
             }
         }
 
@@ -880,7 +876,7 @@ function pushOrderAlertsToWorkshop(newAlerts) {
             const { totalUnits, grandTotal } = getConsolidatedTotals();
             const deliveryDate = new Date().toISOString().split('T')[0];
 
-            consolidatedOrderItems.forEach((it, index) => {
+            const alertsBatch = consolidatedOrderItems.map((it, index) => {
                 const colSummary = (it.labeledColors && it.labeledColors.length)
                     ? it.labeledColors.join(' • ')
                     : ((it.activeColors || []).join(' • '));
@@ -890,8 +886,8 @@ function pushOrderAlertsToWorkshop(newAlerts) {
                     generalNotes ? `Obs general: ${generalNotes}` : ''
                 ].filter(Boolean).join(' | ');
 
-                registerPendingOrderAlert({
-                    id: 'alert_' + Date.now() + '_' + index,
+                return {
+                    id: 'alert_' + Date.now() + '_' + index + '_' + Math.random().toString(36).slice(2, 6),
                     source: 'Consolidado Web',
                     createdAt: new Date().toISOString(),
                     client: clientName,
@@ -905,8 +901,10 @@ function pushOrderAlertsToWorkshop(newAlerts) {
                     paid: 0,
                     deliveryDate,
                     notes: combinedNotes || 'Pedido consolidado desde catálogo web'
-                });
+                };
             });
+
+            pushOrderAlertsToWorkshop(alertsBatch);
 
             const linesText = consolidatedOrderItems.map((it, idx) => {
                 const colText = (it.labeledColors && it.labeledColors.length)
@@ -970,8 +968,8 @@ function pushOrderAlertsToWorkshop(newAlerts) {
             const activeColors = colors.filter(Boolean);
             const notes = document.getElementById('custNotes').value.trim();
 
-            registerPendingOrderAlert({
-                id: 'alert_' + Date.now(),
+            pushOrderAlertsToWorkshop([{
+                id: 'alert_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
                 source: 'Pedido a Medida',
                 createdAt: new Date().toISOString(),
                 client: name,
@@ -985,7 +983,7 @@ function pushOrderAlertsToWorkshop(newAlerts) {
                 paid: 0,
                 deliveryDate: new Date().toISOString().split('T')[0],
                 notes: [notes, activeColors.length ? `Colores: ${activeColors.join(', ')}` : ''].filter(Boolean).join(' • ')
-            });
+            }]);
 
             const msg = `Hola *ATEL 3D* 👋 Quiero consultar/confirmar un pedido:\n\n` +
                         `• *Cliente:* ${name}\n` +
