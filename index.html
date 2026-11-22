@@ -264,24 +264,60 @@
             lucide.createIcons();
         });
 
-        function initFirebaseSyncIfConfigured() {
-            const rawCfg = localStorage.getItem('atel_firebase_cfg');
-            if (!rawCfg || typeof firebase === 'undefined') return;
-            try {
-                const match = rawCfg.match(/\{[\s\S]*\}/);
-                if (!match) return;
-                const cfg = (new Function('return ' + match[0]))();
-                if (!firebase.apps.length) firebase.initializeApp(cfg);
-                dbRef = firebase.firestore();
-                dbRef.collection('atel3d').doc('store').onSnapshot((doc) => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        if (data.storeConfig) {
-                            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
-                            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
-                            renderStoreInfo();
-                        }
-                        if (Array.isArray(data.availableFilaments)) {
+       const ATEL_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
+    authDomain: "atel-3d.firebaseapp.com",
+    projectId: "atel-3d",
+    storageBucket: "atel-3d.firebasestorage.app",
+    messagingSenderId: "752951171722",
+    appId: "1:752951171722:web:767eda5bd4da9b33ff2b73",
+    measurementId: "G-091YZ26DFW"
+};
+
+let dbStore = null;
+
+function connectStoreToFirebase() {
+    if (typeof firebase === 'undefined') return;
+    if (!firebase.apps.length) {
+        firebase.initializeApp(ATEL_FIREBASE_CONFIG);
+    }
+    dbStore = firebase.firestore();
+
+    dbStore.collection('atel3d').doc('store').onSnapshot((doc) => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        if (data.storeConfig) {
+            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
+            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
+            renderStoreInfo();
+        }
+        if (Array.isArray(data.availableFilaments)) {
+            inventoryFilaments = data.availableFilaments;
+            localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
+            populateCustomModalColors();
+        }
+        if (Array.isArray(data.products)) {
+            products = data.products;
+            localStorage.setItem('atel_products_v2', JSON.stringify(products));
+            renderCatalog();
+        }
+    });
+}
+
+function pushOrderAlertsToWorkshop(newAlerts) {
+    const list = Array.isArray(newAlerts) ? newAlerts : [newAlerts];
+    if (!list.length) return;
+
+    const currentLocal = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
+    localStorage.setItem('atel_pending_orders', JSON.stringify([...list, ...currentLocal]));
+
+    if (dbStore && firebase.firestore && firebase.firestore.FieldValue) {
+        dbStore.collection('atel3d').doc('workshop').set({
+            pendingOrders: firebase.firestore.FieldValue.arrayUnion(...list),
+            updatedAt: new Date().toISOString()
+        }, { merge: true }).catch((err) => console.warn('Error enviando pedido a Firestore:', err));
+    }
+}                        if (Array.isArray(data.availableFilaments)) {
                             inventoryFilaments = data.availableFilaments;
                             localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
                         }
