@@ -1,4 +1,762 @@
-<script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATEL 3D — Panel Interno del Taller</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#fff7ed', 100: '#ffedd5', 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 900: '#7c2d12' },
+                        dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .tab-active { background-color: #ea580c; color: #ffffff; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- PANTALLA DE ACCESO RESTRINGIDO -->
+    <div id="lockScreen" class="fixed inset-0 z-50 bg-dark-950 flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl text-center space-y-5">
+            <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-16 h-16 rounded-2xl mx-auto object-cover border border-brand-500/40 shadow-lg shadow-brand-600/30">
+            <div>
+                <h1 class="text-2xl font-extrabold text-white">Taller ATEL 3D</h1>
+                <p class="text-xs text-brand-400 font-medium mt-0.5">Acceso Restringido • Uso Interno</p>
+            </div>
+            <p class="text-xs text-slate-400">
+                Ingresa la contraseña del taller para gestionar cotizaciones, pedidos, filamentos y el catálogo de la web pública.
+            </p>
+            <form onsubmit="unlockWorkshop(event)" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Contraseña del Taller</label>
+                    <input type="password" id="workshopPasswordInput" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <p id="lockError" class="hidden text-xs text-rose-400">Contraseña incorrecta. Inténtalo de nuevo.</p>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl text-sm transition shadow-lg shadow-brand-600/25">
+                    Ingresar al Taller
+                </button>
+            </form>
+            <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                <a href="index.html" class="hover:text-brand-400 transition">← Volver a la tienda pública</a>
+                <span>Clave inicial: <code class="text-slate-300">atel2026</code></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- APLICACIÓN INTERNA DEL TALLER -->
+    <div id="workshopApp" class="hidden flex-1 flex flex-col">
+        <!-- BARRA SUPERIOR -->
+        <header class="bg-dark-900 border-b border-slate-800 sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-10 h-10 rounded-xl object-cover border border-brand-500/40">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-extrabold text-base text-white">ATEL 3D</span>
+                            <span class="text-[10px] bg-brand-600/20 text-brand-400 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">PANEL TALLER</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">Ideas que toman forma</span>
+                    </div>
+                </div>
+
+                <!-- PESTAÑAS -->
+                <nav class="flex flex-wrap items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+                    <button type="button" onclick="switchTab('cotizador')" id="tab-cotizador" class="tab-active px-3.5 py-2 rounded-lg transition">Cotizador</button>
+                    <button type="button" onclick="switchTab('pedidos')" id="tab-pedidos" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                        <span>Pedidos</span>
+                        <span id="ordersAlertNavBadge" class="hidden bg-amber-500 text-slate-950 text-[10px] font-black px-1.5 py-0.2 rounded-full">0</span>
+                    </button>
+                    <button type="button" onclick="switchTab('inventario')" id="tab-inventario" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white transition">Inventario</button>
+                    <button type="button" onclick="switchTab('catalogo')" id="tab-catalogo" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white transition">Editar Catálogo Web</button>
+                </nav>
+
+                <!-- ACCIONES -->
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="openCloudModal()" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-300">
+                        <span id="cloudDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <span id="cloudLabel">Nube</span>
+                    </button>
+                    <a href="index.html" target="_blank" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-brand-400 font-semibold">
+                        Ver Web ↗
+                    </a>
+                    <button type="button" onclick="lockWorkshop()" title="Bloquear panel" class="bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-400 border border-slate-700 p-2 rounded-lg">
+                        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1 space-y-6">
+
+            <!-- ================= VISTA 1: COTIZADOR MULTICOLOR ================= -->
+            <section id="view-cotizador" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 bg-dark-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h2 class="font-bold text-white text-base">Calculadora de Costos de Impresión 3D</h2>
+                            <span id="totalGramsBadge" class="text-xs font-bold bg-brand-600/20 text-brand-400 border border-brand-500/30 px-2.5 py-1 rounded-full">Total: 45 g/u</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div class="sm:col-span-2">
+                                <label class="block text-slate-400 mb-1">Nombre del Proyecto / Pieza</label>
+                                <input type="text" id="quoteName" oninput="calculateQuote()" placeholder="Ej: Servilletero Reno Navideño" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            </div>
+
+                            <!-- 4 SLOTS DE FILAMENTO + GRAMOS -->
+                            <div class="sm:col-span-2 bg-slate-800/40 border border-slate-800 rounded-xl p-3.5 space-y-2.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-slate-200 text-xs">Filamentos y Gramos por Pieza (hasta 4 colores)</span>
+                                    <span class="text-[11px] text-slate-400">Calcula el costo exacto por rollo</span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                                        <span class="text-[10px] font-bold uppercase text-brand-400">Color 1 (Principal)</span>
+                                        <div class="grid grid-cols-3 gap-1.5">
+                                            <select id="qFil_0" onchange="calculateQuote()" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"></select>
+                                            <input type="number" id="qGrams_0" value="45" min="0" step="0.1" oninput="calculateQuote()" placeholder="g" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white text-right">
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                                        <span class="text-[10px] font-bold uppercase text-slate-400">Color 2 (Opcional)</span>
+                                        <div class="grid grid-cols-3 gap-1.5">
+                                            <select id="qFil_1" onchange="calculateQuote()" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"></select>
+                                            <input type="number" id="qGrams_1" value="0" min="0" step="0.1" oninput="calculateQuote()" placeholder="g" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white text-right">
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                                        <span class="text-[10px] font-bold uppercase text-slate-400">Color 3 (Opcional)</span>
+                                        <div class="grid grid-cols-3 gap-1.5">
+                                            <select id="qFil_2" onchange="calculateQuote()" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"></select>
+                                            <input type="number" id="qGrams_2" value="0" min="0" step="0.1" oninput="calculateQuote()" placeholder="g" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white text-right">
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                                        <span class="text-[10px] font-bold uppercase text-slate-400">Color 4 (Opcional)</span>
+                                        <div class="grid grid-cols-3 gap-1.5">
+                                            <select id="qFil_3" onchange="calculateQuote()" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"></select>
+                                            <input type="number" id="qGrams_3" value="0" min="0" step="0.1" oninput="calculateQuote()" placeholder="g" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white text-right">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-slate-400 mb-1">Horas de Impresión</label>
+                                <input type="number" id="quoteHours" value="2" min="0" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Minutos Extra</label>
+                                <input type="number" id="quoteMins" value="30" min="0" max="59" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Cantidad de Unidades</label>
+                                <input type="number" id="quoteQty" value="1" min="1" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Diseño / Post-procesado ($)</label>
+                                <input type="number" id="quoteDesignCost" value="0" min="0" step="0.25" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <div class="flex justify-between mb-1">
+                                    <label class="text-slate-400">Margen de Ganancia</label>
+                                    <span id="marginDisplay" class="font-bold text-brand-400">60%</span>
+                                </div>
+                                <input type="range" id="quoteMargin" min="10" max="250" value="60" oninput="calculateQuote()" class="w-full accent-brand-500">
+                            </div>
+                        </div>
+
+                        <details class="bg-slate-800/40 border border-slate-800 rounded-xl p-3 text-xs">
+                            <summary class="cursor-pointer font-semibold text-slate-300">Parámetros Eléctricos y Desgaste (Cuenca)</summary>
+                            <div class="grid grid-cols-3 gap-3 mt-3">
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Consumo (W)</label>
+                                    <input type="number" id="cfgWatts" value="150" oninput="calculateQuote()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Tarifa $/kWh</label>
+                                    <input type="number" id="cfgKwh" value="0.10" step="0.01" oninput="calculateQuote()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Desgaste $/h</label>
+                                    <input type="number" id="cfgWear" value="0.25" step="0.05" oninput="calculateQuote()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white">
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="lg:col-span-5 bg-dark-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-5">
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-white text-base border-b border-slate-800 pb-3">Resumen de Cotización</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-brand-600/15 border border-brand-500/30 rounded-2xl p-4">
+                                    <p class="text-[11px] text-brand-300 font-semibold">Precio Cliente Total</p>
+                                    <p id="resClientTotal" class="text-2xl font-extrabold text-white mt-1">$0.00</p>
+                                </div>
+                                <div class="bg-slate-800/70 border border-slate-700 rounded-2xl p-4">
+                                    <p class="text-[11px] text-slate-400 font-semibold">Precio Unitario</p>
+                                    <p id="resClientUnit" class="text-2xl font-extrabold text-brand-400 mt-1">$0.00</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800/40 rounded-xl p-4 space-y-2 text-xs">
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Material (<span id="resGramsBreakdown">45g</span>):</span>
+                                    <span id="resMatCost">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Electricidad (<span id="resHoursBreakdown">2.5h</span>):</span>
+                                    <span id="resElecCost">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Desgaste Máquina:</span>
+                                    <span id="resWearCost">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Diseño / Extra:</span>
+                                    <span id="resExtraCost">$0.00</span>
+                                </div>
+                                <div class="border-t border-slate-700 pt-2 flex justify-between font-bold text-white">
+                                    <span>Costo Base Producción:</span>
+                                    <span id="resBaseCost">$0.00</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-emerald-400">
+                                    <span>Ganancia Neta Estimada:</span>
+                                    <span id="resProfit">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5 text-xs">
+                            <button type="button" onclick="copyQuoteText()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl border border-slate-700">
+                                Copiar Cotización
+                            </button>
+                            <button type="button" onclick="convertQuoteToOrder()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl">
+                                Crear Pedido →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VISTA 2: PEDIDOS (4 ETAPAS + ALERTA WEB) ================= -->
+            <section id="view-pedidos" class="hidden space-y-5">
+                <!-- BANNER DE ALERTA: PEDIDOS NUEVOS RECIBIDOS DESDE LA TIENDA WEB -->
+                <div id="onlineOrdersAlertBanner" class="hidden bg-amber-500/10 border border-amber-500/40 rounded-2xl p-4 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2.5">
+                            <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
+                                <i data-lucide="bell-ring" class="w-4 h-4"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-sm font-extrabold text-amber-200">
+                                    Notificación: <span id="alertCountText">0</span> pedido(s) nuevo(s) recibido(s) desde la tienda web
+                                </h3>
+                                <p class="text-[11px] text-amber-300/80">Revisa el detalle y apruébalo para incorporarlo a la etapa <b>Pedido nuevo</b>.</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="dismissAllOnlineAlerts()" class="text-[11px] text-amber-300 hover:underline">Limpiar avisos</button>
+                    </div>
+                    <div id="onlineAlertsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- TARJETAS FINANCIERAS -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400">Facturación Total</p>
+                        <p id="statTotalRevenue" class="text-2xl font-extrabold text-white mt-1">$0.00</p>
+                    </div>
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400">Total Cobrado</p>
+                        <p id="statTotalPaid" class="text-2xl font-extrabold text-emerald-400 mt-1">$0.00</p>
+                    </div>
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400">Saldo por Cobrar</p>
+                        <p id="statTotalBalance" class="text-2xl font-extrabold text-amber-400 mt-1">$0.00</p>
+                    </div>
+                </div>
+
+                <!-- CONTADOR DE LAS 4 ETAPAS DEL FLUJO -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <button type="button" onclick="setOrderStatusFilter('Pedido nuevo')" class="bg-dark-900 hover:border-amber-500/50 border border-slate-800 rounded-xl p-3 text-left transition">
+                        <span class="text-amber-300 font-bold block">1. Pedido nuevo</span>
+                        <span id="stageCountNew" class="text-xl font-extrabold text-white mt-0.5 block">0</span>
+                    </button>
+                    <button type="button" onclick="setOrderStatusFilter('Impreso')" class="bg-dark-900 hover:border-sky-500/50 border border-slate-800 rounded-xl p-3 text-left transition">
+                        <span class="text-sky-300 font-bold block">2. Impreso</span>
+                        <span id="stageCountPrinted" class="text-xl font-extrabold text-white mt-0.5 block">0</span>
+                    </button>
+                    <button type="button" onclick="setOrderStatusFilter('Por cobrar')" class="bg-dark-900 hover:border-purple-500/50 border border-slate-800 rounded-xl p-3 text-left transition">
+                        <span class="text-purple-300 font-bold block">3. Por cobrar</span>
+                        <span id="stageCountToCollect" class="text-xl font-extrabold text-white mt-0.5 block">0</span>
+                    </button>
+                    <button type="button" onclick="setOrderStatusFilter('Cobrado')" class="bg-dark-900 hover:border-emerald-500/50 border border-slate-800 rounded-xl p-3 text-left transition">
+                        <span class="text-emerald-300 font-bold block">4. Cobrado (Cerrado)</span>
+                        <span id="stageCountCollected" class="text-xl font-extrabold text-white mt-0.5 block">0</span>
+                    </button>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <select id="filterOrderStatus" onchange="renderOrders()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="ALL">Todas las etapas</option>
+                            <option value="Pedido nuevo">1. Pedido nuevo</option>
+                            <option value="Impreso">2. Impreso</option>
+                            <option value="Por cobrar">3. Por cobrar</option>
+                            <option value="Cobrado">4. Cobrado (Cerrado)</option>
+                        </select>
+                        <input type="text" id="searchOrder" oninput="renderOrders()" placeholder="Buscar cliente, producto o color..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="exportOrdersCSV()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold px-3.5 py-2 rounded-xl text-xs">
+                            Exportar CSV
+                        </button>
+                        <button type="button" onclick="openOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl text-xs">
+                            + Nuevo Pedido
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ordersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </section>
+
+            <!-- ================= VISTA 3: INVENTARIO (FILAMENTOS + PRODUCTOS) ================= -->
+            <section id="view-inventario" class="hidden space-y-8">
+                <!-- BLOQUE A: FILAMENTOS -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <div>
+                            <h2 class="font-bold text-white text-base">Inventario de Filamentos (Rollos)</h2>
+                            <p class="text-xs text-slate-400">Los colores con stock mayor a 0g se sincronizan automáticamente con los selectores de la tienda web y pedidos.</p>
+                        </div>
+                        <button type="button" onclick="openFilamentModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl text-xs">
+                            + Agregar Rollo
+                        </button>
+                    </div>
+                    <div id="filamentsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <!-- BLOQUE B: PRODUCTOS TERMINADOS / STOCK DEL CATÁLOGO -->
+                <div class="space-y-4 pt-2 border-t border-slate-800/80">
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <div>
+                            <h2 class="font-bold text-white text-base">Inventario de Productos (Stock Listo / Catálogo)</h2>
+                            <p class="text-xs text-slate-400">Controla las unidades disponibles en inventario para cada producto del catálogo.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 text-xs">
+                            <input type="text" id="searchInventoryProduct" oninput="renderInventoryProducts()" placeholder="Buscar producto..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <button type="button" onclick="openProductModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl text-xs">
+                                + Nuevo Producto
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- RESUMEN DE STOCK DE PRODUCTOS -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                            <p class="text-xs text-slate-400">Productos Registrados</p>
+                            <p id="invProdTotalSkus" class="text-2xl font-extrabold text-white mt-1">0</p>
+                        </div>
+                        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                            <p class="text-xs text-slate-400">Unidades Totales en Stock</p>
+                            <p id="invProdTotalUnits" class="text-2xl font-extrabold text-emerald-400 mt-1">0 u.</p>
+                        </div>
+                        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                            <p class="text-xs text-slate-400">Stock Bajo / Agotado (≤ 3 u.)</p>
+                            <p id="invProdLowStock" class="text-2xl font-extrabold text-amber-400 mt-1">0</p>
+                        </div>
+                    </div>
+
+                    <div id="inventoryProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- ================= VISTA 4: EDITAR CATÁLOGO WEB ================= -->
+            <section id="view-catalogo" class="hidden space-y-6">
+                <div class="bg-dark-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                        <div>
+                            <h2 class="font-bold text-white text-base">Configuración de la Tienda Pública (index.html)</h2>
+                            <p class="text-xs text-slate-400">Modifica los datos de contacto y presentación que ven tus clientes en la web.</p>
+                        </div>
+                        <button type="button" onclick="saveStoreSettings()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-xl text-xs">
+                            Guardar Cambios Web
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Número WhatsApp (código país sin +)</label>
+                            <input type="text" id="cfgStoreWhatsapp" placeholder="593998400131" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-slate-400 mb-1">Etiqueta Superior del Hero</label>
+                            <input type="text" id="cfgStoreBadge" placeholder="Diseño y Fabricación Digital 3D" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-slate-400 mb-1">Texto "Nosotros" en el Pie de Página</label>
+                            <textarea id="cfgStoreAbout" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                    <div>
+                        <h3 class="font-bold text-white text-base">Productos Publicados en el Catálogo</h3>
+                        <p class="text-xs text-slate-400">Líneas disponibles: Atel home, Atel pro y Atel lab (hasta 3 fotos y 4 colores por producto).</p>
+                    </div>
+                    <button type="button" onclick="openProductModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl text-xs">
+                        + Nuevo Producto
+                    </button>
+                </div>
+
+                <div id="adminProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL PEDIDO -->
+    <div id="orderModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 id="orderModalTitle" class="text-lg font-bold text-white mb-4">Nuevo Pedido</h3>
+            <form onsubmit="saveOrder(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="ordId">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Cliente *</label>
+                        <input type="text" id="ordClient" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Teléfono / Contacto</label>
+                        <input type="text" id="ordContact" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Producto del Catálogo</label>
+                        <select id="ordCatalogSelect" onchange="onOrderProductSelect()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Nombre del Producto *</label>
+                        <input type="text" id="ordProduct" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Filamento</label>
+                        <select id="ordFilament" onchange="updateOrderColorDropdowns()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="PLA">PLA</option>
+                            <option value="PETG">PETG</option>
+                            <option value="ABS">ABS</option>
+                            <option value="TPU">TPU</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Cantidad *</label>
+                        <input type="number" id="ordQty" value="1" min="1" oninput="onOrderQtyOrPriceChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+
+                <!-- HASTA 4 COLORES DEL INVENTARIO -->
+                <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-3 space-y-2">
+                    <span class="block text-[11px] font-semibold text-slate-300">Colores del Pedido (desde Inventario, hasta 4)</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-0.5">Color 1</label>
+                            <select id="ordColor_0" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-0.5">Color 2</label>
+                            <select id="ordColor_1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-0.5">Color 3</label>
+                            <select id="ordColor_2" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-0.5">Color 4</label>
+                            <select id="ordColor_3" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Total ($)</label>
+                        <input type="number" id="ordTotal" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Anticipo / Abonado ($)</label>
+                        <input type="number" id="ordPaid" step="0.01" value="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Fecha Entrega</label>
+                        <input type="date" id="ordDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Etapa del Pedido</label>
+                        <select id="ordStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="Pedido nuevo">1. Pedido nuevo</option>
+                            <option value="Impreso">2. Impreso</option>
+                            <option value="Por cobrar">3. Por cobrar</option>
+                            <option value="Cobrado">4. Cobrado (Bloquea edición)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Notas / Personalización</label>
+                    <textarea id="ordNotes" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeOrderModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold">Guardar Pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL FILAMENTO -->
+    <div id="filamentModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-4">Rollo de Filamento</h3>
+            <form onsubmit="saveFilament(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="filId">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Material</label>
+                        <select id="filType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="PLA">PLA</option>
+                            <option value="PETG">PETG</option>
+                            <option value="ABS">ABS</option>
+                            <option value="TPU">TPU</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Color *</label>
+                        <input type="text" id="filColor" required placeholder="Ej: Rojo Seda" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Gramos Disponibles</label>
+                        <input type="number" id="filGrams" value="1000" min="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Costo Rollo 1kg ($)</label>
+                        <input type="number" id="filCost" value="22" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeFilamentModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold">Guardar Rollo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PRODUCTO CATÁLOGO WEB -->
+    <div id="productModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 id="prodModalTitle" class="text-lg font-bold text-white mb-4">Producto del Catálogo Web</h3>
+            <form onsubmit="saveProduct(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="prodId">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-2">
+                        <label class="block text-slate-400 mb-1">Nombre del Producto *</label>
+                        <input type="text" id="prodName" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Stock Disponible (u.)</label>
+                        <input type="number" id="prodStock" value="10" min="0" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Línea / Categoría</label>
+                        <select id="prodCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="Atel home">Atel home</option>
+                            <option value="Atel pro">Atel pro</option>
+                            <option value="Atel lab">Atel lab</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Filamento Base</label>
+                        <select id="prodFilament" onchange="updateProdColorDropdowns()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="PLA">PLA</option>
+                            <option value="PETG">PETG</option>
+                            <option value="ABS">ABS</option>
+                            <option value="TPU">TPU</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">N° Colores del Diseño</label>
+                        <select id="prodColorCount" onchange="toggleProdColorFields()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="1">1 Color</option>
+                            <option value="2">2 Colores</option>
+                            <option value="3">3 Colores</option>
+                            <option value="4">4 Colores</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 mb-1">Descripción corta en la tienda</label>
+                    <input type="text" id="prodDescription" placeholder="Ej: Esferas navideñas con nombres personalizados en relieve." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                </div>
+
+                <!-- CONFIGURACIÓN DE HASTA 4 COLORES -->
+                <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-3 space-y-2.5">
+                    <span class="block text-[11px] font-semibold text-slate-300">Etiquetas y Colores Sugeridos (hasta 4 colores)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div id="prodColorField_0" class="bg-slate-900/70 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                            <input type="text" id="prodColorLabel_0" value="Color 1" placeholder="Etiqueta Color 1" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-brand-300 font-semibold">
+                            <select id="prodColor_0" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white"></select>
+                        </div>
+                        <div id="prodColorField_1" class="bg-slate-900/70 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                            <input type="text" id="prodColorLabel_1" value="Color 2" placeholder="Etiqueta Color 2" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-brand-300 font-semibold">
+                            <select id="prodColor_1" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white"></select>
+                        </div>
+                        <div id="prodColorField_2" class="hidden bg-slate-900/70 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                            <input type="text" id="prodColorLabel_2" value="Color 3" placeholder="Etiqueta Color 3" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-brand-300 font-semibold">
+                            <select id="prodColor_2" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white"></select>
+                        </div>
+                        <div id="prodColorField_3" class="hidden bg-slate-900/70 border border-slate-800 rounded-lg p-2 space-y-1.5">
+                            <input type="text" id="prodColorLabel_3" value="Color 4" placeholder="Etiqueta Color 4" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-brand-300 font-semibold">
+                            <select id="prodColor_3" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Precio Base 1u ($)</label>
+                        <input type="number" id="prodBasePrice" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Precio Set 6u ($)</label>
+                        <input type="number" id="prodPack6" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Extra &gt;6u ($/u)</label>
+                        <input type="number" id="prodExtraUnit" step="0.001" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+
+                <!-- SETS / PROMOCIONES POR VOLUMEN -->
+                <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-slate-200 text-xs">Sets Promocionales (opcional)</span>
+                        <button type="button" onclick="addPackRow()" class="text-[11px] bg-brand-600/20 hover:bg-brand-600/35 text-brand-300 border border-brand-500/30 px-2.5 py-1 rounded-lg font-semibold">
+                            + Agregar Set
+                        </button>
+                    </div>
+                    <div id="prodPacksContainer" class="space-y-2"></div>
+                </div>
+
+                <!-- HASTA 3 FOTOS DEL PRODUCTO (ARCHIVO LOCAL O URL) -->
+                <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-3 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-slate-200 text-xs">Fotos del Producto (hasta 3 imágenes)</span>
+                        <span class="text-[10px] text-slate-400">Sube desde tu dispositivo o pega URL</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- FOTO 1 -->
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-brand-400">Foto 1 (Principal)</span>
+                                <button type="button" onclick="clearProductPhoto(0)" class="text-[10px] text-rose-400 hover:underline">Quitar</button>
+                            </div>
+                            <img id="prodImgPreview_0" src="icon.png" alt="Foto 1" class="w-full h-24 object-cover rounded-lg bg-slate-800 border border-slate-700">
+                            <label class="block w-full text-center bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-1.5 rounded-lg cursor-pointer text-[11px] font-semibold">
+                                Subir archivo
+                                <input type="file" accept="image/*" onchange="handleProductPhotoUpload(0, this)" class="hidden">
+                            </label>
+                            <input type="text" id="prodImage_0" oninput="syncPreviewFromUrl(0)" placeholder="o pega URL..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white">
+                        </div>
+
+                        <!-- FOTO 2 -->
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-slate-300">Foto 2</span>
+                                <button type="button" onclick="clearProductPhoto(1)" class="text-[10px] text-rose-400 hover:underline">Quitar</button>
+                            </div>
+                            <img id="prodImgPreview_1" src="icon.png" alt="Foto 2" class="w-full h-24 object-cover rounded-lg bg-slate-800 border border-slate-700 opacity-40">
+                            <label class="block w-full text-center bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-1.5 rounded-lg cursor-pointer text-[11px] font-semibold">
+                                Subir archivo
+                                <input type="file" accept="image/*" onchange="handleProductPhotoUpload(1, this)" class="hidden">
+                            </label>
+                            <input type="text" id="prodImage_1" oninput="syncPreviewFromUrl(1)" placeholder="o pega URL..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white">
+                        </div>
+
+                        <!-- FOTO 3 -->
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-slate-300">Foto 3</span>
+                                <button type="button" onclick="clearProductPhoto(2)" class="text-[10px] text-rose-400 hover:underline">Quitar</button>
+                            </div>
+                            <img id="prodImgPreview_2" src="icon.png" alt="Foto 3" class="w-full h-24 object-cover rounded-lg bg-slate-800 border border-slate-700 opacity-40">
+                            <label class="block w-full text-center bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-1.5 rounded-lg cursor-pointer text-[11px] font-semibold">
+                                Subir archivo
+                                <input type="file" accept="image/*" onchange="handleProductPhotoUpload(2, this)" class="hidden">
+                            </label>
+                            <input type="text" id="prodImage_2" oninput="syncPreviewFromUrl(2)" placeholder="o pega URL..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <label class="flex items-center space-x-2 text-slate-300 pt-1">
+                    <input type="checkbox" id="prodFeatured" checked class="rounded bg-slate-800 border-slate-700">
+                    <span>Mostrar este producto en la tienda pública (index.html)</span>
+                </label>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL NUBE FIREBASE Y CONTRASEÑA -->
+    <div id="cloudModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-white">Sincronización en Línea (Firebase) y Seguridad</h3>
+            <div class="space-y-2 text-xs">
+                <label class="block text-slate-400">Cambiar Contraseña del Taller</label>
+                <div class="flex space-x-2">
+                    <input type="password" id="newWorkshopPass" placeholder="Nueva contraseña..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    <button type="button" onclick="changeWorkshopPassword()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl font-semibold">Actualizar Clave</button>
+                </div>
+            </div>
+            <div class="space-y-2 text-xs pt-2 border-t border-slate-800">
+                <label class="block text-slate-400">Configuración Firebase (Proyecto atel-3d conectado)</label>
+                <textarea id="firebaseConfigInput" rows="6" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-mono text-[11px] text-white"></textarea>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button type="button" onclick="closeCloudModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Cerrar</button>
+                <button type="button" onclick="saveFirebaseConfig()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold text-xs">Conectar Nube</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
         const ATEL_FIREBASE_CONFIG = {
             apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
             authDomain: "atel-3d.firebaseapp.com",
@@ -122,7 +880,7 @@
             if (sessionStorage.getItem('atel_unlocked') === '1') {
                 showWorkshop();
             }
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         });
 
         function unlockWorkshop(e) {
@@ -156,7 +914,7 @@
             renderInventoryProducts();
             renderAdminCatalog();
             loadStoreSettingsUI();
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function initCrossTabSync() {
@@ -198,7 +956,7 @@
                 renderFilaments();
                 renderInventoryProducts();
             }
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function syncAvailableColorsToStore() {
@@ -300,7 +1058,7 @@
                     </div>
                 </div>`;
             }).join('');
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function acceptOnlineAlert(alertId) {
@@ -601,7 +1359,7 @@
                 `;
                 list.appendChild(card);
             });
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function advanceOrderStatus(id) {
@@ -969,7 +1727,7 @@
                 `;
                 grid.appendChild(card);
             });
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function adjustProductStock(prodId, delta) {
@@ -1170,7 +1928,7 @@
             document.getElementById('prodPacksContainer').innerHTML = '';
             addPackRow(6, 9.50);
             document.getElementById('productModal').classList.remove('hidden');
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function closeProductModal() {
@@ -1270,7 +2028,7 @@
                 addPackRow(6, p.pack6Price);
             }
             document.getElementById('productModal').classList.remove('hidden');
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function deleteProduct(id) {
@@ -1394,3 +2152,5 @@
             }
         }
     </script>
+</body>
+</html>
