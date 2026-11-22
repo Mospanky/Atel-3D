@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATEL 3D — Ideas que toman forma</title>
+    <title>ATEL 3D — Taller Privado y Gestión</title>
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,223 +25,757 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .tab-active { border-bottom: 2px solid #f97316; color: #f97316; font-weight: 600; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- ENCABEZADO PÚBLICO -->
-    <header class="bg-dark-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
-            <a href="#" class="flex items-center space-x-3">
-                <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-11 h-11 rounded-xl object-cover shadow-lg shadow-brand-600/30 border border-brand-500/40">
-                <div>
-                    <span class="font-extrabold text-lg tracking-wide text-white block leading-none">ATEL 3D</span>
-                    <span class="text-xs text-brand-400 font-medium">Ideas que toman forma</span>
-                </div>
-            </a>
-
-            <nav class="hidden md:flex items-center space-x-6 text-sm text-slate-300">
-                <a href="#catalogo" class="hover:text-brand-400 transition">Catálogo</a>
-                <a href="#cotizar-medida" class="hover:text-brand-400 transition">Pedido a Medida</a>
-                <a href="#nosotros" class="hover:text-brand-400 transition">Nosotros</a>
-            </nav>
-
-            <div class="flex items-center space-x-2">
-                <button type="button" onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                    <i data-lucide="shopping-cart" class="w-4 h-4 text-brand-400"></i>
-                    <span>Carrito</span>
-                    <span id="cartBadge" class="bg-brand-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
-                </button>
-                <a href="taller-atel3d.html" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow-lg shadow-brand-600/20">
-                    <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
-                    <span>Taller</span>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <!-- HERO -->
-    <section class="relative overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-dark-900 to-dark-950">
-        <div class="max-w-7xl mx-auto px-4 py-12 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-7 space-y-5">
-                <span id="storeHeroBadge" class="inline-flex items-center space-x-2 bg-brand-500/10 border border-brand-500/30 text-brand-300 px-3 py-1 rounded-full text-xs font-semibold">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    <span>Diseño y Fabricación Digital 3D</span>
-                </span>
-                <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
-                    Ideas que toman forma con <span class="text-brand-500">precisión 3D</span>
-                </h1>
-                <p class="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
-                    En <strong class="text-white">ATEL 3D</strong> creamos piezas decorativas, detalles personalizados, sets para eventos y prototipos a medida en impresión 3D. Elige de nuestro catálogo o solicita un diseño exclusivo directo por WhatsApp.
-                </p>
-                <div class="flex flex-wrap gap-3 pt-1">
-                    <a href="#catalogo" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-3 rounded-xl text-sm transition shadow-lg shadow-brand-600/25">
-                        Explorar Catálogo
-                    </a>
-                    <a href="#cotizar-medida" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl text-sm border border-slate-700 transition">
-                        Solicitar Pedido a Medida
-                    </a>
-                </div>
-            </div>
-
-            <div class="lg:col-span-5">
-                <div class="bg-dark-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-brand-400">ATEL 3D • Cuenca, Ecuador</span>
-                        <span class="text-xs text-emerald-400 font-semibold">● Envíos y entregas locales</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Personalización</p>
-                            <p class="text-white font-bold text-sm mt-0.5">Nombres, logos y colores</p>
-                        </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Precios por volumen</p>
-                            <p class="text-white font-bold text-sm mt-0.5">Sets y descuentos</p>
-                        </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Materiales</p>
-                            <p class="text-white font-bold text-sm mt-0.5">PLA, PETG y más</p>
-                        </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Atención directa</p>
-                            <p class="text-white font-bold text-sm mt-0.5">Pedido rápido WhatsApp</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CATÁLOGO PÚBLICO -->
-    <section id="catalogo" class="max-w-7xl w-full mx-auto px-4 py-12 space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-800 pb-4">
+    <!-- PANTALLA DE BLOQUEO -->
+    <div id="lockScreen" class="fixed inset-0 z-50 bg-dark-950 flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-3xl max-w-sm w-full p-7 shadow-2xl text-center space-y-5">
+            <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-16 h-16 rounded-2xl mx-auto object-cover shadow-lg shadow-brand-600/30 border border-brand-500/40">
             <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-400">Catálogo Disponible</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Productos ATEL 3D</h2>
+                <h1 class="text-xl font-black text-white tracking-wide">ATEL 3D • Taller Privado</h1>
+                <p class="text-xs text-slate-400 mt-1">Ideas que toman forma — Acceso exclusivo socios</p>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <button type="button" onclick="filterCatalog('ALL')" id="cat-ALL" class="cat-btn bg-brand-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold">Todos</button>
-                <button type="button" onclick="filterCatalog('Atel home')" id="cat-Atel home" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Atel home</button>
-                <button type="button" onclick="filterCatalog('Atel pro')" id="cat-Atel pro" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Atel pro</button>
-                <button type="button" onclick="filterCatalog('Atel lab')" id="cat-Atel lab" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Atel lab</button>
+            <form onsubmit="unlockWorkshop(event)" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs text-slate-300 mb-1">Contraseña del Taller</label>
+                    <input type="password" id="workshopPasswordInput" required placeholder="Ingresa la contraseña..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <p id="lockError" class="hidden text-xs text-rose-400">Contraseña incorrecta. Intenta de nuevo.</p>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+                    <i data-lucide="unlock" class="w-4 h-4"></i> Ingresar al Taller
+                </button>
+            </form>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <a href="index.html" class="hover:text-brand-400 flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Volver a Tienda Pública
+                </a>
+                <span class="text-[11px] text-slate-500">Clave inicial: atel2026</span>
             </div>
         </div>
+    </div>
 
-        <div id="publicCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-    </section>
+    <!-- APLICACIÓN PRINCIPAL DEL TALLER -->
+    <div id="workshopApp" class="hidden min-h-screen flex flex-col">
+        <header class="bg-dark-900 border-b border-slate-800 sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-10 h-10 rounded-xl object-cover shadow-lg shadow-brand-600/30 border border-brand-500/40">
+                    <div>
+                        <span class="font-bold text-base tracking-wide text-white block leading-none">ATEL 3D • Taller</span>
+                        <span class="text-xs text-brand-400 font-medium">Gestión Interna y Sincronización</span>
+                    </div>
+                </div>
 
-    <!-- PEDIDO A MEDIDA -->
-    <section id="cotizar-medida" class="max-w-7xl w-full mx-auto px-4 pb-14">
-        <div class="bg-dark-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-5 space-y-3">
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-400">Proyectos Especiales</span>
-                <h2 class="text-2xl font-extrabold text-white">¿Buscas algo personalizado o en cantidad?</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
-                    Cuéntanos tu idea, medidas aproximadas, colores y cantidad. Te enviamos una cotización clara y sin compromiso por WhatsApp.
-                </p>
-            </div>
-
-            <form onsubmit="sendCustomWhatsApp(event)" class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Tu Nombre *</label>
-                    <input type="text" id="custName" required placeholder="Ej: Valeria López" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Tipo de Pieza / Proyecto *</label>
-                    <input type="text" id="custItem" required placeholder="Ej: Recuerdos de boda, soporte, llaveros" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Cantidad Aproximada</label>
-                    <input type="number" id="custQty" value="10" min="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Colores Preferidos</label>
-                    <input type="text" id="custColor" placeholder="Ej: Dorado, blanco o rojo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
-                </div>
-                <div class="sm:col-span-2">
-                    <label class="block text-xs text-slate-400 mb-1">Detalles / Nombres / Fecha deseada</label>
-                    <textarea id="custNotes" rows="2" placeholder="Describe tu idea o fecha de entrega..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"></textarea>
-                </div>
-                <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition flex items-center space-x-2">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                        <span>Enviar Solicitud por WhatsApp</span>
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="openCloudModal()" id="cloudStatusBtn" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 transition">
+                        <span id="cloudDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span id="cloudLabel">Nube: atel-3d</span>
+                    </button>
+                    <a href="index.html" target="_blank" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Ver Tienda
+                    </a>
+                    <button type="button" onclick="lockWorkshop()" class="bg-rose-950/60 hover:bg-rose-900/60 border border-rose-800/60 text-rose-300 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1">
+                        <i data-lucide="lock" class="w-3.5 h-3.5"></i> Salir
                     </button>
                 </div>
-            </form>
-        </div>
-    </section>
+            </div>
 
-    <!-- NOSOTROS Y PIE DE PÁGINA -->
-    <footer id="nosotros" class="bg-dark-900 border-t border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
-            <div class="space-y-2">
-                <div class="flex items-center space-x-2.5">
-                    <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-8 h-8 rounded-lg object-cover">
-                    <span class="font-extrabold text-white text-base">ATEL 3D</span>
+            <nav class="max-w-7xl mx-auto px-4 flex space-x-6 overflow-x-auto no-scrollbar text-sm">
+                <button type="button" onclick="switchTab('cotizador')" id="tab-cotizador" class="py-2.5 whitespace-nowrap tab-active flex items-center space-x-2">
+                    <i data-lucide="calculator" class="w-4 h-4"></i><span>Cotizador</span>
+                </button>
+                <button type="button" onclick="switchTab('pedidos')" id="tab-pedidos" class="py-2.5 whitespace-nowrap text-slate-400 hover:text-white flex items-center space-x-2">
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <span>Pedidos</span>
+                    <span id="ordersAlertNavBadge" class="hidden bg-amber-500 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" onclick="switchTab('inventario')" id="tab-inventario" class="py-2.5 whitespace-nowrap text-slate-400 hover:text-white flex items-center space-x-2">
+                    <i data-lucide="layers" class="w-4 h-4"></i><span>Inventario y Filamentos</span>
+                </button>
+                <button type="button" onclick="switchTab('catalogo')" id="tab-catalogo" class="py-2.5 whitespace-nowrap text-slate-400 hover:text-white flex items-center space-x-2">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i><span>Editar Catálogo Web</span>
+                </button>
+            </nav>
+        </header>
+
+        <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1">
+
+            <!-- TAB 1: COTIZADOR -->
+            <section id="view-cotizador" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 bg-dark-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h2 class="text-base font-bold text-white flex items-center space-x-2">
+                                <i data-lucide="sliders" class="w-4 h-4 text-brand-500"></i>
+                                <span>Parámetros de Impresión 3D (Multicolor)</span>
+                            </h2>
+                            <span class="text-xs text-slate-400">Cuenca, Ecuador</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Nombre del Proyecto / Pieza</label>
+                                <input type="text" id="quoteName" placeholder="Ej: Set 6 Servilleteros Navideños" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div class="sm:col-span-2 bg-slate-800/40 border border-slate-700/80 rounded-2xl p-3.5 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-xs font-bold text-brand-400 flex items-center gap-1.5">
+                                        <i data-lucide="palette" class="w-4 h-4"></i> Filamentos y Gramos por Color (hasta 4)
+                                    </label>
+                                    <span id="totalGramsBadge" class="text-xs font-bold text-white bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">Total: 80 g</span>
+                                </div>
+
+                                <div id="quoteFilamentSlots" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 space-y-1.5">
+                                        <span class="text-[11px] font-semibold text-brand-300 block">Filamento 1 (Principal)</span>
+                                        <select id="qFil_0" onchange="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="qGrams_0" value="80" min="0" step="1" oninput="calculateQuote()" placeholder="Gramos" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                                            <span class="text-xs text-slate-400">g</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 space-y-1.5">
+                                        <span class="text-[11px] font-semibold text-slate-300 block">Filamento 2 (Opcional)</span>
+                                        <select id="qFil_1" onchange="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="qGrams_1" value="0" min="0" step="1" oninput="calculateQuote()" placeholder="Gramos" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                                            <span class="text-xs text-slate-400">g</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 space-y-1.5">
+                                        <span class="text-[11px] font-semibold text-slate-300 block">Filamento 3 (Opcional)</span>
+                                        <select id="qFil_2" onchange="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="qGrams_2" value="0" min="0" step="1" oninput="calculateQuote()" placeholder="Gramos" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                                            <span class="text-xs text-slate-400">g</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-2.5 space-y-1.5">
+                                        <span class="text-[11px] font-semibold text-slate-300 block">Filamento 4 (Opcional)</span>
+                                        <select id="qFil_3" onchange="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="qGrams_3" value="0" min="0" step="1" oninput="calculateQuote()" placeholder="Gramos" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                                            <span class="text-xs text-slate-400">g</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Horas de Impresión</label>
+                                <input type="number" id="quoteHours" value="2" min="0" step="0.5" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Minutos de Impresión</label>
+                                <input type="number" id="quoteMins" value="30" min="0" max="59" step="1" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Cantidad de Unidades</label>
+                                <input type="number" id="quoteQty" value="1" min="1" step="1" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Diseño / Post-procesado ($)</label>
+                                <input type="number" id="quoteDesignCost" value="0" min="0" step="0.5" oninput="calculateQuote()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-800">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs font-semibold text-slate-300">Margen de Ganancia Deseado</label>
+                                <span id="marginDisplay" class="text-sm font-bold text-brand-400">60%</span>
+                            </div>
+                            <input type="range" id="quoteMargin" min="15" max="150" value="60" oninput="calculateQuote()" class="w-full accent-brand-500 cursor-pointer">
+                        </div>
+
+                        <details class="bg-slate-800/40 rounded-xl p-3 border border-slate-800 text-xs">
+                            <summary class="cursor-pointer font-medium text-slate-300 flex items-center justify-between">
+                                <span>Tarifas del Taller (Electricidad y Desgaste)</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </summary>
+                            <div class="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-700/60">
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Consumo (W)</label>
+                                    <input type="number" id="cfgWatts" value="150" oninput="calculateQuote()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 mb-1">kWh ($ USD)</label>
+                                    <input type="number" id="cfgKwh" value="0.10" step="0.01" oninput="calculateQuote()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-400 mb-1">Desgaste/h ($)</label>
+                                    <input type="number" id="cfgWear" value="0.25" step="0.05" oninput="calculateQuote()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white">
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="bg-gradient-to-br from-dark-900 to-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-brand-400">Resumen Económico</span>
+                            <div class="mt-4 flex items-baseline justify-between">
+                                <div>
+                                    <p class="text-xs text-slate-400">Precio Sugerido al Cliente</p>
+                                    <p id="resClientTotal" class="text-4xl font-extrabold text-white mt-0.5">$0.00</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-slate-400">Precio Unitario</p>
+                                    <p id="resClientUnit" class="text-lg font-bold text-brand-400">$0.00</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 space-y-2.5 text-xs border-t border-slate-800 pt-4">
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Material (<span id="resGramsBreakdown">80g</span>):</span>
+                                    <span id="resMatCost" class="font-medium">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Energía eléctrica (<span id="resHoursBreakdown">2.5h</span>):</span>
+                                    <span id="resElecCost" class="font-medium">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Desgaste y mantenimiento máquina:</span>
+                                    <span id="resWearCost" class="font-medium">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Diseño / Insumos extra:</span>
+                                    <span id="resExtraCost" class="font-medium">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-200 font-semibold pt-2 border-t border-slate-800">
+                                    <span>Costo Operativo Real:</span>
+                                    <span id="resBaseCost">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 font-bold text-sm pt-1">
+                                    <span>Utilidad Neta ATEL 3D:</span>
+                                    <span id="resProfit">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 grid grid-cols-2 gap-3">
+                                <button type="button" onclick="copyQuoteText()" class="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition border border-slate-700">
+                                    <i data-lucide="copy" class="w-4 h-4"></i><span>Copiar Texto</span>
+                                </button>
+                                <button type="button" onclick="convertQuoteToOrder()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition shadow-lg shadow-brand-600/20">
+                                    <i data-lucide="plus-circle" class="w-4 h-4"></i><span>Crear Pedido</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-xs text-brand-400 font-semibold">Ideas que toman forma</p>
-                <p id="storeAboutText" class="text-xs text-slate-400 leading-relaxed">
-                    Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos.
-                </p>
-            </div>
-            <div class="space-y-2 text-xs text-slate-300">
-                <p class="font-bold text-white uppercase tracking-wider">Contacto</p>
-                <p>Ubicación: Cuenca, Azuay, Ecuador</p>
-                <p>WhatsApp: <span id="storeWhatsappDisplay">+593 99 840 0131</span></p>
-            </div>
-            <div class="space-y-2 text-xs text-slate-400 md:text-right">
-                <p class="font-bold text-white uppercase tracking-wider">Acceso Interno</p>
-                <p><a href="taller-atel3d.html" class="text-brand-400 hover:underline">Panel del Taller ATEL 3D →</a></p>
-                <p class="pt-2">© <span id="yearNow"></span> ATEL 3D. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
+            </section>
 
-    <!-- MODAL CARRITO DE COMPRAS -->
-    <div id="cartModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shopping-cart" class="w-5 h-5 text-brand-400"></i>
-                    <h3 class="text-lg font-bold text-white">Tu Pedido / Carrito ATEL 3D</h3>
+            <!-- TAB 2: PEDIDOS -->
+            <section id="view-pedidos" class="hidden space-y-6">
+                <!-- BANDEJA DE ALERTAS DE PEDIDOS NUEVOS DESDE LA WEB -->
+                <div id="onlineOrdersAlertBanner" class="hidden bg-amber-500/10 border border-amber-500/40 rounded-2xl p-4 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <span class="bg-amber-500 text-slate-950 p-2 rounded-xl">
+                                <i data-lucide="bell-ring" class="w-4 h-4"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-sm font-bold text-amber-300">Pedidos Nuevos desde la Tienda Web (<span id="alertCountText">0</span>)</h3>
+                                <p class="text-[11px] text-slate-300">Clientes que enviaron pedido consolidado o a medida. Aprueba para pasarlos a <b>Pedido nuevo</b>.</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="dismissAllOnlineAlerts()" class="text-xs text-slate-400 hover:text-white underline">Descartar todas</button>
+                    </div>
+                    <div id="onlineAlertsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                 </div>
-                <button type="button" onclick="closeCartModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
-            </div>
 
-            <div id="cartItemsContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1"></div>
+                <!-- MÉTRICAS ECONÓMICAS DE PEDIDOS -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400">Facturación Total</p>
+                        <p id="statTotalRevenue" class="text-2xl font-bold text-white mt-1">$0.00</p>
+                    </div>
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400">Total Cobrado</p>
+                        <p id="statTotalPaid" class="text-2xl font-bold text-emerald-400 mt-1">$0.00</p>
+                    </div>
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                        <p class="text-xs text-slate-400">Saldo Por Cobrar</p>
+                        <p id="statTotalBalance" class="text-2xl font-bold text-amber-400 mt-1">$0.00</p>
+                    </div>
+                </div>
 
-            <div id="cartCheckoutForm" class="space-y-3 pt-3 border-t border-slate-800 text-xs">
-                <div class="flex items-center justify-between bg-slate-800/70 border border-slate-700 rounded-xl px-4 py-3">
-                    <span class="text-slate-300 font-medium">Total Estimado del Pedido:</span>
-                    <span id="cartGrandTotal" class="text-xl font-black text-brand-400">$0.00</span>
+                <!-- CONTADORES POR ETAPA DEL FLUJO -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button type="button" onclick="setOrderStatusFilter('Pedido nuevo')" class="bg-dark-900 hover:border-amber-500/50 border border-slate-800 rounded-2xl p-3 text-left transition">
+                        <span class="text-[11px] font-semibold text-amber-400 uppercase tracking-wider block">1. Pedidos nuevos</span>
+                        <span id="stageCountNew" class="text-xl font-black text-white mt-0.5 block">0</span>
+                    </button>
+                    <button type="button" onclick="setOrderStatusFilter('Impreso')" class="bg-dark-900 hover:border-sky-500/50 border border-slate-800 rounded-2xl p-3 text-left transition">
+                        <span class="text-[11px] font-semibold text-sky-400 uppercase tracking-wider block">2. Impresos</span>
+                        <span id="stageCountPrinted" class="text-xl font-black text-white mt-0.5 block">0</span>
+                    </button>
+                    <button type="button" onclick="setOrderStatusFilter('Por cobrar')" class="bg-dark-900 hover:border-purple-500/50 border border-slate-800 rounded-2xl p-3 text-left transition">
+                        <span class="text-[11px] font-semibold text-purple-400 uppercase tracking-wider block">3. Por cobrar</span>
+                        <span id="stageCountToCollect" class="text-xl font-black text-white mt-0.5 block">0</span>
+                    </button>
+                    <button type="button" onclick="setOrderStatusFilter('Cobrado')" class="bg-dark-900 hover:border-emerald-500/50 border border-slate-800 rounded-2xl p-3 text-left transition">
+                        <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider block">4. Cobrados (Bloqueados)</span>
+                        <span id="stageCountCollected" class="text-xl font-black text-white mt-0.5 block">0</span>
+                    </button>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <select id="filterOrderStatus" onchange="renderOrders()" class="bg-dark-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="ALL">Todos los estados</option>
+                            <option value="Pedido nuevo">Pedidos nuevos</option>
+                            <option value="Impreso">Impresos</option>
+                            <option value="Por cobrar">Por cobrar</option>
+                            <option value="Cobrado">Cobrados</option>
+                        </select>
+                        <input type="text" id="searchOrder" oninput="renderOrders()" placeholder="Buscar cliente o producto..." class="bg-dark-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-48 sm:w-64">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="exportOrdersCSV()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1.5">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar CSV
+                        </button>
+                        <button type="button" onclick="openOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i><span>Nuevo Pedido</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ordersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </section>
+
+            <!-- TAB 3: INVENTARIO (FILAMENTOS + PRODUCTOS) -->
+            <section id="view-inventario" class="hidden space-y-8">
+                <!-- Subsección A: Filamentos -->
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i data-lucide="disc" class="w-4 h-4 text-brand-400"></i>
+                                <span>Filamentos</span>
+                            </h2>
+                            <p class="text-xs text-slate-400">Los colores con stock (&gt; 0 g) se sincronizan automáticamente con los selectores de la tienda web y el cotizador.</p>
+                        </div>
+                        <button type="button" onclick="openFilamentModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i><span>Agregar Rollo</span>
+                        </button>
+                    </div>
+
+                    <div id="filamentsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <hr class="border-slate-800">
+
+                <!-- Subsección B: Inventario de Productos -->
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i data-lucide="package" class="w-4 h-4 text-brand-400"></i>
+                                <span>Inventario de Productos</span>
+                            </h2>
+                            <p class="text-xs text-slate-400">Controla las unidades disponibles en taller por producto, ajusta stock rápidamente o crea un artículo nuevo.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input type="text" id="searchInventoryProduct" oninput="renderInventoryProducts()" placeholder="Buscar producto en stock..." class="bg-dark-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-48 sm:w-56">
+                            <button type="button" onclick="openProductModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5 text-brand-400"></i><span>Nuevo Producto</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                            <p class="text-xs text-slate-400">Referencias en Inventario</p>
+                            <p id="invProdTotalSkus" class="text-2xl font-bold text-white mt-1">0</p>
+                        </div>
+                        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                            <p class="text-xs text-slate-400">Unidades Totales en Stock</p>
+                            <p id="invProdTotalUnits" class="text-2xl font-bold text-brand-400 mt-1">0 u.</p>
+                        </div>
+                        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4">
+                            <p class="text-xs text-slate-400">Stock Bajo / Agotado (&le; 3 u.)</p>
+                            <p id="invProdLowStock" class="text-2xl font-bold text-amber-400 mt-1">0</p>
+                        </div>
+                    </div>
+
+                    <div id="inventoryProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- TAB 4: EDITAR CATÁLOGO WEB -->
+            <section id="view-catalogo" class="hidden space-y-6">
+                <div class="bg-dark-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-white">Configuración General de la Tienda Pública</h2>
+                            <p class="text-xs text-slate-400">Edita el número de WhatsApp receptor y los textos públicos de ATEL 3D.</p>
+                        </div>
+                        <button type="button" onclick="saveStoreSettings()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Guardar Textos</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1">WhatsApp ATEL 3D (con código país, ej: 593998400131)</label>
+                            <input type="text" id="cfgStoreWhatsapp" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Etiqueta Principal (Hero)</label>
+                            <input type="text" id="cfgStoreBadge" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-slate-400 mb-1">Descripción "Sobre Nosotros" (Footer / Página Pública)</label>
+                            <textarea id="cfgStoreAbout" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Productos del Catálogo Público</h2>
+                        <p class="text-xs text-slate-400">Configura hasta 4 colores por producto, sets promocionales (packs) y hasta 3 fotos por artículo.</p>
+                    </div>
+                    <button type="button" onclick="openProductModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i><span>Nuevo Producto</span>
+                    </button>
+                </div>
+
+                <div id="adminProductsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL PEDIDO -->
+    <div id="orderModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 id="orderModalTitle" class="text-lg font-bold text-white mb-4">Nuevo Pedido</h3>
+            <form onsubmit="saveOrder(event)" class="space-y-3 text-sm">
+                <input type="hidden" id="ordId">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Cliente *</label>
+                        <input type="text" id="ordClient" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Teléfono / WhatsApp</label>
+                        <input type="text" id="ordContact" placeholder="099..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-slate-400 mb-1">Tu Nombre *</label>
-                        <input type="text" id="cartClientName" required placeholder="Ej: María Pérez" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        <label class="block text-xs text-slate-400 mb-1">Producto del Catálogo</label>
+                        <select id="ordCatalogSelect" onchange="onOrderProductSelect()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></select>
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">Tu Teléfono / WhatsApp</label>
-                        <input type="text" id="cartClientPhone" placeholder="Ej: 099..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                        <label class="block text-xs text-slate-400 mb-1">Nombre del Producto *</label>
+                        <input type="text" id="ordProduct" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/80 rounded-xl p-3 space-y-2.5">
+                    <span class="text-xs font-semibold text-brand-400 block">Filamento y Colores en Inventario (hasta 4)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">Material</label>
+                            <select id="ordFilament" onchange="updateOrderColorDropdowns()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                                <option value="PLA">PLA</option>
+                                <option value="PETG">PETG</option>
+                                <option value="ABS">ABS</option>
+                                <option value="TPU">TPU</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">Color 1</label>
+                            <select id="ordColor_0" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">Color 2</label>
+                            <select id="ordColor_1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">Color 3</label>
+                            <select id="ordColor_2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] text-slate-400 mb-1">Color 4</label>
+                            <select id="ordColor_3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Cantidad</label>
+                        <input type="number" id="ordQty" value="1" min="1" oninput="onOrderQtyOrPriceChange()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Total ($)</label>
+                        <input type="number" id="ordTotal" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Anticipo / Cobrado ($)</label>
+                        <input type="number" id="ordPaid" step="0.01" value="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Fecha Entrega</label>
+                        <input type="date" id="ordDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Estado del Pedido</label>
+                        <select id="ordStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="Pedido nuevo">Pedido nuevo</option>
+                            <option value="Impreso">Impreso</option>
+                            <option value="Por cobrar">Por cobrar</option>
+                            <option value="Cobrado">Cobrado (Cierra y bloquea)</option>
+                        </select>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-slate-400 mb-1">Nombres para personalizar / Notas generales</label>
-                    <textarea id="cartGeneralNotes" rows="2" placeholder="Ej: Nombres de invitados, entrega en Cuenca..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></textarea>
+                    <label class="block text-xs text-slate-400 mb-1">Notas / Observaciones</label>
+                    <textarea id="ordNotes" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></textarea>
                 </div>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closeOrderModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold text-xs">Guardar Pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                    <button type="button" onclick="clearCart()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-300 text-xs">Vaciar carrito</button>
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="closeCartModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Seguir viendo</button>
-                        <button type="button" onclick="submitCartOrder()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
-                            <i data-lucide="send" class="w-3.5 h-3.5"></i> Enviar Pedido por WhatsApp
-                        </button>
+    <!-- MODAL PRODUCTO CATÁLOGO / INVENTARIO -->
+    <div id="productModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 id="prodModalTitle" class="text-lg font-bold text-white mb-4">Producto del Catálogo Público</h3>
+            <form onsubmit="saveProduct(event)" class="space-y-3 text-sm">
+                <input type="hidden" id="prodId">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs text-slate-400 mb-1">Nombre del Producto *</label>
+                        <input type="text" id="prodName" required placeholder="Ej: Servilleteros Navideños" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Stock en Inventario (u.)</label>
+                        <input type="number" id="prodStock" value="10" min="0" step="1" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                     </div>
                 </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Línea / Categoría</label>
+                        <select id="prodCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="Atel home">Atel home</option>
+                            <option value="Atel pro">Atel pro</option>
+                            <option value="Atel lab">Atel lab</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Filamento Base</label>
+                        <select id="prodFilament" onchange="updateProdColorDropdowns()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="PLA">PLA</option>
+                            <option value="PETG">PETG</option>
+                            <option value="ABS">ABS</option>
+                            <option value="TPU">TPU</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-xs text-slate-400 mb-1">Colores a mostrar</label>
+                        <select id="prodColorCount" onchange="toggleProdColorFields()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="1">1 Color</option>
+                            <option value="2" selected>2 Colores</option>
+                            <option value="3">3 Colores</option>
+                            <option value="4">4 Colores</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Descripción / Detalles del Producto</label>
+                    <textarea id="prodDescription" rows="2" placeholder="Ej: Pasadas 6 unidades aplica descuento por cantidad..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"></textarea>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/80 rounded-xl p-3 space-y-2.5">
+                    <span class="text-xs font-semibold text-brand-400 block">Etiquetas y Colores por Defecto en la Tienda (1 a 4 colores)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div id="prodColorField_0" class="bg-slate-900/70 border border-slate-700/70 rounded-lg p-2 space-y-1.5">
+                            <label class="block text-[10px] text-slate-400">Nombre etiqueta Color 1</label>
+                            <input type="text" id="prodColorLabel_0" placeholder="Ej: Color 1 / Bombillo color" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
+                            <select id="prodColor_0" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white"></select>
+                        </div>
+                        <div id="prodColorField_1" class="bg-slate-900/70 border border-slate-700/70 rounded-lg p-2 space-y-1.5">
+                            <label class="block text-[10px] text-slate-400">Nombre etiqueta Color 2</label>
+                            <input type="text" id="prodColorLabel_1" placeholder="Ej: Color 2 / Nombre color" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
+                            <select id="prodColor_1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white"></select>
+                        </div>
+                        <div id="prodColorField_2" class="bg-slate-900/70 border border-slate-700/70 rounded-lg p-2 space-y-1.5">
+                            <label class="block text-[10px] text-slate-400">Nombre etiqueta Color 3</label>
+                            <input type="text" id="prodColorLabel_2" placeholder="Ej: Color 3" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
+                            <select id="prodColor_2" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white"></select>
+                        </div>
+                        <div id="prodColorField_3" class="bg-slate-900/70 border border-slate-700/70 rounded-lg p-2 space-y-1.5">
+                            <label class="block text-[10px] text-slate-400">Nombre etiqueta Color 4</label>
+                            <input type="text" id="prodColorLabel_3" placeholder="Ej: Color 4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
+                            <select id="prodColor_3" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Precio Base 1 u. ($)</label>
+                        <input type="number" id="prodBasePrice" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Precio Set 6 u. ($)</label>
+                        <input type="number" id="prodPack6" step="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Extra c/u (&gt;6 u.) ($)</label>
+                        <input type="number" id="prodExtraUnit" step="0.001" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-brand-400">Sets Promocionales / Packs</span>
+                        <button type="button" onclick="addPackRow()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-2.5 py-1 rounded-lg flex items-center gap-1 transition">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Añadir Set
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-400">Agrega los combos que verán tus clientes (ej: 6 u. a $9.50, 10 u. a $12.00).</p>
+                    <div id="prodPacksContainer" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/80 rounded-xl p-3 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-brand-400">Fotos del Producto (hasta 3 fotos)</span>
+                        <span class="text-[11px] text-slate-400">JPG / PNG o URL</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <div class="bg-slate-900 border border-slate-700 rounded-xl p-2 space-y-1.5 text-center">
+                            <span class="text-[10px] font-semibold text-slate-300 block">Foto 1 (Principal)</span>
+                            <div class="h-16 bg-slate-800 rounded-lg overflow-hidden flex items-center justify-center">
+                                <img id="prodImgPreview_0" src="icon.png" alt="Preview 1" class="w-full h-full object-cover">
+                            </div>
+                            <label class="block cursor-pointer bg-slate-800 hover:bg-slate-700 text-[10px] text-brand-300 font-semibold py-1 px-1.5 rounded-lg border border-slate-700 transition">
+                                Subir Foto 1
+                                <input type="file" accept="image/*" onchange="handleProductPhotoUpload(0, this)" class="hidden">
+                            </label>
+                            <input type="text" id="prodImage_0" oninput="syncPreviewFromUrl(0)" placeholder="O URL Foto 1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-1.5 py-1 text-[10px] text-white">
+                            <button type="button" onclick="clearProductPhoto(0)" class="text-[10px] text-rose-400 hover:underline">Quitar</button>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-700 rounded-xl p-2 space-y-1.5 text-center">
+                            <span class="text-[10px] font-semibold text-slate-300 block">Foto 2 (Opcional)</span>
+                            <div class="h-16 bg-slate-800 rounded-lg overflow-hidden flex items-center justify-center">
+                                <img id="prodImgPreview_1" src="icon.png" alt="Preview 2" class="w-full h-full object-cover opacity-40">
+                            </div>
+                            <label class="block cursor-pointer bg-slate-800 hover:bg-slate-700 text-[10px] text-brand-300 font-semibold py-1 px-1.5 rounded-lg border border-slate-700 transition">
+                                Subir Foto 2
+                                <input type="file" accept="image/*" onchange="handleProductPhotoUpload(1, this)" class="hidden">
+                            </label>
+                            <input type="text" id="prodImage_1" oninput="syncPreviewFromUrl(1)" placeholder="O URL Foto 2" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-1.5 py-1 text-[10px] text-white">
+                            <button type="button" onclick="clearProductPhoto(1)" class="text-[10px] text-rose-400 hover:underline">Quitar</button>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-700 rounded-xl p-2 space-y-1.5 text-center">
+                            <span class="text-[10px] font-semibold text-slate-300 block">Foto 3 (Opcional)</span>
+                            <div class="h-16 bg-slate-800 rounded-lg overflow-hidden flex items-center justify-center">
+                                <img id="prodImgPreview_2" src="icon.png" alt="Preview 3" class="w-full h-full object-cover opacity-40">
+                            </div>
+                            <label class="block cursor-pointer bg-slate-800 hover:bg-slate-700 text-[10px] text-brand-300 font-semibold py-1 px-1.5 rounded-lg border border-slate-700 transition">
+                                Subir Foto 3
+                                <input type="file" accept="image/*" onchange="handleProductPhotoUpload(2, this)" class="hidden">
+                            </label>
+                            <input type="text" id="prodImage_2" oninput="syncPreviewFromUrl(2)" placeholder="O URL Foto 3" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-1.5 py-1 text-[10px] text-white">
+                            <button type="button" onclick="clearProductPhoto(2)" class="text-[10px] text-rose-400 hover:underline">Quitar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer pt-1">
+                    <input type="checkbox" id="prodFeatured" checked class="rounded accent-brand-500">
+                    <span>Visible en el Catálogo Público</span>
+                </label>
+
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold text-xs">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL FILAMENTO -->
+    <div id="filamentModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-4">Rollo de Filamento</h3>
+            <form onsubmit="saveFilament(event)" class="space-y-3 text-sm">
+                <input type="hidden" id="filId">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Material</label>
+                        <select id="filType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                            <option value="PLA">PLA</option>
+                            <option value="PETG">PETG</option>
+                            <option value="ABS">ABS</option>
+                            <option value="TPU">TPU</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Color *</label>
+                        <input type="text" id="filColor" required placeholder="Ej: Rojo / Blanco / Dorado" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Gramos Restantes (g)</label>
+                        <input type="number" id="filGrams" value="1000" min="0" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Costo del Rollo ($)</label>
+                        <input type="number" id="filCost" value="22" step="0.5" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closeFilamentModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold text-xs">Guardar Rollo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL FIREBASE -->
+    <div id="cloudModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white">Sincronización en Línea (Firebase)</h3>
+                <button type="button" onclick="closeCloudModal()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Conectado por defecto a <strong class="text-brand-400">atel-3d</strong> para compartir catálogo, filamentos y pedidos en tiempo real entre tu dispositivo, tu socio y la tienda pública.
+            </p>
+            <div>
+                <label class="block text-xs text-slate-300 mb-1">Configuración Firebase (JSON)</label>
+                <textarea id="firebaseConfigInput" rows="5" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-mono text-emerald-300"></textarea>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
+                <div>
+                    <label class="block text-[11px] text-slate-400 mb-1">Cambiar contraseña del taller</label>
+                    <input type="password" id="newWorkshopPass" placeholder="Nueva contraseña (opcional)" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                </div>
+                <button type="button" onclick="changeWorkshopPassword()" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 px-3 py-2 rounded-xl border border-slate-700 mt-4">Actualizar Clave</button>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button type="button" onclick="closeCloudModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Cerrar</button>
+                <button type="button" onclick="saveFirebaseConfig()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold text-xs">Conectar / Sincronizar</button>
             </div>
         </div>
     </div>
@@ -257,13 +791,22 @@
             measurementId: "G-091YZ26DFW"
         };
 
+        const DEFAULT_PASS = "atel2026";
         const FALLBACK_IMG = "icon.png";
+        const ORDER_STAGES = ["Pedido nuevo", "Impreso", "Por cobrar", "Cobrado"];
+        const INVENTORY_SEED_VERSION = "v_csv_2026_11_22";
 
         const defaultStoreConfig = {
             whatsapp: "593998400131",
             badge: "Diseño y Fabricación Digital 3D",
             about: "Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos."
         };
+
+        const defaultFilaments = [
+            { id: "fil_1", type: "PLA", color: "Rojo", grams: 1000, cost: 22.00 },
+            { id: "fil_2", type: "PLA", color: "Blanco", grams: 1000, cost: 22.00 },
+            { id: "fil_3", type: "PLA", color: "Dorado", grams: 1000, cost: 24.00 }
+        ];
 
         const defaultProducts = [
             { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", featured: true, description: "Pasadas 6 unidades aplica descuento por cantidad (10 u. = $12.00).", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
@@ -272,212 +815,923 @@
             { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", featured: true, description: "Agitadores navideños ideales para eventos, cafeterías y cenas.", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
         ];
 
-        let storeConfig = JSON.parse(localStorage.getItem('atel_store_config')) || defaultStoreConfig;
-        let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
-        let cart = JSON.parse(localStorage.getItem('atel_cart') || '[]');
-        let currentCategory = 'ALL';
-        let db = null;
+        const csvInitialOrders = [
+            {"id":"ord_csv_01","client":"Estefi Cru","contact":"0987139449","productId":"prod_bookmarks","productName":"Bookmarks navideño","filament":"PLA","colors":["Blanco","","",""],"qty":8,"total":8.5,"paid":8.5,"deliveryDate":"2026-11-12","status":"Cobrado","notes":"Con grabado Casa Ma","createdAt":"2026-11-17T02:07:02.501507+00:00"},
+            {"id":"ord_csv_02","client":"Manolo","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":8,"total":10.0,"paid":10.0,"deliveryDate":"2026-11-12","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:09:29.370142+00:00"},
+            {"id":"ord_csv_03","client":"Gustavo","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-13","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:11:06.575817+00:00"},
+            {"id":"ord_csv_04","client":"Estefy López","contact":"0998400131","productId":"prod_bookmarks","productName":"Bookmark","filament":"PLA","colors":["Blanco","","",""],"qty":5,"total":4.0,"paid":4.0,"deliveryDate":"2026-11-13","status":"Cobrado","notes":"Diseño caballos","createdAt":"2026-11-17T02:12:16.386384+00:00"},
+            {"id":"ord_csv_05","client":"Paul","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.0,"paid":9.0,"deliveryDate":"2026-11-15","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:08:26.982672+00:00"},
+            {"id":"ord_csv_06","client":"Suca","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":0.0,"deliveryDate":"2026-11-16","status":"Por cobrar","notes":"","createdAt":"2026-11-17T02:17:21.880234+00:00"},
+            {"id":"ord_csv_07","client":"Eulalia (Monica)","contact":"0998400132","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Blanco","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-16","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:14:56.564447+00:00"},
+            {"id":"ord_csv_08","client":"Ñaña Regina","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Blanco","","",""],"qty":10,"total":15.0,"paid":15.0,"deliveryDate":"2026-11-16","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:16:06.175816+00:00"},
+            {"id":"ord_csv_09","client":"Elenita","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-16","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:13:11.162926+00:00"},
+            {"id":"ord_csv_10","client":"Ñaña regina","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-17","status":"Cobrado","notes":"","createdAt":"2026-11-17T14:49:57.063817+00:00"},
+            {"id":"ord_csv_11","client":"Kary Roldán","contact":"","productId":"prod_revolvedores","productName":"Revolvedores","filament":"PLA","colors":["Blanco","Rojo","",""],"qty":8,"total":6.75,"paid":6.75,"deliveryDate":"2026-11-17","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:33:11.685858+00:00"},
+            {"id":"ord_csv_12","client":"Mónica","contact":"","productId":"prod_bookmarks","productName":"Bookmark navideños","filament":"PLA","colors":["Blanco","","",""],"qty":8,"total":6.5,"paid":0.0,"deliveryDate":"2026-11-17","status":"Por cobrar","notes":"Nombres primas","createdAt":"2026-11-17T02:30:14.783477+00:00"},
+            {"id":"ord_csv_13","client":"Suca","contact":"","productId":"prod_bombillos","productName":"Bombillos","filament":"PLA","colors":["","","",""],"qty":4,"total":10.0,"paid":10.0,"deliveryDate":"2026-11-17","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:20:28.128784+00:00"},
+            {"id":"ord_csv_14","client":"Tatiana Ochoa","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":12,"total":19.0,"paid":0.0,"deliveryDate":"2026-11-17","status":"Por cobrar","notes":"Variados","createdAt":"2026-11-17T02:04:00.699758+00:00"},
+            {"id":"ord_csv_15","client":"Rosanita (Mónica)","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":0.0,"deliveryDate":"2026-11-17","status":"Por cobrar","notes":"","createdAt":"2026-11-17T02:18:30.17308+00:00"},
+            {"id":"ord_csv_16","client":"Jenny (Mónica)","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-17","status":"Cobrado","notes":"","createdAt":"2026-11-17T02:19:03.740562+00:00"},
+            {"id":"ord_csv_17","client":"Estefi","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","Blanco","",""],"qty":10,"total":15.0,"paid":15.0,"deliveryDate":"2026-11-18","status":"Cobrado","notes":"Por entregar 4 y devolver copo","createdAt":"2026-11-17T02:28:21.655619+00:00"},
+            {"id":"ord_csv_18","client":"Juana romero(amiga suca","contact":"0998400020","productId":"prod_revolvedores","productName":"Revolvedores","filament":"PLA","colors":["Rojo","","",""],"qty":12,"total":11.0,"paid":11.0,"deliveryDate":"2026-11-18","status":"Cobrado","notes":"Variaoss","createdAt":"2026-11-17T18:35:45.397082+00:00"},
+            {"id":"ord_csv_19","client":"Juana romero(amiga suca)","contact":"0998400010","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-18","status":"Cobrado","notes":"Amiga suca","createdAt":"2026-11-17T18:34:46.338723+00:00"},
+            {"id":"ord_csv_20","client":"Paul","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Rojo","","",""],"qty":6,"total":9.5,"paid":0.0,"deliveryDate":"2026-11-18","status":"Por cobrar","notes":"","createdAt":"2026-11-17T02:27:24.395669+00:00"},
+            {"id":"ord_csv_21","client":"Kary Roldán","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Blanco","","",""],"qty":6,"total":9.5,"paid":9.5,"deliveryDate":"2026-11-18","status":"Cobrado","notes":"","createdAt":"2026-11-17T16:43:21.722702+00:00"},
+            {"id":"ord_csv_22","client":"Ely ( hija Ceci)","contact":"0998400131","productId":"prod_bombillos","productName":"Bombillos","filament":"PLA","colors":["Dorado","Blanco","",""],"qty":6,"total":12.0,"paid":12.0,"deliveryDate":"2026-11-19","status":"Cobrado","notes":"Cecilia, Belén, Javi, Javier. Cristian. Y Elizabeth.","createdAt":"2026-11-17T19:03:57.680133+00:00"},
+            {"id":"ord_csv_23","client":"Mónica Ordóñez","contact":"0998400614","productId":"prod_bookmarks","productName":"Bookmark","filament":"PLA","colors":["Blanco","Rojo","",""],"qty":2,"total":1.75,"paid":1.75,"deliveryDate":"2026-11-20","status":"Cobrado","notes":"Nombres, NICOL, ESTEFANIA","createdAt":"2026-11-18T18:14:29.94018+00:00"},
+            {"id":"ord_csv_24","client":"Patricia Molina","contact":"0998400131","productId":"prod_bombillos","productName":"Bombillos con nombres","filament":"PLA","colors":["Por definir","","",""],"qty":4,"total":8.0,"paid":8.0,"deliveryDate":"2026-11-20","status":"Cobrado","notes":"Dorado y blanco (Color original: Por definir)","createdAt":"2026-11-18T05:14:08.126304+00:00"},
+            {"id":"ord_csv_25","client":"Mónica","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Blanco","Rojo","Dorado",""],"qty":12,"total":19.0,"paid":0.0,"deliveryDate":"2026-11-20","status":"Por cobrar","notes":"","createdAt":"2026-11-18T00:39:44.280213+00:00"},
+            {"id":"ord_csv_26","client":"Alexandra Ordoñez","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Dorado","","",""],"qty":10,"total":15.0,"paid":15.0,"deliveryDate":"2026-11-20","status":"Impreso","notes":"","createdAt":"2026-11-19T18:03:46.437224+00:00"},
+            {"id":"ord_csv_27","client":"Freed Ordoñez","contact":"0998400131","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Blanco","","",""],"qty":12,"total":22.5,"paid":0.0,"deliveryDate":"2026-11-20","status":"Por cobrar","notes":"Envío a Guayaquil","createdAt":"2026-11-18T18:04:54.151163+00:00"},
+            {"id":"ord_csv_28","client":"Amiga suca","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["","","",""],"qty":6,"total":9.5,"paid":0.0,"deliveryDate":"2026-11-20","status":"Pedido nuevo","notes":"Reno bebé","createdAt":"2026-11-18T05:10:04.240939+00:00"},
+            {"id":"ord_csv_29","client":"Mónica","contact":"","productId":"prod_revolvedores","productName":"Removedores","filament":"PLA","colors":["Blanco","Dorado","Rojo",""],"qty":8,"total":6.75,"paid":0.0,"deliveryDate":"2026-11-21","status":"Impreso","notes":"","createdAt":"2026-11-21T00:56:15.732215+00:00"},
+            {"id":"ord_csv_30","client":"Pao Aguilar","contact":"","productId":"prod_bombillos","productName":"Bombillos","filament":"PLA","colors":["Blanco","Dorado","",""],"qty":3,"total":6.0,"paid":0.0,"deliveryDate":"2026-11-21","status":"Impreso","notes":"Iván \nPao\nFrida","createdAt":"2026-11-20T22:12:34.338843+00:00"},
+            {"id":"ord_csv_31","client":"Pao Aguilar","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Dorado","","",""],"qty":6,"total":9.5,"paid":0.0,"deliveryDate":"2026-11-21","status":"Impreso","notes":"","createdAt":"2026-11-20T22:18:18.839501+00:00"},
+            {"id":"ord_csv_32","client":"Jackie","contact":"","productId":"prod_revolvedores","productName":"Removedores","filament":"PLA","colors":["Rojo","Blanco","",""],"qty":8,"total":6.75,"paid":0.0,"deliveryDate":"2026-11-22","status":"Impreso","notes":"","createdAt":"2026-11-20T23:57:05.078334+00:00"},
+            {"id":"ord_csv_33","client":"Alexandra Ordóñez","contact":"","productId":"prod_bombillos","productName":"Bombillos","filament":"PLA","colors":["Dorado","Blanco","",""],"qty":7,"total":16.0,"paid":16.0,"deliveryDate":"2026-11-22","status":"Impreso","notes":"","createdAt":"2026-11-21T16:47:09.559961+00:00"},
+            {"id":"ord_csv_34","client":"Estefi Cru","contact":"","productId":"","productName":"Molde galleta","filament":"PLA","colors":["Rojo","","",""],"qty":4,"total":11.0,"paid":0.0,"deliveryDate":"2026-11-22","status":"Pedido nuevo","notes":"","createdAt":"2026-11-22T05:16:11.997229+00:00"},
+            {"id":"ord_csv_35","client":"Cecilia mama","contact":"","productId":"prod_servilleteros","productName":"Servilleteros","filament":"PLA","colors":["Blanco","","",""],"qty":8,"total":15.0,"paid":0.0,"deliveryDate":"2026-11-22","status":"Pedido nuevo","notes":"","createdAt":"2026-11-20T23:54:43.182557+00:00"},
+            {"id":"ord_csv_36","client":"Cecilia mama","contact":"","productId":"prod_revolvedores","productName":"Removedores","filament":"PLA","colors":["Dorado","Blanco","",""],"qty":8,"total":6.75,"paid":0.0,"deliveryDate":"2026-11-22","status":"Impreso","notes":"4 dorados y 4 blancos","createdAt":"2026-11-20T23:52:28.43104+00:00"},
+            {"id":"ord_csv_37","client":"Cecilia mama","contact":"","productId":"prod_bombillos","productName":"Bombillos","filament":"PLA","colors":["Rojo","Blanco","",""],"qty":6,"total":12.0,"paid":0.0,"deliveryDate":"2026-11-22","status":"Pedido nuevo","notes":"Cecilia, Hernán, Elita, Valentina y Rafael, Regina","createdAt":"2026-11-20T23:50:05.337068+00:00"}
+        ];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('yearNow').textContent = new Date().getFullYear();
-            applyStoreConfig();
-            renderCatalog();
-            updateCartBadge();
-            initStoreFirebase();
-            initCrossTabStoreSync();
+        function normalizeOrderStatus(rawStatus, total, paid) {
+            const s = (rawStatus || '').trim();
+            if (ORDER_STAGES.includes(s)) return s;
+            if (s === 'Pagado / Completado' || s === 'Pagado' || s === 'Completado') return 'Cobrado';
+            if (s === 'Entregado') return (Number(total || 0) - Number(paid || 0) <= 0.009 && Number(total || 0) > 0) ? 'Cobrado' : 'Por cobrar';
+            if (s === 'Elaborado / Impreso' || s === 'Elaborado') return 'Impreso';
+            if (s === 'En Impresión' || s === 'Pendiente') return 'Pedido nuevo';
+            return 'Pedido nuevo';
+        }
+
+        function normalizeOrdersList(list) {
+            return (Array.isArray(list) ? list : []).map(o => {
+                const total = Number(o.total || 0);
+                let paid = Number(o.paid || 0);
+                const status = normalizeOrderStatus(o.status, total, paid);
+                if (status === 'Cobrado' && total > 0 && paid < total) {
+                    paid = total;
+                }
+                return {
+                    ...o,
+                    status,
+                    total,
+                    paid
+                };
+            });
+        }
+
+        let storeConfig = JSON.parse(localStorage.getItem('atel_store_config')) || defaultStoreConfig;
+        let filaments = JSON.parse(localStorage.getItem('atel_filaments')) || defaultFilaments;
+        let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
+        let pendingOrders = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
+        let orders = [];
+        let db = null;
+        let isApplyingRemote = false;
+
+        if (localStorage.getItem('atel_orders_seed_version') !== INVENTORY_SEED_VERSION) {
+            orders = normalizeOrdersList(csvInitialOrders);
+            localStorage.setItem('atel_orders', JSON.stringify(orders));
+            localStorage.setItem('atel_orders_seed_version', INVENTORY_SEED_VERSION);
+        } else {
+            const storedOrders = JSON.parse(localStorage.getItem('atel_orders') || 'null');
+            orders = normalizeOrdersList(storedOrders && storedOrders.length ? storedOrders : csvInitialOrders);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('atel_unlocked') === '1') {
+                showWorkshop();
+            }
             lucide.createIcons();
         });
 
-        function initCrossTabStoreSync() {
-            window.addEventListener('storage', (event) => {
-                if (!event.key) return;
-                if (event.key === 'atel_products_v2') {
-                    products = JSON.parse(event.newValue || '[]');
-                    renderCatalog();
-                } else if (event.key === 'atel_available_filaments') {
-                    renderCatalog();
-                } else if (event.key === 'atel_store_config') {
-                    storeConfig = JSON.parse(event.newValue || 'null') || defaultStoreConfig;
-                    applyStoreConfig();
-                } else if (event.key === 'atel_cart') {
-                    cart = JSON.parse(event.newValue || '[]');
-                    updateCartBadge();
-                }
-            });
+        function unlockWorkshop(e) {
+            e.preventDefault();
+            const savedPass = localStorage.getItem('atel_workshop_pass') || DEFAULT_PASS;
+            const input = document.getElementById('workshopPasswordInput').value;
+            if (input === savedPass) {
+                sessionStorage.setItem('atel_unlocked', '1');
+                document.getElementById('lockError').classList.add('hidden');
+                showWorkshop();
+            } else {
+                document.getElementById('lockError').classList.remove('hidden');
+            }
         }
 
-        function applyStoreConfig() {
-            document.getElementById('storeHeroBadge').innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>${storeConfig.badge || defaultStoreConfig.badge}</span>`;
-            document.getElementById('storeAboutText').textContent = storeConfig.about || defaultStoreConfig.about;
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-            document.getElementById('storeWhatsappDisplay').textContent = `+${wa}`;
+        function lockWorkshop() {
+            sessionStorage.removeItem('atel_unlocked');
+            location.reload();
+        }
+
+        function showWorkshop() {
+            document.getElementById('lockScreen').classList.add('hidden');
+            document.getElementById('workshopApp').classList.remove('hidden');
+            initFirebase();
+            initCrossTabSync();
+            populateQuoteFilaments();
+            calculateQuote();
+            renderOnlineAlerts();
+            renderOrders();
+            renderFilaments();
+            renderInventoryProducts();
+            renderAdminCatalog();
+            loadStoreSettingsUI();
             lucide.createIcons();
         }
 
-        function getAvailableColorsForProduct(prod) {
-            const availFilaments = JSON.parse(localStorage.getItem('atel_available_filaments') || 'null');
-            if (Array.isArray(availFilaments) && availFilaments.length > 0) {
-                const prodMat = (prod.filament || 'PLA').toLowerCase().trim();
-                const matchingMat = availFilaments
-                    .filter(f => (f.type || 'PLA').toLowerCase().trim() === prodMat && Number(f.grams) > 0)
-                    .map(f => f.color)
-                    .filter(Boolean);
-                if (matchingMat.length > 0) {
-                    return [...new Set(matchingMat)];
+        function initCrossTabSync() {
+            window.addEventListener('storage', (event) => {
+                if (!event.key) return;
+                if (event.key === 'atel_pending_orders') {
+                    pendingOrders = JSON.parse(event.newValue || '[]');
+                    renderOnlineAlerts();
+                } else if (event.key === 'atel_filaments') {
+                    filaments = JSON.parse(event.newValue || '[]');
+                    populateQuoteFilaments();
+                    renderFilaments();
+                } else if (event.key === 'atel_products_v2') {
+                    products = JSON.parse(event.newValue || '[]');
+                    renderInventoryProducts();
+                    renderAdminCatalog();
+                } else if (event.key === 'atel_orders') {
+                    orders = normalizeOrdersList(JSON.parse(event.newValue || '[]'));
+                    renderOrders();
                 }
-                const anyStock = availFilaments.filter(f => Number(f.grams) > 0).map(f => f.color).filter(Boolean);
-                if (anyStock.length > 0) {
-                    return [...new Set(anyStock)];
-                }
+            });
+        }
+
+        function switchTab(tabName) {
+            ['cotizador', 'pedidos', 'inventario', 'catalogo'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${t}`);
+                btn.classList.remove('tab-active');
+                btn.classList.add('text-slate-400');
+            });
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('text-slate-400');
+            if (tabName === 'pedidos') {
+                renderOnlineAlerts();
+                renderOrders();
+            } else if (tabName === 'inventario') {
+                renderFilaments();
+                renderInventoryProducts();
             }
-            const fallbackCols = (prod.colors || []).filter(Boolean);
-            return fallbackCols.length ? [...new Set(fallbackCols)] : ['Rojo', 'Blanco', 'Dorado'];
+            lucide.createIcons();
         }
 
-        function getProductImages(p) {
-            const arr = Array.isArray(p.images) ? p.images.filter(u => u && u.trim()) : [];
-            if (arr.length) return arr.slice(0, 3);
-            if (p.image && p.image.trim()) return [p.image.trim()];
-            return [FALLBACK_IMG];
+        function syncAvailableColorsToStore() {
+            const available = filaments
+                .filter(f => Number(f.grams) > 0)
+                .map(f => ({
+                    id: f.id,
+                    type: f.type,
+                    color: f.color,
+                    grams: Number(f.grams)
+                }));
+            localStorage.setItem('atel_available_filaments', JSON.stringify(available));
+            return available;
         }
 
-        window.switchProductSlide = function(prodId, delta) {
-            const p = products.find(x => x.id === prodId);
-            if (!p) return;
-            const imgs = getProductImages(p);
-            if (imgs.length <= 1) return;
-            const currentIdx = parseInt(p._slideIdx || 0, 10);
-            const nextIdx = (currentIdx + delta + imgs.length) % imgs.length;
-            p._slideIdx = nextIdx;
-            const imgEl = document.getElementById(`prodSlideImg_${prodId}`);
-            if (imgEl) imgEl.src = imgs[nextIdx];
-            const dots = document.querySelectorAll(`.prod-dot-${prodId}`);
-            dots.forEach((d, i) => {
-                d.className = `prod-dot-${prodId} w-1.5 h-1.5 rounded-full transition ${i === nextIdx ? 'bg-brand-400 scale-125' : 'bg-white/50'}`;
-            });
-        };
+        function saveData(options = { pushOrders: true }) {
+            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
+            localStorage.setItem('atel_filaments', JSON.stringify(filaments));
+            localStorage.setItem('atel_products_v2', JSON.stringify(products));
+            localStorage.setItem('atel_orders', JSON.stringify(orders));
+            localStorage.setItem('atel_pending_orders', JSON.stringify(pendingOrders));
+            const availableFilaments = syncAvailableColorsToStore();
 
-        function filterCatalog(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                const isSelected = btn.id === `cat-${cat}`;
-                btn.className = `cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
-                    isSelected ? 'bg-brand-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                }`;
-            });
-            renderCatalog();
-        }
-
-        function computeUnitPrice(prod, qty) {
-            const q = Math.max(1, parseInt(qty) || 1);
-            if (prod.packs && prod.packs.length > 0) {
-                const exactPack = prod.packs.find(pk => parseInt(pk.qty) === q);
-                if (exactPack) {
-                    return parseFloat(exactPack.price) / q;
+            if (db && !isApplyingRemote) {
+                const workshopPayload = {
+                    filaments,
+                    pendingOrders,
+                    updatedAt: new Date().toISOString()
+                };
+                if (options.pushOrders !== false) {
+                    workshopPayload.orders = orders;
                 }
-                const sortedPacks = [...prod.packs].sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
-                const lowerPack = sortedPacks.filter(pk => parseInt(pk.qty) < q).pop();
-                if (lowerPack) {
-                    const basePackQty = parseInt(lowerPack.qty);
-                    const basePackPrice = parseFloat(lowerPack.price);
-                    const extraPrice = parseFloat(prod.extraUnitPrice) || (basePackPrice / basePackQty);
-                    return (basePackPrice + ((q - basePackQty) * extraPrice)) / q;
-                }
-            } else {
-                if (q === 6) return Number(prod.pack6Price) / 6;
-                if (q > 6) return (Number(prod.pack6Price) + ((q - 6) * Number(prod.extraUnitPrice))) / q;
+                db.collection('atel3d').doc('workshop').set(workshopPayload, { merge: true });
+
+                db.collection('atel3d').doc('store').set({
+                    storeConfig,
+                    products,
+                    availableFilaments,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
             }
-            return Number(prod.basePrice);
         }
 
-        function renderCatalog() {
-            const grid = document.getElementById('publicCatalogGrid');
-            grid.innerHTML = '';
-            const visibleProducts = products.filter(p => {
-                const isVisible = p.featured !== false;
-                const matchCat = currentCategory === 'ALL' || (p.category || 'Atel home') === currentCategory;
-                return isVisible && matchCat;
-            });
+        // ================= ALERTAS DE PEDIDOS NUEVOS DESDE LA WEB =================
+        function renderOnlineAlerts() {
+            const banner = document.getElementById('onlineOrdersAlertBanner');
+            const listEl = document.getElementById('onlineAlertsList');
+            const countText = document.getElementById('alertCountText');
+            const navBadge = document.getElementById('ordersAlertNavBadge');
 
-            if (visibleProducts.length === 0) {
-                grid.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-8 text-center text-sm text-slate-400">No hay productos publicados en esta categoría por el momento.</div>`;
+            const count = pendingOrders.length;
+            if (navBadge) {
+                navBadge.textContent = count;
+                navBadge.classList.toggle('hidden', count === 0);
+            }
+            if (countText) countText.textContent = count;
+
+            if (!banner || !listEl) return;
+            if (count === 0) {
+                banner.classList.add('hidden');
+                listEl.innerHTML = '';
                 return;
             }
 
-            visibleProducts.forEach(p => {
-                const availableColors = getAvailableColorsForProduct(p);
-                const colCount = Math.max(1, Math.min(4, parseInt(p.colorCount) || ((p.colors || []).filter(Boolean).length || 2)));
-                const labels = Array.isArray(p.colorLabels) && p.colorLabels.length ? p.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
-
-                let colorSelectorsHtml = '';
-                for (let i = 0; i < colCount; i++) {
-                    const preferred = (p.colors && p.colors[i]) ? p.colors[i] : (availableColors[i % availableColors.length] || '');
-                    const optionsList = preferred && !availableColors.includes(preferred) ? [preferred, ...availableColors] : availableColors;
-                    const labelText = labels[i] || `Color ${i + 1}`;
-                    colorSelectorsHtml += `
+            banner.classList.remove('hidden');
+            listEl.innerHTML = pendingOrders.map(al => {
+                const activeCols = (al.colors || []).filter(Boolean).join(', ') || 'Por definir';
+                return `
+                <div class="bg-dark-900 border border-amber-500/40 rounded-xl p-3.5 space-y-2 text-xs shadow">
+                    <div class="flex items-start justify-between gap-2">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-0.5">${labelText}</label>
-                            <select id="colorSel_${p.id}_${i}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
-                                ${optionsList.map(c => `<option value="${c}" ${c === preferred ? 'selected' : ''}>${c}</option>`).join('')}
-                            </select>
+                            <span class="font-bold text-white text-sm">${al.client}</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full ml-1.5">${al.source || 'Web'}</span>
+                            <p class="text-brand-400 font-semibold mt-0.5">${al.productName} • ${al.qty} u. ($${Number(al.total || 0).toFixed(2)})</p>
                         </div>
-                    `;
+                        <span class="text-[11px] text-slate-400">${al.contact || ''}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-300">Colores: <b>${activeCols}</b> (${al.filament || 'PLA'})</p>
+                    ${al.notes ? `<p class="text-[11px] text-slate-400 italic bg-slate-800/70 p-2 rounded-lg">"${al.notes}"</p>` : ''}
+                    <div class="flex items-center justify-end gap-2 pt-1">
+                        <button type="button" onclick="dismissOnlineAlert('${al.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px]">Descartar</button>
+                        <button type="button" onclick="acceptOnlineAlert('${al.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[11px] flex items-center gap-1">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Pasar a Pedidos nuevos
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function acceptOnlineAlert(alertId) {
+            const idx = pendingOrders.findIndex(a => a.id === alertId);
+            if (idx < 0) return;
+            const al = pendingOrders[idx];
+            orders.unshift({
+                id: 'ord_' + Date.now(),
+                client: al.client,
+                contact: al.contact || '',
+                productId: al.productId || '',
+                productName: al.productName,
+                filament: al.filament || 'PLA',
+                colors: al.colors || ['', '', '', ''],
+                qty: Number(al.qty) || 1,
+                total: Number(al.total) || 0,
+                paid: Number(al.paid) || 0,
+                deliveryDate: al.deliveryDate || new Date().toISOString().split('T')[0],
+                status: 'Pedido nuevo',
+                notes: al.notes || ''
+            });
+            pendingOrders.splice(idx, 1);
+            saveData();
+            renderOnlineAlerts();
+            renderOrders();
+        }
+
+        function dismissOnlineAlert(alertId) {
+            pendingOrders = pendingOrders.filter(a => a.id !== alertId);
+            saveData({ pushOrders: false });
+            renderOnlineAlerts();
+        }
+
+        function dismissAllOnlineAlerts() {
+            if (!confirm('¿Descartar todas las notificaciones pendientes de la tienda web?')) return;
+            pendingOrders = [];
+            saveData({ pushOrders: false });
+            renderOnlineAlerts();
+        }
+
+        // ================= COTIZADOR MULTICOLOR =================
+        function populateQuoteFilaments() {
+            for (let slot = 0; slot < 4; slot++) {
+                const sel = document.getElementById(`qFil_${slot}`);
+                if (!sel) continue;
+                const prev = sel.value;
+                const optionsHtml = filaments.map(f => `<option value="${f.id}">${f.type} — ${f.color} ($${(f.cost / 1000).toFixed(3)}/g | Disp: ${f.grams}g)</option>`).join('');
+                sel.innerHTML = slot === 0
+                    ? optionsHtml
+                    : `<option value="">-- Ninguno --</option>` + optionsHtml;
+                if (prev && [...sel.options].some(o => o.value === prev)) {
+                    sel.value = prev;
+                } else if (slot === 0 && filaments[0]) {
+                    sel.value = filaments[0].id;
+                } else {
+                    sel.value = "";
                 }
+            }
+        }
 
-                const packsChips = (p.packs && p.packs.length > 0)
-                    ? p.packs.map(pk => `<button type="button" onclick="selectPackQty('${p.id}', ${parseInt(pk.qty)})" class="text-[11px] bg-brand-500/10 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-md font-semibold transition cursor-pointer">Set ${pk.qty} u.: $${Number(pk.price).toFixed(2)}</button>`).join('')
-                    : `<button type="button" onclick="selectPackQty('${p.id}', 6)" class="text-[11px] bg-brand-500/10 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-md font-semibold transition cursor-pointer">Set 6 u.: $${Number(p.pack6Price).toFixed(2)}</button>`;
+        function calculateQuote() {
+            let totalGramsPerUnit = 0;
+            let matCostPerUnit = 0;
+            const breakdownParts = [];
 
-                const imgs = getProductImages(p);
-                const slideIdx = parseInt(p._slideIdx || 0, 10) % imgs.length;
-                const carouselHtml = imgs.length > 1
-                    ? `<button type="button" onclick="switchProductSlide('${p.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-950 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs transition">‹</button>
-                       <button type="button" onclick="switchProductSlide('${p.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-950 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs transition">›</button>
-                       <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-slate-950/60 px-2 py-1 rounded-full">
-                           ${imgs.map((_, idx) => `<span class="prod-dot-${p.id} w-1.5 h-1.5 rounded-full transition ${idx === slideIdx ? 'bg-brand-400 scale-125' : 'bg-white/50'}"></span>`).join('')}
+            for (let slot = 0; slot < 4; slot++) {
+                const filId = document.getElementById(`qFil_${slot}`)?.value;
+                const g = Math.max(0, parseFloat(document.getElementById(`qGrams_${slot}`)?.value) || 0);
+                if (filId && g > 0) {
+                    const fil = filaments.find(f => f.id === filId) || filaments[0];
+                    if (fil) {
+                        const costPerGram = (fil.cost || 22) / 1000;
+                        totalGramsPerUnit += g;
+                        matCostPerUnit += g * costPerGram;
+                        breakdownParts.push(`${g}g ${fil.color}`);
+                    }
+                }
+            }
+
+            const hrs = parseFloat(document.getElementById('quoteHours').value) || 0;
+            const mins = parseFloat(document.getElementById('quoteMins').value) || 0;
+            const qty = Math.max(1, parseInt(document.getElementById('quoteQty').value) || 1);
+            const designCost = parseFloat(document.getElementById('quoteDesignCost').value) || 0;
+            const margin = parseFloat(document.getElementById('quoteMargin').value) || 60;
+            const watts = parseFloat(document.getElementById('cfgWatts').value) || 150;
+            const kwhPrice = parseFloat(document.getElementById('cfgKwh').value) || 0.10;
+            const wearPerHour = parseFloat(document.getElementById('cfgWear').value) || 0.25;
+
+            document.getElementById('marginDisplay').textContent = `${margin}%`;
+            document.getElementById('totalGramsBadge').textContent = `Total: ${totalGramsPerUnit} g/u`;
+
+            const totalHours = hrs + (mins / 60);
+            const matCost = matCostPerUnit * qty;
+            const elecCost = (watts / 1000) * totalHours * kwhPrice * qty;
+            const wearCost = totalHours * wearPerHour * qty;
+            const baseCost = matCost + elecCost + wearCost + designCost;
+            const clientTotal = baseCost * (1 + margin / 100);
+            const clientUnit = clientTotal / qty;
+            const profit = clientTotal - baseCost;
+
+            document.getElementById('resClientTotal').textContent = `$${clientTotal.toFixed(2)}`;
+            document.getElementById('resClientUnit').textContent = `$${clientUnit.toFixed(2)}`;
+            document.getElementById('resGramsBreakdown').textContent = breakdownParts.length ? breakdownParts.join(' + ') : '0g';
+            document.getElementById('resHoursBreakdown').textContent = `${(totalHours * qty).toFixed(1)}h`;
+            document.getElementById('resMatCost').textContent = `$${matCost.toFixed(2)}`;
+            document.getElementById('resElecCost').textContent = `$${elecCost.toFixed(2)}`;
+            document.getElementById('resWearCost').textContent = `$${wearCost.toFixed(2)}`;
+            document.getElementById('resExtraCost').textContent = `$${designCost.toFixed(2)}`;
+            document.getElementById('resBaseCost').textContent = `$${baseCost.toFixed(2)}`;
+            document.getElementById('resProfit').textContent = `$${profit.toFixed(2)}`;
+        }
+
+        function copyQuoteText() {
+            const name = document.getElementById('quoteName').value || 'Pieza 3D Personalizada';
+            const qty = document.getElementById('quoteQty').value;
+            const total = document.getElementById('resClientTotal').textContent;
+            const unit = document.getElementById('resClientUnit').textContent;
+            const cols = [];
+            for (let s = 0; s < 4; s++) {
+                const filId = document.getElementById(`qFil_${s}`)?.value;
+                const g = parseFloat(document.getElementById(`qGrams_${s}`)?.value) || 0;
+                if (filId && g > 0) {
+                    const f = filaments.find(x => x.id === filId);
+                    if (f) cols.push(`${f.color} (${f.type})`);
+                }
+            }
+            const colorLine = cols.length ? `• Colores: ${cols.join(', ')}\n` : '';
+            const text = `Cotización ATEL 3D — Ideas que toman forma\n• Proyecto: ${name}\n${colorLine}• Cantidad: ${qty} u.\n• Precio Unitario: ${unit}\n• Total: ${total}\n¡Quedamos atentos para iniciar producción!`;
+            navigator.clipboard?.writeText(text).then(() => alert('Cotización copiada al portapapeles.'));
+        }
+
+        function convertQuoteToOrder() {
+            openOrderModal();
+            document.getElementById('ordProduct').value = document.getElementById('quoteName').value || 'Pieza Cotizada';
+            document.getElementById('ordQty').value = document.getElementById('quoteQty').value;
+            document.getElementById('ordTotal').value = document.getElementById('resClientTotal').textContent.replace('$', '');
+            const selectedFils = [];
+            for (let s = 0; s < 4; s++) {
+                const filId = document.getElementById(`qFil_${s}`)?.value;
+                const g = parseFloat(document.getElementById(`qGrams_${s}`)?.value) || 0;
+                if (filId && g > 0) {
+                    const f = filaments.find(x => x.id === filId);
+                    if (f) selectedFils.push(f);
+                }
+            }
+            if (selectedFils[0]) {
+                document.getElementById('ordFilament').value = selectedFils[0].type;
+                updateOrderColorDropdowns();
+                selectedFils.forEach((f, i) => {
+                    const el = document.getElementById(`ordColor_${i}`);
+                    if (el) el.value = f.color;
+                });
+            }
+        }
+
+        // ================= PEDIDOS (4 ETAPAS + BLOQUEO AL COBRAR) =================
+        function getInventoryColorsForMaterial(mat) {
+            const cleanMat = (mat || 'PLA').toLowerCase().trim();
+            const inStock = filaments.filter(f => Number(f.grams) > 0);
+            let cols = inStock.filter(f => (f.type || 'PLA').toLowerCase().trim() === cleanMat).map(f => f.color).filter(Boolean);
+            if (!cols.length && inStock.length) {
+                cols = inStock.map(f => f.color).filter(Boolean);
+            }
+            if (!cols.length) {
+                cols = filaments.map(f => f.color).filter(Boolean);
+            }
+            return [...new Set(cols)];
+        }
+
+        function updateOrderColorDropdowns(presetColors = null) {
+            const mat = document.getElementById('ordFilament').value || 'PLA';
+            const cols = getInventoryColorsForMaterial(mat);
+            for (let i = 0; i < 4; i++) {
+                const sel = document.getElementById(`ordColor_${i}`);
+                if (!sel) continue;
+                const currentVal = presetColors ? (presetColors[i] || '') : sel.value;
+                const allOptions = currentVal && !cols.includes(currentVal) ? [currentVal, ...cols] : cols;
+                sel.innerHTML = `<option value="">-- Ninguno --</option>` + allOptions.map(c => `<option value="${c}">${c}</option>`).join('');
+                sel.value = currentVal || '';
+            }
+        }
+
+        function setOrderStatusFilter(status) {
+            const sel = document.getElementById('filterOrderStatus');
+            if (sel) {
+                sel.value = (sel.value === status) ? 'ALL' : status;
+                renderOrders();
+            }
+        }
+
+        function renderOrders() {
+            const list = document.getElementById('ordersList');
+            const filter = document.getElementById('filterOrderStatus').value;
+            const search = document.getElementById('searchOrder').value.toLowerCase();
+            list.innerHTML = '';
+
+            let rev = 0, paid = 0, bal = 0;
+            let countNew = 0, countPrinted = 0, countToCollect = 0, countCollected = 0;
+
+            orders.forEach(o => {
+                rev += Number(o.total || 0);
+                paid += Number(o.paid || 0);
+                bal += Math.max(0, Number(o.total || 0) - Number(o.paid || 0));
+                if (o.status === 'Pedido nuevo') countNew++;
+                else if (o.status === 'Impreso') countPrinted++;
+                else if (o.status === 'Por cobrar') countToCollect++;
+                else if (o.status === 'Cobrado') countCollected++;
+            });
+
+            document.getElementById('statTotalRevenue').textContent = `$${rev.toFixed(2)}`;
+            document.getElementById('statTotalPaid').textContent = `$${paid.toFixed(2)}`;
+            document.getElementById('statTotalBalance').textContent = `$${bal.toFixed(2)}`;
+
+            document.getElementById('stageCountNew').textContent = countNew;
+            document.getElementById('stageCountPrinted').textContent = countPrinted;
+            document.getElementById('stageCountToCollect').textContent = countToCollect;
+            document.getElementById('stageCountCollected').textContent = countCollected;
+
+            const filtered = orders.filter(o => {
+                const matchStatus = filter === 'ALL' || o.status === filter;
+                const colsText = (o.colors || []).join(' ').toLowerCase();
+                const notesText = (o.notes || '').toLowerCase();
+                const matchSearch = (o.client || '').toLowerCase().includes(search) ||
+                                    (o.productName || '').toLowerCase().includes(search) ||
+                                    colsText.includes(search) ||
+                                    notesText.includes(search);
+                return matchStatus && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-8 text-center text-xs text-slate-400">No hay pedidos en esta vista.</div>`;
+                return;
+            }
+
+            const statusColors = {
+                'Pedido nuevo': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+                'Impreso': 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+                'Por cobrar': 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+                'Cobrado': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+            };
+
+            const nextStepConfig = {
+                'Pedido nuevo': { next: 'Impreso', label: 'Marcar Impreso', btnClass: 'bg-sky-600/20 hover:bg-sky-600/35 text-sky-300 border border-sky-500/40' },
+                'Impreso': { next: 'Por cobrar', label: 'Pasar a Por cobrar', btnClass: 'bg-purple-600/20 hover:bg-purple-600/35 text-purple-300 border border-purple-500/40' },
+                'Por cobrar': { next: 'Cobrado', label: 'Marcar Cobrado y Cerrar', btnClass: 'bg-emerald-600/20 hover:bg-emerald-600/35 text-emerald-300 border border-emerald-500/40' }
+            };
+
+            filtered.forEach(o => {
+                const balance = Math.max(0, Number(o.total) - Number(o.paid));
+                const activeCols = (o.colors || []).filter(Boolean);
+                const colorBadges = activeCols.length
+                    ? activeCols.map(c => `<span class="text-[10px] bg-slate-800 border border-slate-700 text-slate-200 px-2 py-0.5 rounded-md">${c}</span>`).join('')
+                    : `<span class="text-[10px] text-slate-500">Sin color asignado</span>`;
+
+                const isLocked = o.status === 'Cobrado';
+                const nextStep = nextStepConfig[o.status];
+
+                const footerControls = isLocked
+                    ? `<div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+                            <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold">
+                                <i data-lucide="lock" class="w-3.5 h-3.5"></i> Pedido cerrado y cobrado
+                            </span>
+                            <span class="text-[11px] text-slate-500">No modificable</span>
                        </div>`
-                    : '';
+                    : `<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 text-xs">
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="editOrder('${o.id}')" class="text-slate-300 hover:text-white">Editar</button>
+                                <button type="button" onclick="deleteOrder('${o.id}')" class="text-rose-400 hover:underline">Eliminar</button>
+                            </div>
+                            ${nextStep ? `<button type="button" onclick="advanceOrderStatus('${o.id}')" class="${nextStep.btnClass} px-2.5 py-1 rounded-lg text-[11px] font-semibold transition">${nextStep.label} →</button>` : ''}
+                       </div>`;
 
                 const card = document.createElement('div');
-                card.className = 'bg-dark-900 border border-slate-800 hover:border-brand-500/50 rounded-2xl overflow-hidden flex flex-col shadow-lg transition';
+                card.className = `bg-dark-900 border ${isLocked ? 'border-emerald-900/50' : 'border-slate-800'} rounded-2xl p-4 space-y-3`;
                 card.innerHTML = `
-                    <div class="h-48 bg-slate-800 relative overflow-hidden">
-                        <img id="prodSlideImg_${p.id}" src="${imgs[slideIdx]}" alt="${p.name}" onerror="this.src='${FALLBACK_IMG}'" class="w-full h-full object-cover">
-                        <span class="absolute top-3 left-3 bg-slate-950/80 text-brand-300 border border-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-full">
-                            ${p.category || 'Atel home'} • ${p.filament || 'PLA'}
-                        </span>
-                        ${carouselHtml}
+                    <div class="flex justify-between items-start gap-2">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">${o.client}</h4>
+                            <p class="text-xs text-brand-400 font-medium">${o.productName} (${o.qty} u.)</p>
+                        </div>
+                        <span class="text-[11px] px-2.5 py-0.5 rounded-full border font-semibold whitespace-nowrap ${statusColors[o.status] || statusColors['Pedido nuevo']}">${o.status}</span>
                     </div>
-                    <div class="p-4 flex-1 flex flex-col justify-between space-y-4">
-                        <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="text-[10px] font-bold bg-brand-600/20 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-md">${o.filament || 'PLA'}</span>
+                        ${colorBadges}
+                    </div>
+                    ${o.notes ? `<p class="text-xs text-slate-400 bg-slate-800/50 p-2 rounded-lg">${o.notes}</p>` : ''}
+                    <div class="flex justify-between text-xs text-slate-300 pt-1">
+                        <span>Total: <b>$${Number(o.total).toFixed(2)}</b></span>
+                        <span>Cobrado: <b class="text-emerald-400">$${Number(o.paid).toFixed(2)}</b></span>
+                        <span>Saldo: <b class="${balance > 0 ? 'text-amber-400' : 'text-slate-400'}">$${balance.toFixed(2)}</b></span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 flex items-center justify-between">
+                        <span>Entrega: ${o.deliveryDate || 'Sin fecha'}</span>
+                        ${o.contact ? `<span>Tel: ${o.contact}</span>` : ''}
+                    </div>
+                    ${footerControls}
+                `;
+                list.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function advanceOrderStatus(id) {
+            const o = orders.find(x => x.id === id);
+            if (!o) return;
+            if (o.status === 'Cobrado') {
+                alert('Este pedido ya está en estado Cobrado y no puede modificarse.');
+                return;
+            }
+            if (o.status === 'Pedido nuevo') {
+                o.status = 'Impreso';
+            } else if (o.status === 'Impreso') {
+                o.status = 'Por cobrar';
+            } else if (o.status === 'Por cobrar') {
+                if (!confirm(`¿Confirmas que el pedido de ${o.client} por $${Number(o.total).toFixed(2)} ya fue cobrado?\n\nUna vez marcado como "Cobrado", el pedido quedará bloqueado y no se podrá volver a modificar.`)) {
+                    return;
+                }
+                o.paid = Number(o.total || 0);
+                o.status = 'Cobrado';
+            }
+            saveData();
+            renderOrders();
+        }
+
+        function openOrderModal() {
+            document.getElementById('orderModalTitle').textContent = 'Nuevo Pedido';
+            document.getElementById('ordId').value = '';
+            document.getElementById('ordClient').value = '';
+            document.getElementById('ordContact').value = '';
+            document.getElementById('ordProduct').value = '';
+            document.getElementById('ordFilament').value = 'PLA';
+            updateOrderColorDropdowns(['', '', '', '']);
+            document.getElementById('ordQty').value = 1;
+            document.getElementById('ordTotal').value = '';
+            document.getElementById('ordPaid').value = 0;
+            document.getElementById('ordStatus').value = 'Pedido nuevo';
+            document.getElementById('ordNotes').value = '';
+            document.getElementById('ordDate').value = new Date().toISOString().split('T')[0];
+
+            const sel = document.getElementById('ordCatalogSelect');
+            sel.innerHTML = `<option value="">-- Personalizado --</option>` + products.map(p => `<option value="${p.id}">${p.name} ($${Number(p.basePrice).toFixed(2)} c/u)</option>`).join('');
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        function onOrderProductSelect() {
+            const prodId = document.getElementById('ordCatalogSelect').value;
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            document.getElementById('ordProduct').value = prod.name;
+            document.getElementById('ordFilament').value = prod.filament || 'PLA';
+            updateOrderColorDropdowns(prod.colors || ['', '', '', '']);
+            onOrderQtyOrPriceChange();
+        }
+
+        function onOrderQtyOrPriceChange() {
+            const prodId = document.getElementById('ordCatalogSelect').value;
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            const q = Math.max(1, parseInt(document.getElementById('ordQty').value) || 1);
+            let total = q * prod.basePrice;
+            if (prod.packs && prod.packs.length > 0) {
+                const exactPack = prod.packs.find(pk => parseInt(pk.qty) === q);
+                if (exactPack) {
+                    total = parseFloat(exactPack.price);
+                } else if (q === 6) {
+                    total = prod.pack6Price;
+                } else if (q > 6) {
+                    total = prod.pack6Price + ((q - 6) * prod.extraUnitPrice);
+                }
+            } else {
+                if (q === 6) total = prod.pack6Price;
+                else if (q > 6) total = prod.pack6Price + ((q - 6) * prod.extraUnitPrice);
+            }
+            document.getElementById('ordTotal').value = total.toFixed(2);
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+
+        function saveOrder(e) {
+            e.preventDefault();
+            const id = document.getElementById('ordId').value;
+            if (id) {
+                const existing = orders.find(x => x.id === id);
+                if (existing && existing.status === 'Cobrado') {
+                    alert('Este pedido ya está en estado Cobrado y no puede modificarse.');
+                    closeOrderModal();
+                    return;
+                }
+            }
+
+            const selectedStatus = document.getElementById('ordStatus').value;
+            const totalVal = parseFloat(document.getElementById('ordTotal').value) || 0;
+            let paidVal = parseFloat(document.getElementById('ordPaid').value) || 0;
+
+            if (selectedStatus === 'Cobrado') {
+                if (!confirm(`¿Confirmas guardar el pedido de ${document.getElementById('ordClient').value.trim()} como "Cobrado"?\n\nUna vez cobrado quedará bloqueado y no se podrá modificar más.`)) {
+                    return;
+                }
+                paidVal = totalVal;
+            }
+
+            const obj = {
+                id: id || 'ord_' + Date.now(),
+                client: document.getElementById('ordClient').value.trim(),
+                contact: document.getElementById('ordContact').value.trim(),
+                productId: document.getElementById('ordCatalogSelect').value,
+                productName: document.getElementById('ordProduct').value.trim(),
+                filament: document.getElementById('ordFilament').value,
+                colors: [
+                    document.getElementById('ordColor_0').value,
+                    document.getElementById('ordColor_1').value,
+                    document.getElementById('ordColor_2').value,
+                    document.getElementById('ordColor_3').value
+                ],
+                qty: parseInt(document.getElementById('ordQty').value) || 1,
+                total: totalVal,
+                paid: paidVal,
+                deliveryDate: document.getElementById('ordDate').value,
+                status: selectedStatus,
+                notes: document.getElementById('ordNotes').value.trim()
+            };
+            if (id) {
+                const idx = orders.findIndex(x => x.id === id);
+                if (idx >= 0) orders[idx] = obj;
+            } else {
+                orders.unshift(obj);
+            }
+            saveData();
+            renderOrders();
+            closeOrderModal();
+        }
+
+        function editOrder(id) {
+            const o = orders.find(x => x.id === id);
+            if (!o) return;
+            if (o.status === 'Cobrado') {
+                alert('Este pedido ya está en estado Cobrado y no puede modificarse.');
+                return;
+            }
+            openOrderModal();
+            document.getElementById('orderModalTitle').textContent = 'Editar Pedido';
+            document.getElementById('ordId').value = o.id;
+            document.getElementById('ordClient').value = o.client;
+            document.getElementById('ordContact').value = o.contact || '';
+            document.getElementById('ordCatalogSelect').value = o.productId || '';
+            document.getElementById('ordProduct').value = o.productName;
+            document.getElementById('ordFilament').value = o.filament || 'PLA';
+            updateOrderColorDropdowns(o.colors || ['', '', '', '']);
+            document.getElementById('ordQty').value = o.qty;
+            document.getElementById('ordTotal').value = o.total;
+            document.getElementById('ordPaid').value = o.paid;
+            document.getElementById('ordDate').value = o.deliveryDate;
+            document.getElementById('ordStatus').value = o.status;
+            document.getElementById('ordNotes').value = o.notes || '';
+        }
+
+        function deleteOrder(id) {
+            const o = orders.find(x => x.id === id);
+            if (o && o.status === 'Cobrado') {
+                alert('Este pedido ya está en estado Cobrado y no puede eliminarse ni modificarse.');
+                return;
+            }
+            if (!confirm('¿Eliminar este pedido?')) return;
+            orders = orders.filter(x => x.id !== id);
+            saveData();
+            renderOrders();
+        }
+
+        function exportOrdersCSV() {
+            const headers = ['Cliente', 'Contacto', 'Producto', 'Cantidad', 'Color', 'Filamento', 'Notas', 'Fecha de entrega', 'Precio', 'Anticipo', 'Saldo', 'Estado'];
+            const rows = orders.map(o => {
+                const cols = (o.colors || []).filter(Boolean).join(', ');
+                const bal = Math.max(0, Number(o.total || 0) - Number(o.paid || 0)).toFixed(2);
+                return [
+                    o.client || '',
+                    o.contact || '',
+                    o.productName || '',
+                    o.qty || 1,
+                    cols,
+                    o.filament || 'PLA',
+                    (o.notes || '').replace(/\n/g, ' '),
+                    o.deliveryDate || '',
+                    Number(o.total || 0).toFixed(2),
+                    Number(o.paid || 0).toFixed(2),
+                    bal,
+                    o.status || ''
+                ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+            });
+            const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pedidos-3d-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ================= FILAMENTOS =================
+        function renderFilaments() {
+            const grid = document.getElementById('filamentsGrid');
+            grid.innerHTML = '';
+            filaments.forEach(f => {
+                const pct = Math.min(100, Math.round((f.grams / 1000) * 100));
+                const card = document.createElement('div');
+                card.className = 'bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-brand-400">${f.type}</span>
+                            <h4 class="font-bold text-white text-sm">${f.color}</h4>
+                        </div>
+                        <span class="text-xs text-slate-400">$${Number(f.cost).toFixed(2)}/kg</span>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-400">Disponible:</span>
+                            <span class="font-bold text-white">${f.grams}g (${pct}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-brand-500 h-full" style="width:${pct}%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-800 text-xs">
+                        <button type="button" onclick="consumeFilament('${f.id}', 50)" class="text-slate-300 hover:text-brand-400">-50g uso</button>
+                        <div class="space-x-2">
+                            <button type="button" onclick="editFilament('${f.id}')" class="text-slate-400 hover:text-white">Editar</button>
+                            <button type="button" onclick="deleteFilament('${f.id}')" class="text-rose-400 hover:underline">Borrar</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openFilamentModal() {
+            document.getElementById('filId').value = '';
+            document.getElementById('filType').value = 'PLA';
+            document.getElementById('filColor').value = '';
+            document.getElementById('filGrams').value = 1000;
+            document.getElementById('filCost').value = 22;
+            document.getElementById('filamentModal').classList.remove('hidden');
+        }
+
+        function closeFilamentModal() {
+            document.getElementById('filamentModal').classList.add('hidden');
+        }
+
+        function saveFilament(e) {
+            e.preventDefault();
+            const id = document.getElementById('filId').value;
+            const obj = {
+                id: id || 'fil_' + Date.now(),
+                type: document.getElementById('filType').value,
+                color: document.getElementById('filColor').value.trim(),
+                grams: parseFloat(document.getElementById('filGrams').value) || 0,
+                cost: parseFloat(document.getElementById('filCost').value) || 22
+            };
+            if (id) {
+                const idx = filaments.findIndex(x => x.id === id);
+                if (idx >= 0) filaments[idx] = obj;
+            } else {
+                filaments.push(obj);
+            }
+            saveData({ pushOrders: false });
+            populateQuoteFilaments();
+            renderFilaments();
+            closeFilamentModal();
+        }
+
+        function editFilament(id) {
+            const f = filaments.find(x => x.id === id);
+            if (!f) return;
+            document.getElementById('filId').value = f.id;
+            document.getElementById('filType').value = f.type;
+            document.getElementById('filColor').value = f.color;
+            document.getElementById('filGrams').value = f.grams;
+            document.getElementById('filCost').value = f.cost;
+            document.getElementById('filamentModal').classList.remove('hidden');
+        }
+
+        function consumeFilament(id, amount) {
+            const f = filaments.find(x => x.id === id);
+            if (!f) return;
+            f.grams = Math.max(0, f.grams - amount);
+            saveData({ pushOrders: false });
+            populateQuoteFilaments();
+            renderFilaments();
+        }
+
+        function deleteFilament(id) {
+            if (!confirm('¿Eliminar este rollo?')) return;
+            filaments = filaments.filter(x => x.id !== id);
+            saveData({ pushOrders: false });
+            populateQuoteFilaments();
+            renderFilaments();
+        }
+
+        // ================= INVENTARIO DE PRODUCTOS =================
+        function renderInventoryProducts() {
+            const grid = document.getElementById('inventoryProductsGrid');
+            if (!grid) return;
+
+            const search = (document.getElementById('searchInventoryProduct')?.value || '').toLowerCase().trim();
+            let totalUnits = 0;
+            let lowStockSkus = 0;
+
+            products.forEach(p => {
+                const st = Math.max(0, parseInt(p.stock) || 0);
+                totalUnits += st;
+                if (st <= 3) lowStockSkus++;
+            });
+
+            document.getElementById('invProdTotalSkus').textContent = products.length;
+            document.getElementById('invProdTotalUnits').textContent = `${totalUnits} u.`;
+            document.getElementById('invProdLowStock').textContent = lowStockSkus;
+
+            const filtered = products.filter(p => {
+                const cols = (p.colors || []).join(' ').toLowerCase();
+                return (p.name || '').toLowerCase().includes(search) ||
+                       (p.category || '').toLowerCase().includes(search) ||
+                       cols.includes(search);
+            });
+
+            grid.innerHTML = '';
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-400">No se encontraron productos en el inventario.</div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const st = Math.max(0, parseInt(p.stock) || 0);
+                const imgs = getAdminProductImages(p);
+                const statusBadge = st === 0
+                    ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">Agotado</span>`
+                    : st <= 3
+                        ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Stock bajo</span>`
+                        : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Disponible</span>`;
+
+                const card = document.createElement('div');
+                card.className = 'bg-dark-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3';
+                card.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <img src="${imgs[0]}" alt="${p.name}" onerror="this.src='${FALLBACK_IMG}'" class="w-14 h-14 rounded-xl object-cover bg-slate-800 border border-slate-700 shrink-0">
+                        <div class="min-w-0 flex-1">
                             <div class="flex items-start justify-between gap-2">
-                                <h3 class="font-bold text-white text-base leading-snug">${p.name}</h3>
-                                <span id="unitPriceBadge_${p.id}" class="text-sm font-extrabold text-brand-400 whitespace-nowrap">$${Number(p.basePrice).toFixed(2)} <span class="text-[10px] font-normal text-slate-400">c/u</span></span>
+                                <h4 class="font-bold text-white text-sm truncate">${p.name}</h4>
+                                ${statusBadge}
                             </div>
-                            ${p.description ? `<p class="text-[11px] text-slate-400 leading-relaxed">${p.description}</p>` : ''}
-                            <div class="flex flex-wrap gap-1.5 pt-0.5">${packsChips}</div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">${p.category || 'Atel home'} • ${p.filament || 'PLA'}</p>
+                            <p class="text-xs text-brand-400 font-bold mt-1">Stock: <span class="text-white text-sm">${st} u.</span> <span class="text-[11px] font-normal text-slate-400">($${Number(p.basePrice || 0).toFixed(2)} base)</span></p>
                         </div>
+                    </div>
 
-                        <div class="space-y-2.5 pt-2 border-t border-slate-800 text-xs">
-                            <div class="grid grid-cols-2 gap-2">
-                                ${colorSelectorsHtml}
-                                <div class="${colCount % 2 === 1 ? '' : 'col-span-2'}">
-                                    <label class="block text-[10px] text-slate-400 mb-0.5">Cantidad</label>
-                                    <input type="number" id="qty_${p.id}" value="1" min="1" oninput="updateCardPricePreview('${p.id}')" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" onclick="addToCart('${p.id}')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 px-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-1 shadow-md shadow-brand-600/20">
-                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                    <span>Agregar</span>
-                                </button>
-                                <button type="button" onclick="orderSingleOnWhatsApp('${p.id}')" class="w-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 font-semibold py-2.5 px-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-1">
-                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                                    <span>Pedir ya</span>
-                                </button>
-                            </div>
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800 text-xs">
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="adjustProductStock('${p.id}', -1)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white w-7 h-7 rounded-lg font-bold transition" title="Restar 1 unidad">-1</button>
+                            <button type="button" onclick="adjustProductStock('${p.id}', 1)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white w-7 h-7 rounded-lg font-bold transition" title="Sumar 1 unidad">+1</button>
+                            <button type="button" onclick="adjustProductStock('${p.id}', 5)" class="bg-brand-600/20 hover:bg-brand-600/35 border border-brand-500/30 text-brand-300 px-2 h-7 rounded-lg font-semibold transition" title="Sumar 5 unidades">+5</button>
                         </div>
+                        <button type="button" onclick="editProduct('${p.id}')" class="text-slate-300 hover:text-white font-medium">Editar / Stock</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -485,268 +1739,315 @@
             lucide.createIcons();
         }
 
-        window.selectPackQty = function(prodId, qty) {
-            const qtyInput = document.getElementById(`qty_${prodId}`);
-            if (qtyInput) {
-                qtyInput.value = qty;
-                updateCardPricePreview(prodId);
-            }
-        };
-
-        window.updateCardPricePreview = function(prodId) {
+        function adjustProductStock(prodId, delta) {
             const p = products.find(x => x.id === prodId);
-            const qtyInput = document.getElementById(`qty_${prodId}`);
-            const badge = document.getElementById(`unitPriceBadge_${prodId}`);
-            if (!p || !qtyInput || !badge) return;
-            const q = Math.max(1, parseInt(qtyInput.value) || 1);
-            const unit = computeUnitPrice(p, q);
-            badge.innerHTML = `$${unit.toFixed(2)} <span class="text-[10px] font-normal text-slate-400">c/u</span>`;
-        };
-
-        function getSelectedColorsForProduct(prod) {
-            const colCount = Math.max(1, Math.min(4, parseInt(prod.colorCount) || ((prod.colors || []).filter(Boolean).length || 2)));
-            const chosen = [];
-            for (let i = 0; i < colCount; i++) {
-                const el = document.getElementById(`colorSel_${prod.id}_${i}`);
-                if (el && el.value) chosen.push(el.value);
-            }
-            return chosen;
+            if (!p) return;
+            p.stock = Math.max(0, (parseInt(p.stock) || 0) + Number(delta));
+            saveData({ pushOrders: false });
+            renderInventoryProducts();
+            renderAdminCatalog();
         }
 
-        function calculateLineSubtotal(prod, qty) {
-            const q = Math.max(1, parseInt(qty) || 1);
-            if (prod.packs && prod.packs.length > 0) {
-                const exactPack = prod.packs.find(pk => parseInt(pk.qty) === q);
-                if (exactPack) return parseFloat(exactPack.price);
-                const sortedPacks = [...prod.packs].sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
-                const lowerPack = sortedPacks.filter(pk => parseInt(pk.qty) < q).pop();
-                if (lowerPack) {
-                    const basePackQty = parseInt(lowerPack.qty);
-                    const basePackPrice = parseFloat(lowerPack.price);
-                    const extraPrice = parseFloat(prod.extraUnitPrice) || (basePackPrice / basePackQty);
-                    return basePackPrice + ((q - basePackQty) * extraPrice);
-                }
+        // ================= CATÁLOGO WEB (ADMIN) =================
+        function loadStoreSettingsUI() {
+            document.getElementById('cfgStoreWhatsapp').value = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
+            document.getElementById('cfgStoreBadge').value = storeConfig.badge || defaultStoreConfig.badge;
+            document.getElementById('cfgStoreAbout').value = storeConfig.about || defaultStoreConfig.about;
+        }
+
+        function saveStoreSettings() {
+            storeConfig = {
+                whatsapp: document.getElementById('cfgStoreWhatsapp').value.trim() || defaultStoreConfig.whatsapp,
+                badge: document.getElementById('cfgStoreBadge').value.trim() || defaultStoreConfig.badge,
+                about: document.getElementById('cfgStoreAbout').value.trim() || defaultStoreConfig.about
+            };
+            saveData({ pushOrders: false });
+            alert('Configuración de la tienda pública guardada y sincronizada.');
+        }
+
+        function getAdminProductImages(p) {
+            const arr = Array.isArray(p.images) ? p.images.filter(u => u && u.trim()) : [];
+            if (arr.length) return arr.slice(0, 3);
+            if (p.image && p.image.trim()) return [p.image.trim()];
+            return [FALLBACK_IMG];
+        }
+
+        function renderAdminCatalog() {
+            const grid = document.getElementById('adminProductsGrid');
+            grid.innerHTML = '';
+            products.forEach(p => {
+                const imgs = getAdminProductImages(p);
+                const colCount = Math.max(1, Math.min(4, parseInt(p.colorCount) || ((p.colors || []).filter(Boolean).length || 2)));
+                const activeCols = (p.colors || []).slice(0, colCount).filter(Boolean).join(', ') || 'Según inventario';
+                const packsText = (p.packs && p.packs.length)
+                    ? p.packs.map(pk => `${pk.qty}u: $${Number(pk.price).toFixed(2)}`).join(' | ')
+                    : `Set 6u: $${Number(p.pack6Price).toFixed(2)}`;
+
+                const card = document.createElement('div');
+                card.className = 'bg-dark-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col';
+                card.innerHTML = `
+                    <div class="h-40 bg-slate-800 relative">
+                        <img src="${imgs[0]}" alt="${p.name}" onerror="this.src='${FALLBACK_IMG}'" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full font-semibold ${p.featured !== false ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-slate-300'}">
+                            ${p.featured !== false ? 'Visible en Web' : 'Oculto'}
+                        </span>
+                        <span class="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-950/85 text-amber-300 border border-slate-700">
+                            Stock: ${Math.max(0, parseInt(p.stock) || 0)} u.
+                        </span>
+                        <span class="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 rounded-md font-bold bg-brand-600 text-white">
+                            ${p.category || 'Atel home'}
+                        </span>
+                        <span class="absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-950/80 text-slate-200 border border-slate-700">
+                            ${imgs.length} foto(s) • ${colCount} col.
+                        </span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">${p.filament || 'PLA'} • ${activeCols}</p>
+                            <p class="text-xs text-brand-400 font-semibold mt-1">1u: $${Number(p.basePrice).toFixed(2)} • ${packsText}</p>
+                        </div>
+                        <div class="flex justify-between pt-2 border-t border-slate-800 text-xs">
+                            <button type="button" onclick="editProduct('${p.id}')" class="text-slate-300 hover:text-white">Editar</button>
+                            <button type="button" onclick="deleteProduct('${p.id}')" class="text-rose-400 hover:underline">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleProdColorFields() {
+            const count = Math.max(1, Math.min(4, parseInt(document.getElementById('prodColorCount').value) || 2));
+            for (let i = 0; i < 4; i++) {
+                const field = document.getElementById(`prodColorField_${i}`);
+                if (field) field.classList.toggle('hidden', i >= count);
+            }
+        }
+
+        function updateProdColorDropdowns(presetColors = null) {
+            const mat = document.getElementById('prodFilament').value || 'PLA';
+            const cols = getInventoryColorsForMaterial(mat);
+            for (let i = 0; i < 4; i++) {
+                const sel = document.getElementById(`prodColor_${i}`);
+                if (!sel) continue;
+                const currentVal = presetColors ? (presetColors[i] || '') : sel.value;
+                const allOptions = currentVal && !cols.includes(currentVal) ? [currentVal, ...cols] : cols;
+                sel.innerHTML = `<option value="">-- Según cliente --</option>` + allOptions.map(c => `<option value="${c}">${c}</option>`).join('');
+                sel.value = currentVal || '';
+            }
+        }
+
+        function addPackRow(qty = '', price = '') {
+            const container = document.getElementById('prodPacksContainer');
+            const row = document.createElement('div');
+            row.className = 'pack-row grid grid-cols-12 gap-2 items-center';
+            row.innerHTML = `
+                <div class="col-span-5">
+                    <input type="number" min="1" step="1" placeholder="Unidades (ej. 6)" value="${qty}" class="pack-qty w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                </div>
+                <div class="col-span-5">
+                    <input type="number" min="0" step="0.01" placeholder="Precio Set ($)" value="${price}" class="pack-price w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                </div>
+                <div class="col-span-2 text-right">
+                    <button type="button" onclick="this.closest('.pack-row').remove()" class="text-rose-400 hover:text-rose-300 text-xs px-2 py-1">✕</button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        function setPhotoPreviewUI(idx, url) {
+            const prev = document.getElementById(`prodImgPreview_${idx}`);
+            if (!prev) return;
+            if (url && url.trim()) {
+                prev.src = url.trim();
+                prev.classList.remove('opacity-40');
             } else {
-                if (q === 6) return Number(prod.pack6Price);
-                if (q > 6) return Number(prod.pack6Price) + ((q - 6) * Number(prod.extraUnitPrice));
+                prev.src = FALLBACK_IMG;
+                prev.classList.add('opacity-40');
             }
-            return q * Number(prod.basePrice);
         }
 
-        function saveCart() {
-            localStorage.setItem('atel_cart', JSON.stringify(cart));
-            updateCartBadge();
+        function syncPreviewFromUrl(idx) {
+            const val = document.getElementById(`prodImage_${idx}`).value;
+            setPhotoPreviewUI(idx, val);
         }
 
-        function updateCartBadge() {
-            const totalItems = cart.reduce((acc, item) => acc + (parseInt(item.qty) || 1), 0);
-            const badge = document.getElementById('cartBadge');
-            if (badge) badge.textContent = totalItems;
+        function clearProductPhoto(idx) {
+            document.getElementById(`prodImage_${idx}`).value = '';
+            setPhotoPreviewUI(idx, '');
         }
 
-        function addToCart(prodId) {
-            const p = products.find(x => x.id === prodId);
-            if (!p) return;
-            const qty = Math.max(1, parseInt(document.getElementById(`qty_${prodId}`).value) || 1);
-            const chosenColors = getSelectedColorsForProduct(p);
-            const subtotal = calculateLineSubtotal(p, qty);
+        function handleProductPhotoUpload(idx, inputEl) {
+            const file = inputEl.files && inputEl.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxDim = 640;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.78);
+                    document.getElementById(`prodImage_${idx}`).value = compressedDataUrl;
+                    setPhotoPreviewUI(idx, compressedDataUrl);
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
 
-            cart.push({
-                cartItemId: 'ci_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                productId: p.id,
-                productName: p.name,
-                filament: p.filament || 'PLA',
-                colors: chosenColors,
-                qty,
-                subtotal
+        function openProductModal() {
+            document.getElementById('prodModalTitle').textContent = 'Nuevo Producto del Catálogo';
+            document.getElementById('prodId').value = '';
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodStock').value = 10;
+            document.getElementById('prodCategory').value = 'Atel home';
+            document.getElementById('prodFilament').value = 'PLA';
+            document.getElementById('prodColorCount').value = '2';
+            document.getElementById('prodDescription').value = '';
+            toggleProdColorFields();
+            updateProdColorDropdowns(['Rojo', 'Blanco', '', '']);
+            ['Color 1', 'Color 2', 'Color 3', 'Color 4'].forEach((lbl, idx) => {
+                const el = document.getElementById(`prodColorLabel_${idx}`);
+                if (el) el.value = lbl;
             });
-            saveCart();
-            openCartModal();
-        }
-
-        function orderSingleOnWhatsApp(prodId) {
-            const p = products.find(x => x.id === prodId);
-            if (!p) return;
-            const qty = Math.max(1, parseInt(document.getElementById(`qty_${prodId}`).value) || 1);
-            const chosenColors = getSelectedColorsForProduct(p);
-            const total = calculateLineSubtotal(p, qty);
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-
-            recordPendingOrderAlert({
-                client: 'Cliente WhatsApp',
-                contact: '',
-                productId: p.id,
-                productName: p.name,
-                filament: p.filament || 'PLA',
-                colors: [chosenColors[0] || '', chosenColors[1] || '', chosenColors[2] || '', chosenColors[3] || ''],
-                qty,
-                total,
-                source: 'WhatsApp directo'
-            });
-
-            const colorText = chosenColors.length ? chosenColors.join(', ') : 'Por definir';
-            const msg = `Hola ATEL 3D! Quisiera pedir:\n• Producto: ${p.name}\n• Cantidad: ${qty} u.\n• Colores: ${colorText} (${p.filament || 'PLA'})\n• Subtotal estimado: $${total.toFixed(2)}`;
-            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function openCartModal() {
-            renderCartItems();
-            document.getElementById('cartModal').classList.remove('hidden');
+            document.getElementById('prodBasePrice').value = 2.00;
+            document.getElementById('prodPack6').value = 9.50;
+            document.getElementById('prodExtraUnit').value = 0.625;
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`prodImage_${i}`).value = '';
+                setPhotoPreviewUI(i, '');
+            }
+            document.getElementById('prodFeatured').checked = true;
+            document.getElementById('prodPacksContainer').innerHTML = '';
+            addPackRow(6, 9.50);
+            document.getElementById('productModal').classList.remove('hidden');
             lucide.createIcons();
         }
 
-        function closeCartModal() {
-            document.getElementById('cartModal').classList.add('hidden');
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
         }
 
-        function renderCartItems() {
-            const container = document.getElementById('cartItemsContainer');
-            const checkoutForm = document.getElementById('cartCheckoutForm');
-            const grandTotalEl = document.getElementById('cartGrandTotal');
-
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="bg-slate-800/50 border border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-400">Tu carrito está vacío. Agrega productos desde el catálogo para armar tu pedido.</div>`;
-                checkoutForm.classList.add('hidden');
-                grandTotalEl.textContent = '$0.00';
-                return;
-            }
-
-            checkoutForm.classList.remove('hidden');
-            let grandTotal = 0;
-
-            container.innerHTML = cart.map((item, idx) => {
-                grandTotal += Number(item.subtotal || 0);
-                const colStr = (item.colors || []).filter(Boolean).join(', ') || 'Por definir';
-                return `
-                    <div class="bg-slate-800/70 border border-slate-700/70 rounded-xl p-3 flex items-center justify-between gap-3 text-xs">
-                        <div class="space-y-0.5">
-                            <p class="font-bold text-white text-sm">${item.productName}</p>
-                            <p class="text-slate-300">Cantidad: <b>${item.qty} u.</b> • Colores: <b class="text-brand-300">${colStr}</b> (${item.filament})</p>
-                            <p class="text-emerald-400 font-bold">Subtotal: $${Number(item.subtotal || 0).toFixed(2)}</p>
-                        </div>
-                        <button type="button" onclick="removeCartItem(${idx})" class="text-rose-400 hover:text-rose-300 px-2 py-1 rounded-lg bg-slate-900/70">Quitar</button>
-                    </div>
-                `;
-            }).join('');
-
-            grandTotalEl.textContent = `$${grandTotal.toFixed(2)}`;
-        }
-
-        function removeCartItem(idx) {
-            cart.splice(idx, 1);
-            saveCart();
-            renderCartItems();
-        }
-
-        function clearCart() {
-            cart = [];
-            saveCart();
-            renderCartItems();
-        }
-
-        function submitCartOrder() {
-            if (cart.length === 0) return;
-            const clientName = document.getElementById('cartClientName').value.trim();
-            if (!clientName) {
-                alert('Por favor ingresa tu nombre para registrar el pedido.');
-                document.getElementById('cartClientName').focus();
-                return;
-            }
-            const clientPhone = document.getElementById('cartClientPhone').value.trim();
-            const generalNotes = document.getElementById('cartGeneralNotes').value.trim();
-
-            const grandTotal = cart.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
-            const totalQty = cart.reduce((acc, item) => acc + (parseInt(item.qty) || 1), 0);
-            const summaryNames = cart.map(i => `${i.productName} (${i.qty}u)`).join(' + ');
-            const allColors = [...new Set(cart.flatMap(i => i.colors || []).filter(Boolean))];
-            const detailLines = cart.map(i => {
-                const cStr = (i.colors || []).filter(Boolean).join(', ') || 'Por definir';
-                return `• ${i.productName} — ${i.qty} u. | Colores: ${cStr} | $${Number(i.subtotal || 0).toFixed(2)}`;
-            }).join('\n');
-
-            recordPendingOrderAlert({
-                client: clientName,
-                contact: clientPhone,
-                productId: cart[0].productId || '',
-                productName: summaryNames,
-                filament: cart[0].filament || 'PLA',
-                colors: [allColors[0] || '', allColors[1] || '', allColors[2] || '', allColors[3] || ''],
-                qty: totalQty,
-                total: grandTotal,
-                notes: [detailLines, generalNotes ? `Notas: ${generalNotes}` : ''].filter(Boolean).join('\n'),
-                source: 'Carrito Web'
-            });
-
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-            let msg = `Hola ATEL 3D! Quiero realizar el siguiente pedido:\n\n` +
-                      `Cliente: ${clientName}\n` +
-                      (clientPhone ? `Teléfono: ${clientPhone}\n` : '') +
-                      `\nDetalle:\n${detailLines}\n` +
-                      (generalNotes ? `\nNotas / Personalización: ${generalNotes}\n` : '') +
-                      `\nTotal Estimado: $${grandTotal.toFixed(2)}`;
-
-            cart = [];
-            saveCart();
-            closeCartModal();
-            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function sendCustomWhatsApp(e) {
+        function saveProduct(e) {
             e.preventDefault();
-            const name = document.getElementById('custName').value.trim();
-            const item = document.getElementById('custItem').value.trim();
-            const qty = document.getElementById('custQty').value;
-            const color = document.getElementById('custColor').value.trim() || 'Por definir';
-            const notes = document.getElementById('custNotes').value.trim();
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-
-            recordPendingOrderAlert({
-                client: name,
-                contact: '',
-                productId: '',
-                productName: `A medida: ${item}`,
-                filament: 'PLA',
-                colors: [color, '', '', ''],
-                qty: parseInt(qty) || 1,
-                total: 0,
-                notes,
-                source: 'Pedido a medida'
+            const id = document.getElementById('prodId').value;
+            const packs = [];
+            document.querySelectorAll('#prodPacksContainer .pack-row').forEach(row => {
+                const q = parseInt(row.querySelector('.pack-qty').value);
+                const pr = parseFloat(row.querySelector('.pack-price').value);
+                if (q > 0 && pr >= 0) packs.push({ qty: q, price: pr });
             });
+            packs.sort((a, b) => a.qty - b.qty);
 
-            const msg = `Hola ATEL 3D! Quisiera cotizar un pedido a medida:\n• Nombre: ${name}\n• Proyecto: ${item}\n• Cantidad aprox.: ${qty}\n• Colores: ${color}\n• Detalles: ${notes || 'Sin detalles adicionales'}`;
-            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
+            const imagesArr = [
+                document.getElementById('prodImage_0').value.trim(),
+                document.getElementById('prodImage_1').value.trim(),
+                document.getElementById('prodImage_2').value.trim()
+            ];
+            const firstValidImg = imagesArr.find(u => u) || '';
 
-        function recordPendingOrderAlert(alertData) {
-            const pending = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-            const entry = {
-                id: 'al_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                client: alertData.client || 'Cliente Web',
-                contact: alertData.contact || '',
-                productId: alertData.productId || '',
-                productName: alertData.productName || 'Pedido Web',
-                filament: alertData.filament || 'PLA',
-                colors: alertData.colors || ['', '', '', ''],
-                qty: Number(alertData.qty) || 1,
-                total: Number(alertData.total) || 0,
-                paid: 0,
-                deliveryDate: new Date().toISOString().split('T')[0],
-                notes: alertData.notes || '',
-                source: alertData.source || 'Web',
-                createdAt: new Date().toISOString()
+            const colorCount = Math.max(1, Math.min(4, parseInt(document.getElementById('prodColorCount').value) || 2));
+            const colorLabels = [0, 1, 2, 3].map(i => document.getElementById(`prodColorLabel_${i}`).value.trim() || `Color ${i + 1}`);
+            const colorsArr = [0, 1, 2, 3].map(i => i < colorCount ? document.getElementById(`prodColor_${i}`).value : '');
+
+            const obj = {
+                id: id || 'prod_' + Date.now(),
+                name: document.getElementById('prodName').value.trim(),
+                category: document.getElementById('prodCategory').value,
+                filament: document.getElementById('prodFilament').value,
+                colorCount,
+                colorLabels,
+                colors: colorsArr,
+                description: document.getElementById('prodDescription').value.trim(),
+                stock: Math.max(0, parseInt(document.getElementById('prodStock').value) || 0),
+                basePrice: parseFloat(document.getElementById('prodBasePrice').value) || 1,
+                pack6Price: parseFloat(document.getElementById('prodPack6').value) || 5,
+                extraUnitPrice: parseFloat(document.getElementById('prodExtraUnit').value) || 0.6,
+                images: imagesArr,
+                image: firstValidImg,
+                featured: document.getElementById('prodFeatured').checked,
+                packs
             };
-            pending.unshift(entry);
-            localStorage.setItem('atel_pending_orders', JSON.stringify(pending));
-
-            if (db) {
-                db.collection('atel3d').doc('workshop').set({
-                    pendingOrders: pending,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true }).catch(() => {});
+            if (id) {
+                const idx = products.findIndex(x => x.id === id);
+                if (idx >= 0) products[idx] = obj;
+            } else {
+                products.push(obj);
             }
+            saveData({ pushOrders: false });
+            renderInventoryProducts();
+            renderAdminCatalog();
+            closeProductModal();
         }
 
-        function resolveStoreFirebaseConfig() {
+        function editProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('prodModalTitle').textContent = 'Editar Producto del Catálogo';
+            document.getElementById('prodId').value = p.id;
+            document.getElementById('prodName').value = p.name;
+            document.getElementById('prodStock').value = Math.max(0, parseInt(p.stock) || 0);
+            document.getElementById('prodCategory').value = p.category || 'Atel home';
+            document.getElementById('prodFilament').value = p.filament || 'PLA';
+            const colCount = Math.max(1, Math.min(4, parseInt(p.colorCount) || ((p.colors || []).filter(Boolean).length || 2)));
+            document.getElementById('prodColorCount').value = String(colCount);
+            document.getElementById('prodDescription').value = p.description || '';
+            toggleProdColorFields();
+            updateProdColorDropdowns(p.colors || [p.color || 'Rojo', 'Blanco', '', '']);
+            const labels = Array.isArray(p.colorLabels) && p.colorLabels.length ? p.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+            labels.forEach((lbl, idx) => {
+                const el = document.getElementById(`prodColorLabel_${idx}`);
+                if (el) el.value = lbl || `Color ${idx + 1}`;
+            });
+            document.getElementById('prodBasePrice').value = p.basePrice;
+            document.getElementById('prodPack6').value = p.pack6Price;
+            document.getElementById('prodExtraUnit').value = p.extraUnitPrice;
+
+            const imgs = Array.isArray(p.images) ? p.images : [p.image || '', '', ''];
+            for (let i = 0; i < 3; i++) {
+                const val = imgs[i] || '';
+                document.getElementById(`prodImage_${i}`).value = val;
+                setPhotoPreviewUI(i, val);
+            }
+
+            document.getElementById('prodFeatured').checked = p.featured !== false;
+            const container = document.getElementById('prodPacksContainer');
+            container.innerHTML = '';
+            if (p.packs && p.packs.length > 0) {
+                p.packs.forEach(pk => addPackRow(pk.qty, pk.price));
+            } else {
+                addPackRow(6, p.pack6Price);
+            }
+            document.getElementById('productModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function deleteProduct(id) {
+            if (!confirm('¿Eliminar este producto del catálogo?')) return;
+            products = products.filter(x => x.id !== id);
+            saveData({ pushOrders: false });
+            renderInventoryProducts();
+            renderAdminCatalog();
+        }
+
+        // ================= NUBE FIREBASE =================
+        function resolveWorkshopFirebaseConfig() {
             const rawCfg = localStorage.getItem('atel_firebase_cfg');
             if (rawCfg) {
                 const match = rawCfg.match(/\{[\s\S]*\}/);
@@ -757,33 +2058,104 @@
             return ATEL_FIREBASE_CONFIG;
         }
 
-        function initStoreFirebase() {
+        function openCloudModal() {
+            document.getElementById('firebaseConfigInput').value = localStorage.getItem('atel_firebase_cfg') || JSON.stringify(ATEL_FIREBASE_CONFIG, null, 2);
+            document.getElementById('cloudModal').classList.remove('hidden');
+        }
+
+        function closeCloudModal() {
+            document.getElementById('cloudModal').classList.add('hidden');
+        }
+
+        function changeWorkshopPassword() {
+            const np = document.getElementById('newWorkshopPass').value.trim();
+            if (np.length < 4) return alert('La contraseña debe tener al menos 4 caracteres.');
+            localStorage.setItem('atel_workshop_pass', np);
+            document.getElementById('newWorkshopPass').value = '';
+            alert('Contraseña del taller actualizada correctamente.');
+        }
+
+        function saveFirebaseConfig() {
+            const raw = document.getElementById('firebaseConfigInput').value.trim();
+            if (!raw) return;
+            localStorage.setItem('atel_firebase_cfg', raw);
+            initFirebase();
+            saveData();
+            closeCloudModal();
+        }
+
+        function initFirebase() {
             try {
-                const cfg = resolveStoreFirebaseConfig();
+                const cfg = resolveWorkshopFirebaseConfig();
                 if (!cfg || !cfg.apiKey) return;
                 if (!firebase.apps.length) firebase.initializeApp(cfg);
                 db = firebase.firestore();
+                document.getElementById('cloudDot').className = 'w-2 h-2 rounded-full bg-emerald-400';
+                document.getElementById('cloudLabel').textContent = `Nube: ${cfg.projectId || 'atel-3d'}`;
+
+                db.collection('atel3d').doc('workshop').onSnapshot((doc) => {
+                    if (!doc.exists) return;
+                    const data = doc.data();
+                    isApplyingRemote = true;
+                    try {
+                        if (Array.isArray(data.filaments) && data.filaments.length) {
+                            filaments = data.filaments;
+                            localStorage.setItem('atel_filaments', JSON.stringify(filaments));
+                            syncAvailableColorsToStore();
+                            populateQuoteFilaments();
+                            renderFilaments();
+                        }
+                        if (Array.isArray(data.pendingOrders)) {
+                            pendingOrders = data.pendingOrders;
+                            localStorage.setItem('atel_pending_orders', JSON.stringify(pendingOrders));
+                            renderOnlineAlerts();
+                        }
+                        if (Array.isArray(data.orders) && data.orders.length) {
+                            const remoteSeed = data.seedVersion || '';
+                            if (remoteSeed === INVENTORY_SEED_VERSION || localStorage.getItem('atel_remote_orders_synced') === '1') {
+                                orders = normalizeOrdersList(data.orders);
+                                localStorage.setItem('atel_orders', JSON.stringify(orders));
+                                renderOrders();
+                            }
+                        }
+                    } finally {
+                        isApplyingRemote = false;
+                    }
+                });
 
                 db.collection('atel3d').doc('store').onSnapshot((doc) => {
                     if (!doc.exists) return;
                     const data = doc.data();
-                    if (data.storeConfig) {
-                        storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
-                        localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
-                        applyStoreConfig();
-                    }
-                    if (Array.isArray(data.products) && data.products.length) {
-                        products = data.products;
-                        localStorage.setItem('atel_products_v2', JSON.stringify(products));
-                        renderCatalog();
-                    }
-                    if (Array.isArray(data.availableFilaments)) {
-                        localStorage.setItem('atel_available_filaments', JSON.stringify(data.availableFilaments));
-                        renderCatalog();
+                    isApplyingRemote = true;
+                    try {
+                        if (data.storeConfig) {
+                            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
+                            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
+                            loadStoreSettingsUI();
+                        }
+                        if (Array.isArray(data.products) && data.products.length) {
+                            products = data.products;
+                            localStorage.setItem('atel_products_v2', JSON.stringify(products));
+                            renderInventoryProducts();
+                            renderAdminCatalog();
+                        }
+                    } finally {
+                        isApplyingRemote = false;
                     }
                 });
+
+                db.collection('atel3d').doc('workshop').set({
+                    orders,
+                    filaments,
+                    pendingOrders,
+                    seedVersion: INVENTORY_SEED_VERSION,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                localStorage.setItem('atel_remote_orders_synced', '1');
             } catch (err) {
-                console.warn('Tienda operando en modo local/por defecto:', err);
+                console.error(err);
+                document.getElementById('cloudDot').className = 'w-2 h-2 rounded-full bg-amber-400';
+                document.getElementById('cloudLabel').textContent = 'Nube: Local';
             }
         }
     </script>
