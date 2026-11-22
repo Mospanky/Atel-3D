@@ -144,7 +144,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-slate-300 mb-1">Observaciones / Detalles adicionales</label>
-                    <textarea id="custNotes" rows="2" placeholder="Nombres para bombillos, si deseas un solo modelo, fecha de entrega, ciudad..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"></textarea>
+                    <textarea id="custNotes" rows="2" placeholder="Nombres para bombillos, si deseas un solo modelo, fecha de entrega, ciudad..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs resize-none"></textarea>
                 </div>
                 <div class="flex space-x-2 pt-2">
                     <button type="button" onclick="closeCustomOrderModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-medium">Cancelar</button>
@@ -335,7 +335,6 @@
             if (baseCount >= 2) return baseCount;
             const minSet = getMinSetThreshold(prod);
             const q = Math.max(1, parseInt(qty) || 1);
-            // Si pide más de 1 set (o más de 1 unidad cuando no hay sets), habilita 2 colores
             if (q > minSet) return 2;
             return 1;
         }
@@ -352,7 +351,6 @@
             const colLabels = getProductColorLabels(prod);
             const availCols = getAvailableColorsForProduct(prod);
 
-            // Preservar valores que el usuario ya haya elegido en esta tarjeta
             const prevValues = [1, 2, 3, 4].map(slot => {
                 const existing = document.getElementById(`waC${slot}_${prod.id}`);
                 return existing ? existing.value : (cList[slot - 1] || '');
@@ -385,9 +383,28 @@
             }).join('');
         }
 
+        function captureNotesDrafts() {
+            const drafts = {};
+            document.querySelectorAll('[id^="waNotes_"]').forEach(el => {
+                const prodId = el.id.replace('waNotes_', '');
+                drafts[prodId] = el.value;
+            });
+            return drafts;
+        }
+
+        function restoreNotesDrafts(drafts) {
+            Object.entries(drafts || {}).forEach(([prodId, val]) => {
+                const el = document.getElementById(`waNotes_${prodId}`);
+                if (el && val !== undefined) {
+                    el.value = val;
+                }
+            });
+        }
+
         function renderCatalog() {
             const grid = document.getElementById('catalogGrid');
             const term = (document.getElementById('storeSearch')?.value || '').toLowerCase().trim();
+            const notesDrafts = captureNotesDrafts();
             grid.innerHTML = '';
 
             const list = products.filter(p => {
@@ -491,7 +508,7 @@
 
                             <div>
                                 <label class="block text-[11px] text-slate-300 mb-1">Observaciones (opcional)</label>
-                                <textarea id="waNotes_${p.id}" rows="2" placeholder="Ej: Nombres para bombillos, si deseas un solo modelo o algún detalle especial..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500"></textarea>
+                                <textarea id="waNotes_${p.id}" rows="2" placeholder="Ej: Nombres para bombillos, si deseas un solo modelo o algún detalle especial..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500 resize-none"></textarea>
                             </div>
 
                             <div class="flex gap-2 pt-1">
@@ -508,6 +525,7 @@
                 grid.appendChild(card);
                 renderProductColorSelectors(p, 1);
             });
+            restoreNotesDrafts(notesDrafts);
             lucide.createIcons();
         }
 
