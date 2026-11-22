@@ -41,11 +41,11 @@
             </div>
         </div>
         <div class="flex items-center space-x-2">
-            <button onclick="lockOrUnlockWorkshop()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700 font-medium transition flex items-center space-x-1.5">
+            <button type="button" onclick="lockOrUnlockWorkshop()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700 font-medium transition flex items-center space-x-1.5">
                 <i data-lucide="lock" class="w-4 h-4 text-brand-400"></i>
                 <span id="lockLabel">Bloquear</span>
             </button>
-            <button onclick="openCloudModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700 font-medium transition flex items-center space-x-1">
+            <button type="button" onclick="openCloudModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700 font-medium transition flex items-center space-x-1">
                 <i data-lucide="cloud" class="w-4 h-4 text-sky-400"></i>
                 <span id="cloudStatusLabel">Local</span>
             </button>
@@ -58,7 +58,7 @@
             <div class="text-center mb-4">
                 <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-16 h-16 rounded-2xl object-cover mx-auto mb-3 border border-brand-500/40 shadow-lg">
                 <h2 class="text-lg font-bold text-white">Acceso Privado al Taller</h2>
-                <p class="text-xs text-slate-400">Ingrese su contraseña</p>
+                <p class="text-xs text-slate-400">Clave por defecto: 1234</p>
             </div>
             <form onsubmit="verifyWorkshopPassword(event)" class="space-y-4">
                 <input type="password" id="workshopPasswordInput" placeholder="Clave" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-center tracking-widest text-lg" required>
@@ -72,23 +72,23 @@
 
     <!-- NAVEGACIÓN -->
     <nav class="bg-dark-900 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-40 px-1 py-2 flex justify-around items-center">
-        <button onclick="switchTab('inicio')" class="tab-btn flex flex-col items-center text-brand-400 py-1 px-2 rounded-xl active" data-tab="inicio">
+        <button type="button" onclick="switchTab('inicio')" class="tab-btn flex flex-col items-center text-brand-400 py-1 px-2 rounded-xl active" data-tab="inicio">
             <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-medium">Inicio</span>
         </button>
-        <button onclick="switchTab('inventario')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="inventario">
+        <button type="button" onclick="switchTab('inventario')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="inventario">
             <i data-lucide="box" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-medium">Inventario</span>
         </button>
-        <button onclick="switchTab('cotizador')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="cotizador">
+        <button type="button" onclick="switchTab('cotizador')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="cotizador">
             <i data-lucide="calculator" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-medium">Cotizador</span>
         </button>
-        <button onclick="switchTab('pedidos')" class="tab-btn relative flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="pedidos">
+        <button type="button" onclick="switchTab('pedidos')" class="tab-btn relative flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="pedidos">
             <span id="navPendingBadge" class="hidden absolute -top-0.5 right-1 bg-amber-500 text-slate-950 text-[9px] font-black px-1.5 rounded-full">0</span>
             <i data-lucide="clipboard-list" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-medium">Pedidos</span>
         </button>
-        <button onclick="switchTab('webcontrol')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="webcontrol">
+        <button type="button" onclick="switchTab('webcontrol')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="webcontrol">
             <i data-lucide="globe" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-medium">Tienda Web</span>
         </button>
-        <button onclick="switchTab('ajustes')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="ajustes">
+        <button type="button" onclick="switchTab('ajustes')" class="tab-btn flex flex-col items-center text-slate-400 hover:text-brand-400 py-1 px-2 rounded-xl" data-tab="ajustes">
             <i data-lucide="settings" class="w-5 h-5 mb-0.5"></i><span class="text-[10px] font-medium">Ajustes</span>
         </button>
     </nav>
@@ -117,13 +117,16 @@
         <!-- 2. INVENTARIO INTERNO -->
         <div id="tab-inventario" class="tab-content space-y-4">
             <div class="flex flex-wrap gap-2">
-                <button onclick="switchInventorySubtab('productos', this)" id="subtabProdBtn" class="inv-subtab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white">Stock Interno Taller</button>
-                <button onclick="switchInventorySubtab('filamentos', this)" id="subtabFilBtn" class="inv-subtab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">Rollos de Filamento (g)</button>
+                <button type="button" onclick="switchInventorySubtab('productos', this)" id="subtabProdBtn" class="inv-subtab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white">Stock Manual Productos</button>
+                <button type="button" onclick="switchInventorySubtab('filamentos', this)" id="subtabFilBtn" class="inv-subtab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">Rollos de Filamento (g)</button>
             </div>
             <div id="inv-productos" class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-bold text-white">Stock y Tandas de Impresión</h2>
-                    <button onclick="openCatalogModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-3.5 py-2 rounded-xl font-semibold">+ Nuevo Producto</button>
+                <div class="flex justify-between items-center gap-2">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Cantidad Existente de Productos</h2>
+                        <p class="text-[11px] text-slate-400">Ajusta manualmente las unidades disponibles (-1, +1 o cantidad exacta) y se descuentan al guardar pedidos.</p>
+                    </div>
+                    <button type="button" onclick="openCatalogModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-3.5 py-2 rounded-xl font-semibold shrink-0">+ Nuevo Producto</button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="inventoryGrid"></div>
             </div>
@@ -133,7 +136,7 @@
                         <h2 class="text-lg font-bold text-white">Rollos de Filamento</h2>
                         <p class="text-[11px] text-slate-400">Los colores con gramos &gt; 0 g son los únicos que aparecen disponibles para elegir en la Tienda Web.</p>
                     </div>
-                    <button onclick="openFilamentModal()" class="bg-brand-600 text-white text-xs px-3.5 py-2 rounded-xl font-semibold">+ Nuevo Rollo</button>
+                    <button type="button" onclick="openFilamentModal()" class="bg-brand-600 text-white text-xs px-3.5 py-2 rounded-xl font-semibold">+ Nuevo Rollo</button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="filamentsGrid"></div>
             </div>
@@ -203,7 +206,7 @@
                     <div class="bg-brand-500/10 border border-brand-500/30 p-3 rounded-xl"><span class="text-[11px] text-brand-300 block">Set 6 u. ($)</span><span id="resPack6" class="text-xl font-black text-brand-400">$0.00</span></div>
                     <div class="bg-sky-500/10 border border-sky-500/30 p-3 rounded-xl"><span class="text-[11px] text-sky-300 block">Extra > 6 u. ($)</span><span id="resExtraUnit" class="text-xl font-black text-sky-400">$0.00</span></div>
                 </div>
-                <button onclick="sendQuoteToCatalogModal()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl text-xs">Enviar Precios al Catálogo de Tienda Web</button>
+                <button type="button" onclick="sendQuoteToCatalogModal()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl text-xs">Enviar Precios al Catálogo de Tienda Web</button>
             </div>
         </div>
 
@@ -225,13 +228,13 @@
 
             <div class="flex justify-between items-center">
                 <h2 class="text-lg font-bold text-white">Pedidos y Ventas</h2>
-                <button onclick="openOrderModal()" class="bg-brand-600 text-white text-xs px-3.5 py-2.5 rounded-xl font-semibold">+ Nuevo Pedido</button>
+                <button type="button" onclick="openOrderModal()" class="bg-brand-600 text-white text-xs px-3.5 py-2.5 rounded-xl font-semibold">+ Nuevo Pedido</button>
             </div>
             <div class="flex space-x-2 overflow-x-auto pb-2 text-xs">
-                <button onclick="filterOrders('todos', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-brand-600 text-white font-medium">Todos</button>
-                <button onclick="filterOrders('pedido', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">Por Imprimir</button>
-                <button onclick="filterOrders('impreso', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">Impresos</button>
-                <button onclick="filterOrders('entregado', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">Entregados</button>
+                <button type="button" onclick="filterOrders('todos', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-brand-600 text-white font-medium">Todos</button>
+                <button type="button" onclick="filterOrders('pedido', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">Por Imprimir</button>
+                <button type="button" onclick="filterOrders('impreso', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">Impresos</button>
+                <button type="button" onclick="filterOrders('entregado', this)" class="order-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300">Entregados</button>
             </div>
             <div class="space-y-3" id="ordersListContainer"></div>
         </div>
@@ -245,7 +248,7 @@
                         <h2 class="text-xl font-extrabold text-white mt-0.5">Catálogo de Productos (Hasta 3 Fotos c/u)</h2>
                         <p class="text-xs text-slate-400">Agrega, modifica o borra hasta 3 fotos, cantidad de colores y etiquetas de cada producto.</p>
                     </div>
-                    <button onclick="openCatalogModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-4 py-3 rounded-xl font-bold flex items-center gap-1.5 shadow-lg shadow-brand-600/25">
+                    <button type="button" onclick="openCatalogModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-4 py-3 rounded-xl font-bold flex items-center gap-1.5 shadow-lg shadow-brand-600/25">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i> Agregar Producto al Catálogo
                     </button>
                 </div>
@@ -260,11 +263,11 @@
                 <h2 class="text-lg font-bold text-white">Ajustes y Respaldos</h2>
                 <div class="flex space-x-2">
                     <input type="text" id="settingNewPassword" placeholder="Nueva contraseña" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
-                    <button onclick="changeWorkshopPassword()" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs border border-slate-700">Guardar Clave</button>
+                    <button type="button" onclick="changeWorkshopPassword()" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs border border-slate-700">Guardar Clave</button>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="exportCSV()" class="bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl border border-slate-700">Exportar CSV</button>
-                    <button onclick="resetToCsvDefaults()" class="bg-slate-800 text-amber-400 text-xs px-4 py-2.5 rounded-xl border border-amber-500/30">Restaurar Datos Base</button>
+                    <button type="button" onclick="exportCSV()" class="bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl border border-slate-700">Exportar CSV</button>
+                    <button type="button" onclick="resetToCsvDefaults()" class="bg-slate-800 text-amber-400 text-xs px-4 py-2.5 rounded-xl border border-amber-500/30">Restaurar Datos Base</button>
                 </div>
             </div>
         </div>
@@ -276,8 +279,8 @@
             <h3 class="text-lg font-bold text-white mb-2">Sincronización Nube (Firebase)</h3>
             <textarea id="firebaseConfigInput" rows="6" placeholder="const firebaseConfig = { apiKey: '...', ... };" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono mb-4"></textarea>
             <div class="flex space-x-2">
-                <button onclick="closeCloudModal()" class="flex-1 bg-slate-800 text-slate-300 py-2.5 rounded-xl text-xs">Cerrar</button>
-                <button onclick="saveCloudConfig()" class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl text-xs font-semibold">Guardar y Sincronizar</button>
+                <button type="button" onclick="closeCloudModal()" class="flex-1 bg-slate-800 text-slate-300 py-2.5 rounded-xl text-xs">Cerrar</button>
+                <button type="button" onclick="saveCloudConfig()" class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl text-xs font-semibold">Guardar y Sincronizar</button>
             </div>
         </div>
     </div>
@@ -429,19 +432,20 @@
     <!-- MODAL ROLLO FILAMENTO -->
     <div id="filamentModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 class="text-lg font-bold text-white mb-4">Registrar Rollo</h3>
+            <h3 id="filamentModalTitle" class="text-lg font-bold text-white mb-4">Registrar Rollo</h3>
             <form onsubmit="saveFilament(event)" class="space-y-3 text-sm">
+                <input type="hidden" id="filId">
                 <div class="grid grid-cols-2 gap-2">
                     <div><label class="text-xs text-slate-300">Material</label><select id="filType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"><option>PLA</option><option>PETG</option><option>ABS</option><option>TPU</option><option>PLA Silk</option></select></div>
                     <div><label class="text-xs text-slate-300">Color *</label><input type="text" id="filColor" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="text-xs text-slate-300">Gramos</label><input type="number" id="filGrams" value="1000" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
-                    <div><label class="text-xs text-slate-300">$/Kg</label><input type="number" id="filPriceKg" value="18" step="0.5" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
+                    <div><label class="text-xs text-slate-300">Gramos</label><input type="number" id="filGrams" value="1000" min="0" step="1" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
+                    <div><label class="text-xs text-slate-300">$/Kg</label><input type="number" id="filPriceKg" value="18" min="0" step="0.5" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></div>
                 </div>
                 <div class="flex space-x-2 pt-2">
                     <button type="button" onclick="closeFilamentModal()" class="flex-1 bg-slate-800 text-slate-300 py-2.5 rounded-xl text-xs">Cancelar</button>
-                    <button type="submit" class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl text-xs font-semibold">Guardar</button>
+                    <button type="submit" id="btnSaveFilamentSubmit" class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl text-xs font-semibold">Guardar</button>
                 </div>
             </form>
         </div>
@@ -505,20 +509,20 @@
         ];
 
         const defaultOrders = [
-            { id: "ord_1", client: "Estefi Cru", contact: "0987139449", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 8, total: 8.5, paid: 8.5, status: "entregado", deliveryDate: "2026-11-12", notes: "Con grabado Casa Ma" },
-            { id: "ord_2", client: "Manolo", contact: "0998400131", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Rojo", "", "", ""], qty: 8, total: 10.0, paid: 10.0, status: "entregado", deliveryDate: "2026-11-12", notes: "" },
-            { id: "ord_22", client: "Ely (hija Ceci)", contact: "0998400131", productId: "prod_bombillos", productName: "Bombillos 3D Personalizados", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], qty: 6, total: 18.0, paid: 0.0, status: "pedido", deliveryDate: "2026-11-19", notes: "Cecilia, Belén, Javi, Javier, Cristian, Elizabeth" },
-            { id: "ord_23", client: "Mónica Ordóñez", contact: "0998400614", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 2, total: 1.75, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Nombres: NICOL, ESTEFANIA" },
-            { id: "ord_25", client: "Amiga suca", contact: "", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Rojo", "", "", ""], qty: 6, total: 9.5, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Reno bebé" },
-            { id: "ord_26", client: "Freed Ordoñez", contact: "0998400131", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 12, total: 22.5, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Envío a Guayaquil" },
-            { id: "ord_27", client: "Patricia Molina", contact: "0998400131", productId: "prod_bombillos", productName: "Bombillos 3D Personalizados", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], qty: 4, total: 10.0, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Con nombres" }
+            { id: "ord_1", client: "Estefi Cru", contact: "0987139449", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 8, total: 8.5, paid: 8.5, status: "entregado", deliveryDate: "2026-11-12", notes: "Con grabado Casa Ma", stockDeducted: true },
+            { id: "ord_2", client: "Manolo", contact: "0998400131", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Rojo", "", "", ""], qty: 8, total: 10.0, paid: 10.0, status: "entregado", deliveryDate: "2026-11-12", notes: "", stockDeducted: true },
+            { id: "ord_22", client: "Ely (hija Ceci)", contact: "0998400131", productId: "prod_bombillos", productName: "Bombillos 3D Personalizados", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], qty: 6, total: 18.0, paid: 0.0, status: "pedido", deliveryDate: "2026-11-19", notes: "Cecilia, Belén, Javi, Javier, Cristian, Elizabeth", stockDeducted: true },
+            { id: "ord_23", client: "Mónica Ordóñez", contact: "0998400614", productId: "prod_bookmarks", productName: "Bookmarks Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 2, total: 1.75, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Nombres: NICOL, ESTEFANIA", stockDeducted: true },
+            { id: "ord_25", client: "Amiga suca", contact: "", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Rojo", "", "", ""], qty: 6, total: 9.5, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Reno bebé", stockDeducted: true },
+            { id: "ord_26", client: "Freed Ordoñez", contact: "0998400131", productId: "prod_servilleteros", productName: "Servilleteros Navideños", filament: "PLA", colors: ["Blanco", "", "", ""], qty: 12, total: 22.5, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Envío a Guayaquil", stockDeducted: true },
+            { id: "ord_27", client: "Patricia Molina", contact: "0998400131", productId: "prod_bombillos", productName: "Bombillos 3D Personalizados", filament: "PLA", colors: ["Dorado", "Blanco", "", ""], qty: 4, total: 10.0, paid: 0.0, status: "pedido", deliveryDate: "2026-11-20", notes: "Con nombres", stockDeducted: true }
         ];
 
         let filaments = JSON.parse(localStorage.getItem('atel_filaments_v1')) || defaultFilaments;
         let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
         let orders = JSON.parse(localStorage.getItem('atel_orders_v2')) || defaultOrders;
         let pendingOrders = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-        let workshopPassword = localStorage.getItem('atel_pass') || 'Moschanky2026@';
+        let workshopPassword = localStorage.getItem('atel_pass') || '1234';
         let isUnlocked = sessionStorage.getItem('atel_session_unlocked') === '1';
         let currentFilter = 'todos';
         let mirrorPhotoIdx = {};
@@ -814,13 +818,13 @@
                         </div>
                     </div>
                     <div class="px-4 py-3 bg-slate-900 border-t border-slate-800 flex items-center justify-between gap-2">
-                        <button onclick="openCatalogModal('${p.id}')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white text-xs py-2 rounded-xl font-bold flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="openCatalogModal('${p.id}')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white text-xs py-2 rounded-xl font-bold flex items-center justify-center gap-1.5">
                             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Modificar Fotos e Info
                         </button>
-                        <button onclick="toggleProductFeatured('${p.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-xl border border-slate-700">
+                        <button type="button" onclick="toggleProductFeatured('${p.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-xl border border-slate-700">
                             ${isPublished ? 'Ocultar' : 'Publicar'}
                         </button>
-                        <button onclick="deleteProduct('${p.id}')" class="bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 p-2 rounded-xl">
+                        <button type="button" onclick="deleteProduct('${p.id}')" class="bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 p-2 rounded-xl">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -913,7 +917,7 @@
                 featured: document.getElementById('catProdFeatured').checked,
                 filament: document.getElementById('catProdFilament').value,
                 gramsPerUnit: existing ? (existing.gramsPerUnit || 5.4) : 5.4,
-                stock: existing ? (existing.stock || 10) : 10,
+                stock: existing ? Math.max(0, parseInt(existing.stock, 10) || 0) : 10,
                 colorCount,
                 colorLabels,
                 colors: rawColors,
@@ -1044,7 +1048,7 @@
             renderDashboard();
         }
 
-        /* ================= INVENTARIO, COTIZADOR Y PEDIDOS ================= */
+        /* ================= INVENTARIO MANUAL DE PRODUCTOS Y FILAMENTOS ================= */
         function switchInventorySubtab(sub, btn) {
             document.querySelectorAll('.inv-subtab-btn').forEach(b => b.className = "inv-subtab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700");
             if (btn) btn.className = "inv-subtab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white";
@@ -1052,67 +1056,133 @@
             document.getElementById('inv-filamentos').classList.toggle('hidden', sub !== 'filamentos');
         }
 
-        function renderInventory() {
-            document.getElementById('inventoryGrid').innerHTML = products.map(p => {
-                let falta = 0;
-                orders.forEach(o => { if (o.status === 'pedido' && (o.productId === p.id || o.productName === p.name)) falta += o.qty; });
-                return `
-                <div class="bg-dark-900 border border-slate-800 p-4 rounded-2xl space-y-2">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-white text-sm">${p.name}</h3>
-                            <p class="text-xs text-slate-400">${p.filament} • Stock: <b>${p.stock}</b></p>
-                        </div>
-                        <button onclick="printBatch('${p.id}')" class="bg-brand-600/20 text-brand-300 border border-brand-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold">+ Tanda</button>
-                    </div>
-                    <div class="text-xs text-slate-300">Pendiente imprimir: <b>${falta} u.</b></div>
-                </div>`;
-            }).join('');
-        }
-
-        function printBatch(prodId) {
-            const prod = products.find(p => p.id === prodId);
+        function setProductManualStock(productId, newStockValue) {
+            const prod = products.find(p => p.id === productId);
             if (!prod) return;
-            const qty = parseInt(prompt(`¿Cuántas unidades de "${prod.name}" imprimiste?`, "6")) || 0;
-            if (qty <= 0) return;
-            prod.stock += qty;
-            deductFilamentGrams(prod.filament, prod.colors, qty * (prod.gramsPerUnit || 5.4));
+            prod.stock = Math.max(0, parseInt(newStockValue, 10) || 0);
             saveLocalAndSync(true);
             renderAll();
         }
 
-        function deductFilamentGrams(filamentType, colors, totalGrams) {
-            if (!totalGrams || totalGrams <= 0) return;
-            const active = (colors || []).map(c => c.trim()).filter(Boolean);
-            const buckets = active.length ? active : ['General'];
-            const share = totalGrams / buckets.length;
-            buckets.forEach(col => {
-                const target = filaments.find(f => f.type.toLowerCase() === (filamentType || 'PLA').toLowerCase() && f.color.toLowerCase() === col.toLowerCase()) ||
-                               filaments.find(f => f.type.toLowerCase() === (filamentType || 'PLA').toLowerCase());
-                if (target) target.grams = Math.max(0, parseFloat((target.grams - share).toFixed(1)));
-            });
+        function adjustProductStock(productId, delta) {
+            const prod = products.find(p => p.id === productId);
+            if (!prod) return;
+            const current = Math.max(0, parseInt(prod.stock, 10) || 0);
+            prod.stock = Math.max(0, current + (parseInt(delta, 10) || 0));
+            saveLocalAndSync(true);
+            renderAll();
+        }
+
+        function deductProductManualStock(productId, productName, qtyToDeduct) {
+            const q = Math.max(0, parseInt(qtyToDeduct, 10) || 0);
+            if (q <= 0) return;
+            const prod = products.find(p => p.id === productId) ||
+                         products.find(p => p.name.toLowerCase() === (productName || '').toLowerCase());
+            if (!prod) return;
+            const current = Math.max(0, parseInt(prod.stock, 10) || 0);
+            prod.stock = Math.max(0, current - q);
+        }
+
+        function renderInventory() {
+            const grid = document.getElementById('inventoryGrid');
+            if (!grid) return;
+            grid.innerHTML = products.map(p => {
+                let falta = 0;
+                orders.forEach(o => { if (o.status === 'pedido' && (o.productId === p.id || o.productName === p.name)) falta += o.qty; });
+                const stockVal = Math.max(0, parseInt(p.stock, 10) || 0);
+                return `
+                <div class="bg-dark-900 border border-slate-800 p-4 rounded-2xl space-y-2.5">
+                    <div class="flex justify-between items-center gap-2">
+                        <div>
+                            <h3 class="font-bold text-white text-sm">${p.name}</h3>
+                            <p class="text-xs text-slate-400">${p.filament || 'PLA'} • Por imprimir en pedidos: <b>${falta} u.</b></p>
+                        </div>
+                        <span class="text-xs font-black px-2.5 py-1 rounded-lg ${stockVal > 0 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'}">
+                            ${stockVal} u.
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-[11px] text-slate-300 font-medium">Ajuste manual:</span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="adjustProductStock('${p.id}', -1)" title="Restar 1 unidad" class="bg-slate-900 hover:bg-rose-500/20 text-rose-400 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold transition">-1</button>
+                            <input type="number" id="manualStockInput_${p.id}" min="0" step="1" value="${stockVal}" onchange="setProductManualStock('${p.id}', this.value)" class="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white focus:outline-none focus:border-brand-500">
+                            <button type="button" onclick="adjustProductStock('${p.id}', 1)" title="Sumar 1 unidad" class="bg-slate-900 hover:bg-emerald-500/20 text-emerald-400 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold transition">+1</button>
+                            <button type="button" onclick="setProductManualStock('${p.id}', document.getElementById('manualStockInput_${p.id}').value)" class="bg-brand-600 hover:bg-brand-700 text-white px-2.5 py-1 rounded-lg text-xs font-semibold transition">Aplicar</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         function renderFilaments() {
-            document.getElementById('filamentsGrid').innerHTML = filaments.map(f => `
-                <div class="bg-dark-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+            const grid = document.getElementById('filamentsGrid');
+            if (!grid) return;
+            if (!filaments.length) {
+                grid.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-400">No hay rollos registrados en el inventario. Usa "+ Nuevo Rollo" para agregar uno.</div>`;
+                return;
+            }
+            grid.innerHTML = filaments.map(f => `
+                <div class="bg-dark-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center gap-3">
                     <div>
-                        <h3 class="font-bold text-white text-sm">${f.type} — ${f.color}</h3>
-                        <p class="text-xs text-slate-400">$${Number(f.priceKg).toFixed(2)}/kg • ${Number(f.grams) > 0 ? '<span class="text-emerald-400">Visible en Web</span>' : '<span class="text-rose-400">Sin stock (Oculto en Web)</span>'}</p>
+                        <h3 class="font-bold text-white text-sm">${f.type || 'PLA'} — ${f.color}</h3>
+                        <p class="text-xs text-slate-400">$${Number(f.priceKg || 0).toFixed(2)}/kg • ${Number(f.grams) > 0 ? '<span class="text-emerald-400">Visible en Web</span>' : '<span class="text-rose-400">Sin stock (Oculto en Web)</span>'}</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-black ${Number(f.grams) > 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(f.grams).toFixed(0)} g</span>
-                        <button onclick="adjustFilament('${f.id}', 1000)" class="bg-slate-800 text-xs px-2.5 py-1.5 rounded-lg text-emerald-400">+1kg</button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <span class="text-sm font-black mr-1 ${Number(f.grams) > 0 ? 'text-emerald-400' : 'text-rose-400'}">${Number(f.grams || 0).toFixed(0)} g</span>
+                        <button type="button" onclick="adjustFilament('${f.id}', 1000)" class="bg-slate-800 hover:bg-slate-700 text-xs px-2 py-1.5 rounded-lg text-emerald-400 font-semibold">+1kg</button>
+                        <button type="button" onclick="editFilament('${f.id}')" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1.5 rounded-lg text-slate-200 border border-slate-700">Editar</button>
+                        <button type="button" onclick="deleteFilament('${f.id}')" title="Borrar rollo" class="bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 p-1.5 rounded-lg">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 </div>`).join('');
+            lucide.createIcons();
         }
-        function adjustFilament(id, d) { const f = filaments.find(x => x.id === id); if (f) { f.grams += d; saveLocalAndSync(true); renderAll(); } }
-        function openFilamentModal() { document.getElementById('filamentModal').classList.remove('hidden'); }
+        function adjustFilament(id, d) { const f = filaments.find(x => x.id === id); if (f) { f.grams = Math.max(0, (Number(f.grams) || 0) + d); saveLocalAndSync(true); renderAll(); } }
+        function openFilamentModal() {
+            document.getElementById('filamentModalTitle').textContent = 'Registrar Rollo';
+            document.getElementById('btnSaveFilamentSubmit').textContent = 'Guardar';
+            document.getElementById('filId').value = '';
+            document.getElementById('filType').value = 'PLA';
+            document.getElementById('filColor').value = '';
+            document.getElementById('filGrams').value = '1000';
+            document.getElementById('filPriceKg').value = '18';
+            document.getElementById('filamentModal').classList.remove('hidden');
+        }
+        function editFilament(id) {
+            const f = filaments.find(x => x.id === id);
+            if (!f) return;
+            document.getElementById('filamentModalTitle').textContent = 'Editar Rollo de Filamento';
+            document.getElementById('btnSaveFilamentSubmit').textContent = 'Guardar Cambios';
+            document.getElementById('filId').value = f.id;
+            document.getElementById('filType').value = f.type || 'PLA';
+            document.getElementById('filColor').value = f.color || '';
+            document.getElementById('filGrams').value = Number(f.grams ?? 0);
+            document.getElementById('filPriceKg').value = Number(f.priceKg ?? 18);
+            document.getElementById('filamentModal').classList.remove('hidden');
+        }
         function closeFilamentModal() { document.getElementById('filamentModal').classList.add('hidden'); }
         function saveFilament(e) {
             e.preventDefault();
-            filaments.push({ id: 'fil_' + Date.now(), type: document.getElementById('filType').value, color: document.getElementById('filColor').value.trim(), grams: parseFloat(document.getElementById('filGrams').value) || 1000, priceKg: parseFloat(document.getElementById('filPriceKg').value) || 18 });
+            const id = document.getElementById('filId').value || ('fil_' + Date.now());
+            const item = {
+                id,
+                type: document.getElementById('filType').value,
+                color: document.getElementById('filColor').value.trim(),
+                grams: Math.max(0, parseFloat(document.getElementById('filGrams').value) || 0),
+                priceKg: Math.max(0, parseFloat(document.getElementById('filPriceKg').value) || 0)
+            };
+            const idx = filaments.findIndex(x => x.id === id);
+            if (idx >= 0) filaments[idx] = item; else filaments.push(item);
             saveLocalAndSync(true); closeFilamentModal(); renderAll();
+        }
+        function deleteFilament(id) {
+            const f = filaments.find(x => x.id === id);
+            if (!f) return;
+            if (!confirm(`¿Borrar el rollo "${f.type || 'PLA'} — ${f.color}" del inventario?`)) return;
+            filaments = filaments.filter(x => x.id !== id);
+            saveLocalAndSync(true); renderAll();
         }
 
         function calcularCotizacion3D() {
@@ -1183,8 +1253,8 @@
                     <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-800">
                         <span>Total: $${o.total.toFixed(2)} | <b class="${saldo > 0 ? 'text-amber-400' : 'text-emerald-400'}">${saldo > 0 ? 'Saldo: $' + saldo.toFixed(2) : 'Pagado'}</b></span>
                         <div class="flex gap-1.5">
-                            <button onclick="editOrder('${o.id}')" class="bg-slate-800 px-2.5 py-1 rounded-lg text-slate-200">Editar</button>
-                            <button onclick="advanceOrderStatus('${o.id}')" class="bg-brand-600/20 text-brand-300 px-2.5 py-1 rounded-lg">Avanzar</button>
+                            <button type="button" onclick="editOrder('${o.id}')" class="bg-slate-800 px-2.5 py-1 rounded-lg text-slate-200">Editar</button>
+                            <button type="button" onclick="advanceOrderStatus('${o.id}')" class="bg-brand-600/20 text-brand-300 px-2.5 py-1 rounded-lg">Avanzar</button>
                         </div>
                     </div>
                 </div>`;
@@ -1242,16 +1312,28 @@
         }
         function saveOrder(e) {
             e.preventDefault();
-            const id = document.getElementById('ordId').value || 'ord_' + Date.now();
+            const rawId = document.getElementById('ordId').value;
+            const existingOrder = rawId ? orders.find(x => x.id === rawId) : null;
+            const id = rawId || ('ord_' + Date.now());
             const fromAlertId = document.getElementById('ordFromAlertId').value;
             const prod = products.find(p => p.id === document.getElementById('ordProductId').value);
+            const qty = Math.max(1, parseInt(document.getElementById('ordQty').value) || 1);
+            const productId = prod ? prod.id : (existingOrder ? existingOrder.productId : '');
+            const productName = prod ? prod.name : (existingOrder ? existingOrder.productName : 'Personalizado');
+
+            let stockDeducted = existingOrder ? Boolean(existingOrder.stockDeducted) : false;
+            if (!existingOrder) {
+                deductProductManualStock(productId, productName, qty);
+                stockDeducted = true;
+            }
+
             const item = {
                 id,
                 client: document.getElementById('ordClient').value.trim(),
                 contact: document.getElementById('ordContact').value.trim(),
                 deliveryDate: document.getElementById('ordDate').value,
-                productId: prod ? prod.id : '',
-                productName: prod ? prod.name : 'Personalizado',
+                productId,
+                productName,
                 filament: document.getElementById('ordFilament').value,
                 colors: [
                     document.getElementById('ordC1').value,
@@ -1259,11 +1341,12 @@
                     document.getElementById('ordC3').value,
                     document.getElementById('ordC4').value
                 ],
-                qty: parseInt(document.getElementById('ordQty').value) || 1,
+                qty,
                 total: parseFloat(document.getElementById('ordTotal').value) || 0,
                 paid: parseFloat(document.getElementById('ordPaid').value) || 0,
                 status: document.getElementById('ordStatus').value,
-                notes: document.getElementById('ordNotes').value.trim()
+                notes: document.getElementById('ordNotes').value.trim(),
+                stockDeducted
             };
             const idx = orders.findIndex(x => x.id === id);
             if (idx >= 0) orders[idx] = item; else orders.unshift(item);
