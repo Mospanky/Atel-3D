@@ -27,7 +27,7 @@
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-24">
 
     <header class="bg-dark-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
@@ -42,7 +42,12 @@
             <nav class="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm font-medium">
                 <a href="#catalogo-tienda" class="text-slate-300 hover:text-brand-400 px-2.5 py-1.5 rounded-lg transition">Catálogo</a>
                 <a href="#sobre-atel" class="text-slate-300 hover:text-brand-400 px-2.5 py-1.5 rounded-lg transition">Sobre ATEL 3D</a>
-                <button onclick="openCustomOrderModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
+                <button type="button" onclick="openConsolidatedOrderModal()" class="relative bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-brand-600/20">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    <span>Mi Pedido</span>
+                    <span id="navCartCountBadge" class="hidden bg-slate-950 text-brand-300 text-[10px] font-black px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button type="button" onclick="openCustomOrderModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
                     <i data-lucide="message-circle" class="w-4 h-4"></i>
                     <span>Pedido a Medida</span>
                 </button>
@@ -60,7 +65,7 @@
                     <span class="text-[11px] text-slate-400">✓ Descuentos por set • ✓ Colores en inventario • ✓ Envíos a todo el Ecuador</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-black text-white">Catálogo de Productos</h1>
-                <p class="text-xs sm:text-sm text-slate-400">Indica tu nombre, tu WhatsApp, cantidad, colores disponibles y observaciones en el producto que elijas.</p>
+                <p class="text-xs sm:text-sm text-slate-400">Elige cantidad, colores y observaciones en cada producto, agrégalos al pedido y envía un solo mensaje consolidado por WhatsApp.</p>
             </div>
             <div class="flex flex-col items-stretch md:items-end gap-2 w-full md:w-auto">
                 <div id="catalogFilterButtons" class="flex flex-wrap items-center gap-2">
@@ -107,11 +112,79 @@
         <p class="mt-0.5">Cuenca, Ecuador — Fabricación Digital e Impresión 3D</p>
     </footer>
 
+    <!-- BARRA FLOTANTE DEL PEDIDO CONSOLIDADO -->
+    <div id="floatingOrderBar" class="hidden fixed bottom-4 left-4 right-4 z-40 max-w-4xl mx-auto">
+        <div class="bg-dark-900/95 backdrop-blur-md border border-brand-500/50 rounded-2xl px-4 py-3 shadow-2xl flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="bg-brand-600/20 border border-brand-500/40 text-brand-400 p-2.5 rounded-xl shrink-0">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                </div>
+                <div class="truncate">
+                    <p id="floatingOrderSummaryText" class="text-sm font-extrabold text-white truncate">Ver pedido (0) • $0.00</p>
+                    <p id="floatingOrderSubtext" class="text-[11px] text-slate-400 truncate">Listo para enviar un solo consolidado por WhatsApp</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="clearConsolidatedCart()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-2 rounded-xl text-xs font-medium transition">
+                    Vaciar
+                </button>
+                <button type="button" onclick="openConsolidatedOrderModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/25">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Revisar y Enviar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ÚNICO DE PEDIDO CONSOLIDADO POR WHATSAPP -->
+    <div id="consolidatedOrderModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Confirmar Pedido Consolidado</h3>
+                    <p class="text-xs text-slate-400">Revisa los productos agregados y envía un solo mensaje por WhatsApp.</p>
+                </div>
+                <button type="button" onclick="closeConsolidatedOrderModal()" class="text-slate-400 hover:text-white text-base px-2">✕</button>
+            </div>
+
+            <div id="consolidatedItemsList" class="space-y-2.5 mb-4"></div>
+
+            <div class="bg-slate-800/60 border border-slate-700 rounded-xl px-3.5 py-2.5 flex items-center justify-between mb-4">
+                <span class="text-xs font-semibold text-slate-300">Total estimado del pedido:</span>
+                <span id="consolidatedGrandTotal" class="text-base font-black text-brand-400">$0.00</span>
+            </div>
+
+            <form onsubmit="submitConsolidatedWhatsApp(event)" class="space-y-3 text-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Tu Nombre *</label>
+                        <input type="text" id="consName" required placeholder="Ej: Juan Pérez" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Tu Número de WhatsApp *</label>
+                        <input type="tel" id="consPhone" required placeholder="Ej: 0998400131" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-300 mb-1">Observaciones Generales (opcional)</label>
+                    <textarea id="consGeneralNotes" rows="2" placeholder="Ej: Empaque de regalo, lugar o fecha de entrega en Cuenca..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs resize-none"></textarea>
+                </div>
+                <div class="flex space-x-2 pt-2">
+                    <button type="button" onclick="closeConsolidatedOrderModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-medium">Seguir Agregando</button>
+                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-600/20">
+                        <i data-lucide="send" class="w-4 h-4"></i> Enviar Pedido por WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PEDIDO A MEDIDA -->
     <div id="customOrderModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-lg font-bold text-white">Pedido / Consulta por WhatsApp</h3>
-                <button onclick="closeCustomOrderModal()" class="text-slate-400 hover:text-white">✕</button>
+                <button type="button" onclick="closeCustomOrderModal()" class="text-slate-400 hover:text-white">✕</button>
             </div>
             <form onsubmit="sendCustomWhatsApp(event)" class="space-y-3 text-sm">
                 <div>
@@ -177,6 +250,7 @@
         let storeConfig = JSON.parse(localStorage.getItem('atel_store_config')) || defaultStoreConfig;
         let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
         let inventoryFilaments = JSON.parse(localStorage.getItem('atel_available_filaments')) || [];
+        let consolidatedOrderItems = JSON.parse(localStorage.getItem('atel_consolidated_cart') || '[]');
         let activeFilter = 'Todo';
         let activeCardPhotoIdx = {};
         let dbRef = null;
@@ -186,6 +260,7 @@
             renderStoreInfo();
             renderCatalog();
             populateCustomModalColors();
+            renderConsolidatedBar();
             lucide.createIcons();
         });
 
@@ -220,6 +295,14 @@
                 });
             } catch (err) {
                 console.warn('Sincronización Firebase en espera:', err);
+            }
+        }
+
+        function saveConsolidatedCart() {
+            localStorage.setItem('atel_consolidated_cart', JSON.stringify(consolidatedOrderItems));
+            renderConsolidatedBar();
+            if (!document.getElementById('consolidatedOrderModal').classList.contains('hidden')) {
+                renderConsolidatedModalItems();
             }
         }
 
@@ -476,29 +559,19 @@
                             ${packsBadges}
                         </div>
 
-                        <form onsubmit="submitProductWhatsApp(event, '${p.id}')" class="bg-slate-800/50 border border-slate-700/80 rounded-2xl p-3.5 space-y-3">
+                        <div class="bg-slate-800/50 border border-slate-700/80 rounded-2xl p-3.5 space-y-3">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                                    <i data-lucide="message-circle" class="w-4 h-4"></i> Pedir este producto al WhatsApp
+                                <span class="text-xs font-bold text-brand-400 flex items-center gap-1.5">
+                                    <i data-lucide="layers" class="w-4 h-4"></i> Configura tu selección
                                 </span>
                                 <span id="cardTotal_${p.id}" class="text-sm font-black text-white bg-brand-600/20 text-brand-300 border border-brand-500/30 px-2.5 py-0.5 rounded-lg">
-                                    Total: $${initialTotal.toFixed(2)}
+                                    Subtotal: $${initialTotal.toFixed(2)}
                                 </span>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                                <div>
-                                    <label class="block text-[11px] text-slate-300 mb-1">Tu Nombre *</label>
-                                    <input type="text" id="waName_${p.id}" required placeholder="Ej: Carlos" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-brand-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] text-slate-300 mb-1">Tu WhatsApp *</label>
-                                    <input type="tel" id="waPhone_${p.id}" required placeholder="Ej: 0998400131" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-brand-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] text-slate-300 mb-1">Cantidad *</label>
-                                    <input type="number" id="waQty_${p.id}" min="1" value="1" required oninput="onCardQtyInput('${p.id}')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-white font-semibold focus:outline-none focus:border-brand-500">
-                                </div>
+                            <div class="text-xs">
+                                <label class="block text-[11px] text-slate-300 mb-1">Cantidad *</label>
+                                <input type="number" id="waQty_${p.id}" min="1" value="1" required oninput="onCardQtyInput('${p.id}')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-semibold focus:outline-none focus:border-brand-500">
                             </div>
 
                             <div>
@@ -507,19 +580,20 @@
                             </div>
 
                             <div>
-                                <label class="block text-[11px] text-slate-300 mb-1">Observaciones (opcional)</label>
+                                <label class="block text-[11px] text-slate-300 mb-1">Observaciones del producto (opcional)</label>
                                 <textarea id="waNotes_${p.id}" rows="2" placeholder="Ej: Nombres para bombillos, si deseas un solo modelo o algún detalle especial..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500 resize-none"></textarea>
                             </div>
 
                             <div class="flex gap-2 pt-1">
-                                <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20">
-                                    <i data-lucide="send" class="w-3.5 h-3.5"></i> Enviar Pedido al WhatsApp
+                                <button type="button" onclick="addProductToConsolidatedOrder('${p.id}')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-brand-600/20">
+                                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Agregar al pedido
                                 </button>
                                 <button type="button" onclick="copyCardSummary('${p.id}')" title="Copiar resumen" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2.5 rounded-xl text-xs font-medium transition">
                                     Copiar
                                 </button>
                             </div>
-                        </form>
+                            <p id="addedFeedback_${p.id}" class="hidden text-[11px] text-emerald-400 font-semibold text-center"></p>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -543,8 +617,198 @@
             const qty = Math.max(1, parseInt(document.getElementById(`waQty_${productId}`).value) || 1);
             const total = calculateProductPrice(prod, qty);
             const badge = document.getElementById(`cardTotal_${productId}`);
-            if (badge) badge.textContent = `Total: $${total.toFixed(2)}`;
+            if (badge) badge.textContent = `Subtotal: $${total.toFixed(2)}`;
             renderProductColorSelectors(prod, qty);
+        }
+
+        function collectCardSelection(productId) {
+            const prod = products.find(p => p.id === productId);
+            if (!prod) return null;
+            const qty = Math.max(1, parseInt(document.getElementById(`waQty_${productId}`)?.value) || 1);
+            const obs = (document.getElementById(`waNotes_${productId}`)?.value || '').trim();
+            const effectiveCols = getEffectiveColorCount(prod, qty);
+            const colLabels = getProductColorLabels(prod);
+
+            const selectedValues = [1, 2, 3, 4].map(slot => {
+                if (slot > effectiveCols) return '';
+                const el = document.getElementById(`waC${slot}_${productId}`);
+                return el ? el.value.trim() : '';
+            });
+
+            const labeledColors = selectedValues
+                .map((val, idx) => val ? `${(colLabels[idx] || '').trim() || `Color ${idx + 1}`}: ${val}` : '')
+                .filter(Boolean);
+
+            const subtotal = calculateProductPrice(prod, qty);
+            return {
+                prod,
+                qty,
+                obs,
+                colors: selectedValues,
+                activeColors: selectedValues.filter(Boolean),
+                labeledColors,
+                subtotal
+            };
+        }
+
+        function addProductToConsolidatedOrder(productId) {
+            const sel = collectCardSelection(productId);
+            if (!sel) return;
+
+            const normalizedColorsKey = sel.colors.map(c => c.toLowerCase()).join('|');
+            const normalizedObsKey = sel.obs.toLowerCase();
+
+            const existingIdx = consolidatedOrderItems.findIndex(item =>
+                item.productId === sel.prod.id &&
+                (item.colors || []).map(c => (c || '').toLowerCase()).join('|') === normalizedColorsKey &&
+                (item.obs || '').toLowerCase() === normalizedObsKey
+            );
+
+            if (existingIdx >= 0) {
+                const existing = consolidatedOrderItems[existingIdx];
+                existing.qty = existing.qty + sel.qty;
+                existing.subtotal = Number(calculateProductPrice(sel.prod, existing.qty).toFixed(2));
+            } else {
+                consolidatedOrderItems.push({
+                    lineId: 'line_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                    productId: sel.prod.id,
+                    productName: sel.prod.name,
+                    filament: sel.prod.filament || 'PLA',
+                    qty: sel.qty,
+                    colors: sel.colors,
+                    activeColors: sel.activeColors,
+                    labeledColors: sel.labeledColors,
+                    obs: sel.obs,
+                    subtotal: Number(sel.subtotal.toFixed(2))
+                });
+            }
+
+            saveConsolidatedCart();
+
+            const fb = document.getElementById(`addedFeedback_${productId}`);
+            if (fb) {
+                fb.textContent = existingIdx >= 0
+                    ? `✓ Cantidad combinada en tu pedido (${consolidatedOrderItems[existingIdx].qty} u.)`
+                    : `✓ Agregado al pedido (${sel.qty} u.)`;
+                fb.classList.remove('hidden');
+                clearTimeout(fb._timer);
+                fb._timer = setTimeout(() => fb.classList.add('hidden'), 2500);
+            }
+        }
+
+        function updateCartLineQty(lineId, newQty) {
+            const idx = consolidatedOrderItems.findIndex(x => x.lineId === lineId);
+            if (idx < 0) return;
+            const qty = parseInt(newQty) || 0;
+            if (qty <= 0) {
+                consolidatedOrderItems.splice(idx, 1);
+            } else {
+                const item = consolidatedOrderItems[idx];
+                const prod = products.find(p => p.id === item.productId);
+                item.qty = qty;
+                item.subtotal = prod
+                    ? Number(calculateProductPrice(prod, qty).toFixed(2))
+                    : Number(((item.subtotal / Math.max(1, item.qty)) * qty).toFixed(2));
+            }
+            saveConsolidatedCart();
+        }
+
+        function removeCartLine(lineId) {
+            consolidatedOrderItems = consolidatedOrderItems.filter(x => x.lineId !== lineId);
+            saveConsolidatedCart();
+        }
+
+        function clearConsolidatedCart() {
+            if (!consolidatedOrderItems.length) return;
+            if (!confirm('¿Vaciar todos los productos de tu pedido actual?')) return;
+            consolidatedOrderItems = [];
+            saveConsolidatedCart();
+            closeConsolidatedOrderModal();
+        }
+
+        function getConsolidatedTotals() {
+            const linesCount = consolidatedOrderItems.length;
+            const totalUnits = consolidatedOrderItems.reduce((acc, it) => acc + (parseInt(it.qty) || 0), 0);
+            const grandTotal = consolidatedOrderItems.reduce((acc, it) => acc + (parseFloat(it.subtotal) || 0), 0);
+            return { linesCount, totalUnits, grandTotal };
+        }
+
+        function renderConsolidatedBar() {
+            const bar = document.getElementById('floatingOrderBar');
+            const summaryEl = document.getElementById('floatingOrderSummaryText');
+            const subEl = document.getElementById('floatingOrderSubtext');
+            const navBadge = document.getElementById('navCartCountBadge');
+
+            const { linesCount, totalUnits, grandTotal } = getConsolidatedTotals();
+
+            if (navBadge) {
+                navBadge.textContent = linesCount;
+                navBadge.classList.toggle('hidden', linesCount === 0);
+            }
+
+            if (!bar) return;
+            if (linesCount === 0) {
+                bar.classList.add('hidden');
+                return;
+            }
+
+            bar.classList.remove('hidden');
+            if (summaryEl) summaryEl.textContent = `Ver pedido (${linesCount}) • $${grandTotal.toFixed(2)}`;
+            if (subEl) subEl.textContent = `${totalUnits} unidad${totalUnits === 1 ? '' : 'es'} en ${linesCount} línea${linesCount === 1 ? '' : 's'} — Envío único por WhatsApp`;
+            lucide.createIcons();
+        }
+
+        function openConsolidatedOrderModal() {
+            if (!consolidatedOrderItems.length) {
+                alert('Primero agrega al menos un producto usando el botón "Agregar al pedido".');
+                return;
+            }
+            renderConsolidatedModalItems();
+            document.getElementById('consolidatedOrderModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeConsolidatedOrderModal() {
+            document.getElementById('consolidatedOrderModal').classList.add('hidden');
+        }
+
+        function renderConsolidatedModalItems() {
+            const listEl = document.getElementById('consolidatedItemsList');
+            const grandEl = document.getElementById('consolidatedGrandTotal');
+            const { grandTotal } = getConsolidatedTotals();
+
+            if (grandEl) grandEl.textContent = `$${grandTotal.toFixed(2)}`;
+            if (!listEl) return;
+
+            if (!consolidatedOrderItems.length) {
+                listEl.innerHTML = `<div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center text-xs text-slate-400">No hay productos en el pedido.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = consolidatedOrderItems.map((it, idx) => {
+                const colText = (it.labeledColors && it.labeledColors.length)
+                    ? it.labeledColors.join(', ')
+                    : ((it.activeColors && it.activeColors.length) ? it.activeColors.join(', ') : 'A coordinar');
+                return `
+                <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-3 space-y-2 text-xs">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="font-bold text-white">${idx + 1}. ${it.productName}</span>
+                            <span class="text-[10px] bg-brand-600/20 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-md ml-1.5">${it.filament || 'PLA'}</span>
+                            <p class="text-[11px] text-slate-300 mt-0.5">Colores: <b>${colText}</b></p>
+                            ${it.obs ? `<p class="text-[11px] text-amber-300 mt-0.5">Obs: ${it.obs}</p>` : ''}
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="font-black text-brand-400 block">$${Number(it.subtotal || 0).toFixed(2)}</span>
+                            <button type="button" onclick="removeCartLine('${it.lineId}')" class="text-[11px] text-rose-400 hover:underline mt-0.5">Quitar</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-1.5 border-t border-slate-700/70">
+                        <span class="text-[11px] text-slate-400">Cantidad:</span>
+                        <input type="number" min="1" value="${it.qty}" onchange="updateCartLineQty('${it.lineId}', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold text-center">
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         function registerPendingOrderAlert(alertPayload) {
@@ -560,82 +824,82 @@
             }
         }
 
-        function buildProductOrderMessage(productId) {
-            const prod = products.find(p => p.id === productId);
-            const clientName = (document.getElementById(`waName_${productId}`).value || '').trim();
-            const clientPhone = (document.getElementById(`waPhone_${productId}`).value || '').trim();
-            const qty = Math.max(1, parseInt(document.getElementById(`waQty_${productId}`).value) || 1);
-            const obs = (document.getElementById(`waNotes_${productId}`)?.value || '').trim();
-            const effectiveCols = getEffectiveColorCount(prod, qty);
-            const colLabels = getProductColorLabels(prod);
-
-            const selectedValues = [1, 2, 3, 4].map(slot => {
-                if (slot > effectiveCols) return '';
-                const el = document.getElementById(`waC${slot}_${productId}`);
-                return el ? el.value.trim() : '';
-            });
-
-            const labeledColors = selectedValues
-                .map((val, idx) => val ? `${(colLabels[idx] || '').trim() || `Color ${idx + 1}`}: ${val}` : '')
-                .filter(Boolean);
-
-            const activeColors = selectedValues.filter(Boolean);
-            const total = calculateProductPrice(prod, qty);
-
-            return {
-                prod,
-                clientName,
-                clientPhone,
-                qty,
-                obs,
-                colors: selectedValues,
-                activeColors,
-                labeledColors,
-                total,
-                text: `Hola *ATEL 3D* 👋 Quiero confirmar el siguiente pedido:\n\n` +
-                      `• *Cliente:* ${clientName}\n` +
-                      `• *WhatsApp cliente:* ${clientPhone}\n` +
-                      `• *Producto:* ${prod.name}\n` +
-                      `• *Cantidad:* ${qty} unidades\n` +
-                      `• *Filamento:* ${prod.filament || 'PLA'}\n` +
-                      `• *Colores:* ${labeledColors.length ? labeledColors.join(', ') : 'A coordinar'}\n` +
-                      (obs ? `• *Observaciones:* ${obs}\n` : '') +
-                      `• *Total estimado:* $${total.toFixed(2)}\n\n` +
-                      `¿Me ayudas confirmando disponibilidad y entrega?`
-            };
-        }
-
-        function submitProductWhatsApp(e, productId) {
+        function submitConsolidatedWhatsApp(e) {
             e.preventDefault();
+            if (!consolidatedOrderItems.length) {
+                alert('Tu pedido está vacío.');
+                return;
+            }
             const targetPhone = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '');
-            const data = buildProductOrderMessage(productId);
-            const combinedNotes = [
-                data.obs ? `Obs: ${data.obs}` : '',
-                data.labeledColors.join(' • ')
-            ].filter(Boolean).join(' | ');
+            const clientName = document.getElementById('consName').value.trim();
+            const clientPhone = document.getElementById('consPhone').value.trim();
+            const generalNotes = document.getElementById('consGeneralNotes').value.trim();
+            const { totalUnits, grandTotal } = getConsolidatedTotals();
+            const deliveryDate = new Date().toISOString().split('T')[0];
 
-            registerPendingOrderAlert({
-                id: 'alert_' + Date.now(),
-                source: 'WhatsApp Catálogo',
-                createdAt: new Date().toISOString(),
-                client: data.clientName,
-                contact: data.clientPhone,
-                productId: data.prod.id,
-                productName: data.prod.name,
-                filament: data.prod.filament || 'PLA',
-                colors: data.colors,
-                qty: data.qty,
-                total: Number(data.total.toFixed(2)),
-                paid: 0,
-                deliveryDate: new Date().toISOString().split('T')[0],
-                notes: combinedNotes || 'Pedido desde catálogo web'
+            // Registra una alerta pendiente editable por cada producto del consolidado
+            consolidatedOrderItems.forEach((it, index) => {
+                const colSummary = (it.labeledColors && it.labeledColors.length)
+                    ? it.labeledColors.join(' • ')
+                    : ((it.activeColors || []).join(' • '));
+                const combinedNotes = [
+                    it.obs ? `Obs producto: ${it.obs}` : '',
+                    colSummary,
+                    generalNotes ? `Obs general: ${generalNotes}` : ''
+                ].filter(Boolean).join(' | ');
+
+                registerPendingOrderAlert({
+                    id: 'alert_' + Date.now() + '_' + index,
+                    source: 'Consolidado Web',
+                    createdAt: new Date().toISOString(),
+                    client: clientName,
+                    contact: clientPhone,
+                    productId: it.productId,
+                    productName: it.productName,
+                    filament: it.filament || 'PLA',
+                    colors: it.colors || ['', '', '', ''],
+                    qty: it.qty,
+                    total: Number(it.subtotal || 0),
+                    paid: 0,
+                    deliveryDate,
+                    notes: combinedNotes || 'Pedido consolidado desde catálogo web'
+                });
             });
-            window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(data.text)}`, '_blank');
+
+            const linesText = consolidatedOrderItems.map((it, idx) => {
+                const colText = (it.labeledColors && it.labeledColors.length)
+                    ? it.labeledColors.join(', ')
+                    : ((it.activeColors && it.activeColors.length) ? it.activeColors.join(', ') : 'A coordinar');
+                return `${idx + 1}. *${it.productName}* — ${it.qty} u. ($${Number(it.subtotal || 0).toFixed(2)})\n` +
+                       `   • Filamento: ${it.filament || 'PLA'} | Colores: ${colText}` +
+                       (it.obs ? `\n   • Observaciones: ${it.obs}` : '');
+            }).join('\n\n');
+
+            const msg = `Hola *ATEL 3D* 👋 Quiero confirmar el siguiente pedido consolidado:\n\n` +
+                        `• *Cliente:* ${clientName}\n` +
+                        `• *WhatsApp cliente:* ${clientPhone}\n\n` +
+                        `*Detalle del pedido:*\n${linesText}\n\n` +
+                        `• *Total unidades:* ${totalUnits} u.\n` +
+                        (generalNotes ? `• *Observaciones generales:* ${generalNotes}\n` : '') +
+                        `• *Total estimado:* $${grandTotal.toFixed(2)}\n\n` +
+                        `¿Me ayudas confirmando disponibilidad y entrega?`;
+
+            window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+
+            consolidatedOrderItems = [];
+            saveConsolidatedCart();
+            document.getElementById('consGeneralNotes').value = '';
+            closeConsolidatedOrderModal();
         }
 
         function copyCardSummary(productId) {
-            const data = buildProductOrderMessage(productId);
-            navigator.clipboard?.writeText(data.text).then(() => alert('Resumen del pedido copiado.'));
+            const sel = collectCardSelection(productId);
+            if (!sel) return;
+            const colText = sel.labeledColors.length ? sel.labeledColors.join(', ') : 'A coordinar';
+            const text = `${sel.prod.name} (${sel.qty} u.) • Colores: ${colText}` +
+                         (sel.obs ? ` • Obs: ${sel.obs}` : '') +
+                         ` • Subtotal: $${sel.subtotal.toFixed(2)}`;
+            navigator.clipboard?.writeText(text).then(() => alert('Resumen del producto copiado.'));
         }
 
         function openCustomOrderModal() {
