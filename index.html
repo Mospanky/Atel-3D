@@ -264,7 +264,7 @@
             lucide.createIcons();
         });
 
-       const ATEL_FIREBASE_CONFIG = {
+      const ATEL_FIREBASE_CONFIG = {
     apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
     authDomain: "atel-3d.firebaseapp.com",
     projectId: "atel-3d",
@@ -273,37 +273,44 @@
     appId: "1:752951171722:web:767eda5bd4da9b33ff2b73",
     measurementId: "G-091YZ26DFW"
 };
-
 let dbStore = null;
 
-function connectStoreToFirebase() {
+function initFirebaseSyncIfConfigured() {
     if (typeof firebase === 'undefined') return;
-    if (!firebase.apps.length) {
-        firebase.initializeApp(ATEL_FIREBASE_CONFIG);
+    try {
+        const rawCfg = localStorage.getItem('atel_firebase_cfg');
+        let cfg = ATEL_FIREBASE_CONFIG;
+        if (rawCfg) {
+            const match = rawCfg.match(/\{[\s\S]*\}/);
+            if (match) cfg = (new Function('return ' + match[0]))();
+        }
+        if (!cfg || !cfg.apiKey) return;
+        if (!firebase.apps.length) firebase.initializeApp(cfg);
+        dbRef = firebase.firestore();
+
+        dbRef.collection('atel3d').doc('store').onSnapshot((doc) => {
+            if (!doc.exists) return;
+            const data = doc.data();
+            if (data.storeConfig) {
+                storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
+                localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
+                renderStoreInfo();
+            }
+            if (Array.isArray(data.availableFilaments)) {
+                inventoryFilaments = data.availableFilaments;
+                localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
+                populateCustomModalColors();
+            }
+            if (Array.isArray(data.products)) {
+                products = data.products;
+                localStorage.setItem('atel_products_v2', JSON.stringify(products));
+                renderCatalog();
+            }
+        });
+    } catch (err) {
+        console.warn('Error al conectar con Firebase:', err);
     }
-    dbStore = firebase.firestore();
-
-    dbStore.collection('atel3d').doc('store').onSnapshot((doc) => {
-        if (!doc.exists) return;
-        const data = doc.data();
-        if (data.storeConfig) {
-            storeConfig = { ...defaultStoreConfig, ...data.storeConfig };
-            localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
-            renderStoreInfo();
-        }
-        if (Array.isArray(data.availableFilaments)) {
-            inventoryFilaments = data.availableFilaments;
-            localStorage.setItem('atel_available_filaments', JSON.stringify(inventoryFilaments));
-            populateCustomModalColors();
-        }
-        if (Array.isArray(data.products)) {
-            products = data.products;
-            localStorage.setItem('atel_products_v2', JSON.stringify(products));
-            renderCatalog();
-        }
-    });
 }
-
 function pushOrderAlertsToWorkshop(newAlerts) {
     const list = Array.isArray(newAlerts) ? newAlerts : [newAlerts];
     if (!list.length) return;
