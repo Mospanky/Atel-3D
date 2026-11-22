@@ -837,7 +837,6 @@
             const { totalUnits, grandTotal } = getConsolidatedTotals();
             const deliveryDate = new Date().toISOString().split('T')[0];
 
-            // Registra una alerta pendiente editable por cada producto del consolidado
             consolidatedOrderItems.forEach((it, index) => {
                 const colSummary = (it.labeledColors && it.labeledColors.length)
                     ? it.labeledColors.join(' • ')
