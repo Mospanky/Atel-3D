@@ -58,7 +58,7 @@
             <div class="text-center mb-4">
                 <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-16 h-16 rounded-2xl object-cover mx-auto mb-3 border border-brand-500/40 shadow-lg">
                 <h2 class="text-lg font-bold text-white">Acceso Privado al Taller</h2>
-                <p class="text-xs text-slate-400">Ingrese su contraseña</p>
+                <p class="text-xs text-slate-400">Clave por defecto: 1234</p>
             </div>
             <form onsubmit="verifyWorkshopPassword(event)" class="space-y-4">
                 <input type="password" id="workshopPasswordInput" placeholder="Clave" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-center tracking-widest text-lg" required>
@@ -204,7 +204,7 @@
                     <div class="bg-slate-800/60 p-3 rounded-xl"><span class="text-[11px] text-slate-400 block">Costo / Unidad</span><span id="resCostoUnit" class="text-lg font-bold text-white">$0.00</span></div>
                     <div class="bg-emerald-500/10 border border-emerald-500/30 p-3 rounded-xl"><span class="text-[11px] text-emerald-300 block">Precio Sugerido / u.</span><span id="resPrecioPVP" class="text-xl font-black text-emerald-400">$0.00</span></div>
                     <div class="bg-brand-500/10 border border-brand-500/30 p-3 rounded-xl"><span class="text-[11px] text-brand-300 block">Set 6 u. ($)</span><span id="resPack6" class="text-xl font-black text-brand-400">$0.00</span></div>
-                    <div class="bg-sky-500/10 border border-sky-500/30 p-3 rounded-xl"><span class="text-[11px] text-sky-300 block">Extra > 6 u. ($)</span><span id="resExtraUnit" class="text-xl font-black text-sky-400">$0.00</span></div>
+                    <div class="bg-sky-500/10 border border-sky-500/30 p-3 rounded-xl"><span class="text-[11px] text-sky-300 block">Extra &gt; 6 u. ($)</span><span id="resExtraUnit" class="text-xl font-black text-sky-400">$0.00</span></div>
                 </div>
                 <button type="button" onclick="sendQuoteToCatalogModal()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl text-xs">Enviar Precios al Catálogo de Tienda Web</button>
             </div>
@@ -373,7 +373,7 @@
                         <input type="number" id="catProdPack6" step="0.01" value="9.50" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Extra > 6 u. ($ c/u)</label>
+                        <label class="block text-xs text-slate-300 mb-1">Extra &gt; 6 u. ($ c/u)</label>
                         <input type="number" id="catProdExtraUnit" step="0.005" value="0.625" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
                     </div>
                 </div>
@@ -493,6 +493,16 @@
     </div>
 
     <script>
+        const ATEL_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
+            authDomain: "atel-3d.firebaseapp.com",
+            projectId: "atel-3d",
+            storageBucket: "atel-3d.firebasestorage.app",
+            messagingSenderId: "752951171722",
+            appId: "1:752951171722:web:767eda5bd4da9b33ff2b73",
+            measurementId: "G-091YZ26DFW"
+        };
+
         const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='360' fill='%231e293b'%3E%3Crect width='600' height='360'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2394a3b8' font-family='sans-serif' font-size='18'%3ESin foto (ATEL 3D)%3C/text%3E%3C/svg%3E";
 
         const defaultFilaments = [
@@ -522,22 +532,27 @@
         let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
         let orders = JSON.parse(localStorage.getItem('atel_orders_v2')) || defaultOrders;
         let pendingOrders = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-        let workshopPassword = localStorage.getItem('atel_pass') || 'Moschanky2026@';
+        let workshopPassword = localStorage.getItem('atel_pass') || '1234';
         let isUnlocked = sessionStorage.getItem('atel_session_unlocked') === '1';
         let currentFilter = 'todos';
         let mirrorPhotoIdx = {};
         let dbRef = null;
+        let isApplyingCloudSnapshot = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            if (!localStorage.getItem('atel_firebase_cfg')) {
+                localStorage.setItem('atel_firebase_cfg', JSON.stringify(ATEL_FIREBASE_CONFIG, null, 2));
+            }
             if (!isUnlocked) {
                 document.getElementById('lockLabel').textContent = 'Bloqueado';
                 document.getElementById('btnCancelAuth').classList.add('hidden');
                 document.getElementById('workshopAuthModal').classList.remove('hidden');
             }
             initFirebase();
+            initCrossTabListeners();
             calcularCotizacion3D();
-            saveLocalAndSync(false);
+            saveLocalAndSync(true);
             renderAll();
         });
 
@@ -571,53 +586,118 @@
             localStorage.setItem('atel_orders_v2', JSON.stringify(orders));
             localStorage.setItem('atel_pending_orders', JSON.stringify(pendingOrders));
 
-            if (pushToCloud && dbRef) {
+            if (pushToCloud && dbRef && !isApplyingCloudSnapshot) {
+                const ts = new Date().toISOString();
                 dbRef.collection('atel3d').doc('store').set({
                     products,
                     availableFilaments,
-                    updatedAt: new Date().toISOString()
+                    updatedAt: ts
                 }, { merge: true }).catch(err => console.warn('Error guardando store:', err));
 
                 dbRef.collection('atel3d').doc('workshop').set({
                     filaments,
                     orders,
                     pendingOrders,
-                    updatedAt: new Date().toISOString()
+                    updatedAt: ts
                 }, { merge: true }).catch(err => console.warn('Error guardando workshop:', err));
             }
         }
 
-        function initFirebase() {
+        function resolveWorkshopFirebaseConfig() {
             const rawCfg = localStorage.getItem('atel_firebase_cfg');
-            if (!rawCfg || typeof firebase === 'undefined') return;
-            try {
+            if (rawCfg) {
                 const match = rawCfg.match(/\{[\s\S]*\}/);
-                if (!match) return;
-                const cfg = (new Function('return ' + match[0]))();
+                if (match) {
+                    return (new Function('return ' + match[0]))();
+                }
+            }
+            return ATEL_FIREBASE_CONFIG;
+        }
+
+        function initFirebase() {
+            if (typeof firebase === 'undefined') return;
+            try {
+                const cfg = resolveWorkshopFirebaseConfig();
+                if (!cfg || !cfg.apiKey) return;
                 if (!firebase.apps.length) firebase.initializeApp(cfg);
                 dbRef = firebase.firestore();
                 document.getElementById('cloudStatusLabel').textContent = 'Nube Activa';
 
                 dbRef.collection('atel3d').doc('store').onSnapshot(doc => {
-                    if (doc.exists && Array.isArray(doc.data().products)) {
-                        products = doc.data().products;
-                        localStorage.setItem('atel_products_v2', JSON.stringify(products));
+                    if (!doc.exists) return;
+                    const data = doc.data();
+                    isApplyingCloudSnapshot = true;
+                    try {
+                        if (Array.isArray(data.products)) {
+                            products = data.products;
+                            localStorage.setItem('atel_products_v2', JSON.stringify(products));
+                        }
+                        if (Array.isArray(data.availableFilaments)) {
+                            localStorage.setItem('atel_available_filaments', JSON.stringify(data.availableFilaments));
+                        }
                         renderAll();
+                    } finally {
+                        isApplyingCloudSnapshot = false;
                     }
                 });
 
                 dbRef.collection('atel3d').doc('workshop').onSnapshot(doc => {
-                    if (doc.exists) {
-                        const d = doc.data();
+                    if (!doc.exists) return;
+                    const d = doc.data();
+                    isApplyingCloudSnapshot = true;
+                    try {
                         if (Array.isArray(d.pendingOrders)) {
-                            pendingOrders = d.pendingOrders;
+                            const merged = new Map();
+                            [...d.pendingOrders, ...pendingOrders].forEach(item => {
+                                if (item && item.id && !merged.has(item.id)) merged.set(item.id, item);
+                            });
+                            pendingOrders = Array.from(merged.values());
                             localStorage.setItem('atel_pending_orders', JSON.stringify(pendingOrders));
-                            renderPendingAlerts();
-                            renderDashboard();
                         }
+                        if (Array.isArray(d.filaments)) {
+                            filaments = d.filaments;
+                            localStorage.setItem('atel_filaments_v1', JSON.stringify(filaments));
+                        }
+                        if (Array.isArray(d.orders)) {
+                            orders = d.orders;
+                            localStorage.setItem('atel_orders_v2', JSON.stringify(orders));
+                        }
+                        renderAll();
+                    } finally {
+                        isApplyingCloudSnapshot = false;
                     }
                 });
-            } catch (e) {}
+            } catch (e) {
+                console.warn('Error inicializando Firebase en taller:', e);
+            }
+        }
+
+        function initCrossTabListeners() {
+            window.addEventListener('storage', (event) => {
+                if (!event.key) return;
+                if (event.key === 'atel_pending_orders') {
+                    pendingOrders = JSON.parse(event.newValue || '[]');
+                    renderPendingAlerts();
+                    renderDashboard();
+                } else if (event.key === 'atel_filaments_v1') {
+                    filaments = JSON.parse(event.newValue || '[]');
+                    renderFilaments();
+                } else if (event.key === 'atel_products_v2') {
+                    products = JSON.parse(event.newValue || '[]');
+                    renderInventory();
+                    renderWebCatalogMirror();
+                } else if (event.key === 'atel_orders_v2') {
+                    orders = JSON.parse(event.newValue || '[]');
+                    renderOrders();
+                    renderDashboard();
+                }
+            });
+
+            window.addEventListener('focus', () => {
+                pendingOrders = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
+                renderPendingAlerts();
+                renderDashboard();
+            });
         }
 
         function switchTab(tabId) {
@@ -1399,7 +1479,7 @@
             orders.forEach(o => csv += `"${o.client}","${o.productName}",${o.qty},${o.total},${o.paid},"${o.status}"\n`);
             const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'atel3d.csv'; a.click();
         }
-        function openCloudModal() { document.getElementById('firebaseConfigInput').value = localStorage.getItem('atel_firebase_cfg') || ''; document.getElementById('cloudModal').classList.remove('hidden'); }
+        function openCloudModal() { document.getElementById('firebaseConfigInput').value = localStorage.getItem('atel_firebase_cfg') || JSON.stringify(ATEL_FIREBASE_CONFIG, null, 2); document.getElementById('cloudModal').classList.remove('hidden'); }
         function closeCloudModal() { document.getElementById('cloudModal').classList.add('hidden'); }
         function saveCloudConfig() { localStorage.setItem('atel_firebase_cfg', document.getElementById('firebaseConfigInput').value.trim()); initFirebase(); saveLocalAndSync(true); closeCloudModal(); }
     </script>
