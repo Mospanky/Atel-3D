@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATEL 3D — Ideas que toman forma</title>
+    <title>ATEL 3D — Ideas que toman forma | Impresión 3D Personalizada</title>
+    <meta name="description" content="Catálogo oficial de ATEL 3D: servilleteros, bookmarks, bombillos personalizados y piezas funcionales impresas en 3D con acabado profesional.">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,8 +13,20 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { 50: '#fff7ed', 100: '#ffedd5', 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 900: '#7c2d12' },
-                        dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            900: '#7c2d12'
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617'
+                        }
                     }
                 }
             }
@@ -25,214 +38,322 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .glass-card { background: rgba(15, 23, 42, 0.78); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.55); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- ENCABEZADO PÚBLICO -->
-    <header class="bg-dark-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
+    <!-- NAVEGACIÓN SUPERIOR -->
+    <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="#" class="flex items-center space-x-3">
-                <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-11 h-11 rounded-xl object-cover shadow-lg shadow-brand-600/30 border border-brand-500/40">
-                <div>
-                    <span class="font-extrabold text-lg tracking-wide text-white block leading-none">ATEL 3D</span>
-                    <span class="text-xs text-brand-400 font-medium">Ideas que toman forma</span>
+                <img src="icon.png" alt="ATEL 3D Logo" onerror="this.style.display='none'" class="w-11 h-11 rounded-xl object-cover border border-brand-500/40 shadow-lg shadow-brand-600/25">
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-xl tracking-tight text-white leading-none">ATEL <span class="text-brand-500">3D</span></span>
+                    <span class="text-[11px] font-medium text-slate-400 tracking-wide mt-0.5">Ideas que toman forma</span>
                 </div>
             </a>
 
-            <nav class="hidden md:flex items-center space-x-6 text-sm text-slate-300">
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
                 <a href="#catalogo" class="hover:text-brand-400 transition">Catálogo</a>
-                <a href="#cotizar-medida" class="hover:text-brand-400 transition">Pedido a Medida</a>
+                <a href="#personalizado" class="hover:text-brand-400 transition">Pedido a Medida</a>
                 <a href="#nosotros" class="hover:text-brand-400 transition">Nosotros</a>
             </nav>
 
-            <div class="flex items-center space-x-2">
-                <button type="button" onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
-                    <i data-lucide="shopping-cart" class="w-4 h-4 text-brand-400"></i>
-                    <span>Carrito</span>
-                    <span id="cartBadge" class="bg-brand-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
+            <div class="flex items-center space-x-3">
+                <button type="button" onclick="toggleCart()" class="relative bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-3.5 py-2.5 rounded-xl flex items-center space-x-2 transition">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-400"></i>
+                    <span class="text-xs font-semibold hidden sm:inline">Mi Pedido</span>
+                    <span id="cartCountBadge" class="bg-brand-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- HERO -->
-    <section class="relative overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-dark-900 to-dark-950">
-        <div class="max-w-7xl mx-auto px-4 py-12 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-7 space-y-5">
-                <span id="storeHeroBadge" class="inline-flex items-center space-x-2 bg-brand-500/10 border border-brand-500/30 text-brand-300 px-3 py-1 rounded-full text-xs font-semibold">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    <span>Diseño y Fabricación Digital 3D</span>
-                </span>
-                <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
-                    Ideas que toman forma con <span class="text-brand-500">precisión 3D</span>
+    <!-- HERO PRINCIPAL -->
+    <section class="relative overflow-hidden border-b border-slate-800/60">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(234,88,12,0.18),_transparent_55%)]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-22 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-brand-500/10 border border-brand-500/30 rounded-full px-3.5 py-1.5 text-brand-400 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    <span id="heroBadgeText">Diseño y Fabricación Digital 3D</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.08]">
+                    ATEL 3D: <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-amber-300">Ideas que toman forma.</span>
                 </h1>
-                <p class="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
-                    En <strong class="text-white">ATEL 3D</strong> creamos piezas decorativas, detalles personalizados, sets para eventos y prototipos a medida en impresión 3D. Elige de nuestro catálogo o solicita un diseño exclusivo directo por WhatsApp.
+                <p class="text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed">
+                    Fabricamos accesorios decorativos, artículos personalizados para eventos, organizadores y piezas técnicas con precisión milimétrica y acabados limpios.
                 </p>
-                <div class="flex flex-wrap gap-3 pt-1">
-                    <a href="#catalogo" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-3 rounded-xl text-sm transition shadow-lg shadow-brand-600/25">
-                        Explorar Catálogo
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="#catalogo" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3.5 rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center space-x-2">
+                        <span>Explorar Catálogo</span>
+                        <i data-lucide="arrow-down" class="w-4 h-4"></i>
                     </a>
-                    <a href="#cotizar-medida" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl text-sm border border-slate-700 transition">
-                        Solicitar Pedido a Medida
+                    <a href="#personalizado" class="bg-slate-800/90 hover:bg-slate-800 border border-slate-700 text-slate-200 font-semibold px-6 py-3.5 rounded-xl transition flex items-center space-x-2">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-brand-400"></i>
+                        <span>Cotizar Proyecto Personalizado</span>
                     </a>
                 </div>
             </div>
 
             <div class="lg:col-span-5">
-                <div class="bg-dark-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-brand-400">ATEL 3D • Cuenca, Ecuador</span>
-                        <span class="text-xs text-emerald-400 font-semibold">● Envíos y entregas locales</span>
+                <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-700/60 space-y-5">
+                    <div class="flex items-center space-x-4">
+                        <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-16 h-16 rounded-2xl object-cover border border-brand-500/40 shadow-md">
+                        <div>
+                            <h2 class="text-xl font-bold text-white">Atelier de Diseño 3D</h2>
+                            <p class="text-xs text-slate-400">Cuenca, Ecuador • Envíos a todo el país</p>
+                        </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Personalización</p>
-                            <p class="text-white font-bold text-sm mt-0.5">Nombres, logos y colores</p>
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3.5">
+                            <p class="text-brand-400 font-bold text-sm mb-1">Multicolor Real</p>
+                            <p class="text-slate-400">Combinaciones en rojo, blanco, dorado, negro y más colores en stock.</p>
                         </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Precios por volumen</p>
-                            <p class="text-white font-bold text-sm mt-0.5">Sets y descuentos</p>
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3.5">
+                            <p class="text-brand-400 font-bold text-sm mb-1">Descuentos por Set</p>
+                            <p class="text-slate-400">Precios especiales por packs y pedidos corporativos o de eventos.</p>
                         </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Materiales</p>
-                            <p class="text-white font-bold text-sm mt-0.5">PLA, PETG y más</p>
+                    </div>
+                    <div class="bg-brand-500/10 border border-brand-500/20 rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-slate-300 font-medium">¿Tienes un archivo STL o una idea?</p>
+                            <p class="text-sm font-bold text-white">Lo diseñamos e imprimimos por ti</p>
                         </div>
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5">
-                            <p class="text-slate-400">Atención directa</p>
-                            <p class="text-white font-bold text-sm mt-0.5">Pedido rápido WhatsApp</p>
-                        </div>
+                        <a href="#personalizado" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition">Solicitar</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CATÁLOGO PÚBLICO -->
-    <section id="catalogo" class="max-w-7xl w-full mx-auto px-4 py-12 space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-800 pb-4">
+    <!-- CATÁLOGO DE PRODUCTOS -->
+    <section id="catalogo" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
             <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-400">Catálogo Disponible</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Productos ATEL 3D</h2>
+                <span class="text-brand-400 text-xs font-bold uppercase tracking-wider">Colección Disponible</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Catálogo de Productos 3D</h2>
+                <p class="text-slate-400 text-sm mt-1">Selecciona el producto, ajusta los colores disponibles en inventario y elige la cantidad (arranca en 0 para evitar errores).</p>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <button type="button" onclick="filterCatalog('ALL')" id="cat-ALL" class="cat-btn bg-brand-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold">Todos</button>
-                <button type="button" onclick="filterCatalog('Atel home')" id="cat-Atel home" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Atel home</button>
-                <button type="button" onclick="filterCatalog('Atel pro')" id="cat-Atel pro" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Atel pro</button>
-                <button type="button" onclick="filterCatalog('Atel lab')" id="cat-Atel lab" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Atel lab</button>
+            <div class="flex flex-wrap gap-2" id="categoryFilters">
+                <button type="button" onclick="filterCatalog('ALL')" data-cat="ALL" class="cat-btn bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">Todos</button>
+                <button type="button" onclick="filterCatalog('Atel home')" data-cat="Atel home" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl transition">Atel home</button>
+                <button type="button" onclick="filterCatalog('Atel pro')" data-cat="Atel pro" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl transition">Atel pro</button>
+                <button type="button" onclick="filterCatalog('Atel lab')" data-cat="Atel lab" class="cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl transition">Atel lab</button>
             </div>
         </div>
 
-        <div id="publicCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
     </section>
 
-    <!-- PEDIDO A MEDIDA -->
-    <section id="cotizar-medida" class="max-w-7xl w-full mx-auto px-4 pb-14">
-        <div class="bg-dark-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-5 space-y-3">
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-400">Proyectos Especiales</span>
-                <h2 class="text-2xl font-extrabold text-white">¿Buscas algo personalizado o en cantidad?</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
-                    Cuéntanos tu idea, medidas aproximadas, colores y cantidad. Te enviamos una cotización clara y sin compromiso por WhatsApp.
-                </p>
+    <!-- PEDIDO PERSONALIZADO / A MEDIDA -->
+    <section id="personalizado" class="py-16 bg-slate-900/50 border-y border-slate-800/70">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <span class="text-brand-400 text-xs font-bold uppercase tracking-wider">Fabricación a Medida</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Solicita tu Diseño Personalizado</h2>
+                <p class="text-slate-400 text-sm mt-2">Cuéntanos qué necesitas fabricar, los colores y las medidas aproximadas. Te enviaremos tu cotización y lo registraremos en el taller.</p>
             </div>
 
-            <form onsubmit="sendCustomWhatsApp(event)" class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Tu Nombre *</label>
-                    <input type="text" id="custName" required placeholder="Ej: Valeria López" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
+            <form onsubmit="sendCustomRequest(event)" class="glass-card rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Tu Nombre *</label>
+                        <input type="text" id="custName" required placeholder="Ej: María Fernanda" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">WhatsApp / Teléfono *</label>
+                        <input type="text" id="custPhone" required placeholder="Ej: 099 123 4567" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Material Preferido</label>
+                        <select id="custMaterial" onchange="updateCustomColorOptions()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                            <option value="PLA">PLA (Decorativo / Regalos)</option>
+                            <option value="PETG">PETG (Mayor resistencia)</option>
+                            <option value="TPU">TPU (Flexible)</option>
+                            <option value="Asesoría">Necesito recomendación</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Colores Deseados</label>
+                        <select id="custColors" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Cantidad Estimada</label>
+                        <input type="number" id="custQty" value="1" min="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Tipo de Pieza / Proyecto *</label>
-                    <input type="text" id="custItem" required placeholder="Ej: Recuerdos de boda, soporte, llaveros" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5">Descripción de tu idea, nombres o medidas *</label>
+                    <textarea id="custNotes" rows="3" required placeholder="Describe la pieza que deseas, nombres personalizados, texto o medidas aproximadas..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500"></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Cantidad Aproximada</label>
-                    <input type="number" id="custQty" value="10" min="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Colores Preferidos</label>
-                    <input type="text" id="custColor" placeholder="Ej: Dorado, blanco o rojo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white">
-                </div>
-                <div class="sm:col-span-2">
-                    <label class="block text-xs text-slate-400 mb-1">Detalles / Nombres / Fecha deseada</label>
-                    <textarea id="custNotes" rows="2" placeholder="Describe tu idea o fecha de entrega..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"></textarea>
-                </div>
-                <div class="sm:col-span-2 flex justify-end">
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition flex items-center space-x-2">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                        <span>Enviar Solicitud por WhatsApp</span>
-                    </button>
-                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center space-x-2">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    <span>Confirmar Solicitud y Enviar al Taller</span>
+                </button>
             </form>
         </div>
     </section>
 
-    <!-- NOSOTROS Y PIE DE PÁGINA -->
-    <footer id="nosotros" class="bg-dark-900 border-t border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
-            <div class="space-y-2">
-                <div class="flex items-center space-x-2.5">
-                    <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-8 h-8 rounded-lg object-cover">
-                    <span class="font-extrabold text-white text-base">ATEL 3D</span>
+    <!-- NOSOTROS Y FOOTER -->
+    <footer id="nosotros" class="bg-dark-950 py-12 border-t border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <img src="icon.png" alt="Logo ATEL 3D" onerror="this.style.display='none'" class="w-10 h-10 rounded-xl object-cover border border-brand-500/40">
+                    <div>
+                        <span class="font-extrabold text-lg text-white">ATEL <span class="text-brand-500">3D</span></span>
+                        <p class="text-xs text-slate-400">Ideas que toman forma</p>
+                    </div>
                 </div>
-                <p class="text-xs text-brand-400 font-semibold">Ideas que toman forma</p>
-                <p id="storeAboutText" class="text-xs text-slate-400 leading-relaxed">
+                <p id="footerAboutText" class="text-xs text-slate-400 leading-relaxed">
                     Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos.
                 </p>
             </div>
-            <div class="space-y-2 text-xs text-slate-300 md:text-right">
-                <p class="font-bold text-white uppercase tracking-wider">Contacto</p>
-                <p>Ubicación: Cuenca, Azuay, Ecuador</p>
-                <p>WhatsApp: <span id="storeWhatsappDisplay">+593 99 840 0131</span></p>
-                <p class="pt-2 text-slate-400">© <span id="yearNow"></span> ATEL 3D. Todos los derechos reservados.</p>
+
+            <div class="space-y-2 text-xs text-slate-400">
+                <h3 class="text-sm font-bold text-white mb-2">Atención y Entregas</h3>
+                <p>• Entregas personales en Cuenca, Ecuador.</p>
+                <p>• Envíos seguros a todas las provincias del Ecuador.</p>
+                <p>• Pedidos personalizados bajo cotización previa.</p>
             </div>
+
+            <div class="space-y-3 text-xs">
+                <h3 class="text-sm font-bold text-white">Contacto Directo</h3>
+                <a id="footerWhatsappBtn" href="https://wa.me/593998400131" target="_blank" class="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-4 py-2.5 rounded-xl transition">
+                    <i data-lucide="phone" class="w-4 h-4 text-emerald-400"></i>
+                    <span id="footerWhatsappLabel">WhatsApp ATEL 3D</span>
+                </a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500 gap-2">
+            <span>© 2026 ATEL 3D — Ideas que toman forma. Todos los derechos reservados.</span>
+            <span>Catálogo sincronizado en tiempo real con el taller.</span>
         </div>
     </footer>
 
-    <!-- MODAL CARRITO DE COMPRAS -->
-    <div id="cartModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shopping-cart" class="w-5 h-5 text-brand-400"></i>
-                    <h3 class="text-lg font-bold text-white">Tu Pedido / Carrito ATEL 3D</h3>
-                </div>
-                <button type="button" onclick="closeCartModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+    <!-- MODAL DETALLE DE PRODUCTO (GALERÍA DE HASTA 3 FOTOS) -->
+    <div id="productDetailModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-slate-800 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto">
+            <div class="relative bg-slate-800 h-72 sm:h-80">
+                <img id="detailMainImg" src="" alt="Detalle producto" class="w-full h-full object-cover">
+                <button type="button" onclick="closeProductDetail()" class="absolute top-3 right-3 bg-slate-950/80 hover:bg-slate-900 text-white p-2 rounded-full border border-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <span id="detailCategoryBadge" class="absolute top-3 left-3 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow"></span>
             </div>
 
-            <div id="cartItemsContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1"></div>
+            <div class="p-6 space-y-4">
+                <div id="detailThumbsRow" class="flex items-center gap-2.5"></div>
 
-            <div id="cartCheckoutForm" class="space-y-3 pt-3 border-t border-slate-800 text-xs">
-                <div class="flex items-center justify-between bg-slate-800/70 border border-slate-700 rounded-xl px-4 py-3">
-                    <span class="text-slate-300 font-medium">Total Estimado del Pedido:</span>
-                    <span id="cartGrandTotal" class="text-xl font-black text-brand-400">$0.00</span>
+                <div class="flex flex-wrap justify-between items-start gap-2">
+                    <div>
+                        <h3 id="detailTitle" class="text-xl font-extrabold text-white"></h3>
+                        <p id="detailDesc" class="text-xs text-slate-400 mt-1"></p>
+                    </div>
+                    <div class="text-right">
+                        <span id="detailUnitPrice" class="text-xl font-extrabold text-brand-400"></span>
+                        <p id="detailStockBadge" class="text-[11px] font-semibold mt-0.5"></p>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-400 mb-1">Tu Nombre *</label>
-                        <input type="text" id="cartClientName" required placeholder="Ej: María Pérez" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                <div id="detailPacksBox" class="bg-slate-800/50 border border-slate-800 rounded-2xl p-3 text-xs space-y-1.5"></div>
+
+                <!-- SELECTORES DE COLOR DEL DETALLE -->
+                <div id="detailColorSelectors" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs"></div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 items-center">
+                    <div class="flex items-center justify-between bg-slate-800 rounded-xl px-4 py-2.5 border border-slate-700">
+                        <span class="text-xs text-slate-300">Cantidad:</span>
+                        <div class="flex items-center space-x-3">
+                            <button type="button" onclick="changeDetailQty(-1)" class="text-slate-300 hover:text-white font-bold text-base px-1">−</button>
+                            <span id="detailQtyVal" class="font-bold text-white text-sm min-w-[1.5rem] text-center">0</span>
+                            <button type="button" onclick="changeDetailQty(1)" class="text-slate-300 hover:text-white font-bold text-base px-1">+</button>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">Tu Teléfono / WhatsApp</label>
-                        <input type="text" id="cartClientPhone" placeholder="Ej: 099..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white">
+                    <button type="button" id="detailAddBtn" onclick="addDetailProductToCart()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center space-x-2">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        <span>Agregar ($0.00)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DESLIZABLE DEL CARRITO / MI PEDIDO -->
+    <div id="cartDrawer" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex justify-end">
+        <div class="bg-dark-900 border-l border-slate-800 w-full max-w-md h-full flex flex-col justify-between p-6 shadow-2xl overflow-y-auto">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-400"></i>
+                        <h3 class="text-lg font-bold text-white">Resumen de tu Pedido</h3>
                     </div>
+                    <button type="button" onclick="toggleCart()" class="text-slate-400 hover:text-white p-1">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div id="cartItemsList" class="space-y-3 max-h-[38vh] overflow-y-auto pr-1"></div>
+
+                <div class="border-t border-slate-800 pt-4 space-y-3">
+                    <p class="text-xs font-semibold text-slate-300">Datos para coordinar tu entrega:</p>
+                    <input type="text" id="orderClientName" placeholder="Tu Nombre *" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <input type="text" id="orderClientPhone" placeholder="Tu WhatsApp / Teléfono *" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <input type="text" id="orderDeliveryCity" placeholder="Ciudad (Ej: Cuenca) o Envío Nacional" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <textarea id="orderCustomNotes" rows="2" placeholder="Nombres para grabar o detalles adicionales..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-4 mt-4 space-y-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-400">Total Estimado:</span>
+                    <span id="cartTotalAmount" class="text-2xl font-extrabold text-brand-400">$0.00</span>
+                </div>
+                <button type="button" onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center space-x-2 text-sm">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    <span>Confirmar Pedido y Enviar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMACIÓN DE PEDIDO Y ENLACE DIRECTO A WHATSAPP -->
+    <div id="orderConfirmationModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-dark-900 border border-emerald-500/40 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-5">
+            <div class="flex items-start gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <label class="block text-slate-400 mb-1">Nombres para personalizar / Notas generales</label>
-                    <textarea id="cartGeneralNotes" rows="2" placeholder="Ej: Nombres de invitados, entrega en Cuenca..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"></textarea>
+                    <h3 class="text-xl font-extrabold text-white">¡Pedido Confirmado!</h3>
+                    <p id="confirmSyncStatus" class="text-xs text-emerald-300 mt-1">
+                        Tu pedido fue registrado y enviado como notificación al panel del taller ATEL 3D.
+                    </p>
                 </div>
+            </div>
 
-                <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                    <button type="button" onclick="clearCart()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-300 text-xs">Vaciar carrito</button>
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="closeCartModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Seguir viendo</button>
-                        <button type="button" onclick="submitCartOrder()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
-                            <i data-lucide="send" class="w-3.5 h-3.5"></i> Enviar Pedido por WhatsApp
-                        </button>
-                    </div>
+            <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 space-y-2">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Detalle del pedido enviado</span>
+                <pre id="confirmMessagePreview" class="text-xs text-slate-200 whitespace-pre-wrap font-sans leading-relaxed max-h-48 overflow-y-auto"></pre>
+            </div>
+
+            <div class="space-y-2.5">
+                <a id="confirmWhatsappDirectLink" href="https://wa.me/593998400131" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/25 transition flex items-center justify-center gap-2 text-sm">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    <span>Abrir WhatsApp y Enviar al Taller</span>
+                </a>
+                <div class="grid grid-cols-2 gap-2.5 text-xs">
+                    <button type="button" onclick="copyConfirmedOrderMessage()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span id="copyConfirmBtnLabel">Copiar mensaje</span>
+                    </button>
+                    <button type="button" onclick="closeOrderConfirmationModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold py-2.5 rounded-xl transition">
+                        Listo, volver a la tienda
+                    </button>
                 </div>
             </div>
         </div>
@@ -257,488 +378,652 @@
             about: "Somos un estudio de fabricación digital e impresión 3D con base en Cuenca, Azuay, Ecuador. Cuidamos cada detalle de diseño, acabado superficial y combinación de colores para entregar piezas funcionales, decorativas y personalizadas para hogares, eventos y emprendimientos."
         };
 
+        const defaultAvailableFilaments = [
+            { id: "fil_1", type: "PLA", color: "Rojo", grams: 1000 },
+            { id: "fil_2", type: "PLA", color: "Blanco", grams: 1000 },
+            { id: "fil_3", type: "PLA", color: "Dorado", grams: 1000 }
+        ];
+
         const defaultProducts = [
-            { id: "prod_servilleteros", name: "Servilleteros Navideños", category: "Atel home", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 10, basePrice: 2.00, pack6Price: 9.50, extraUnitPrice: 0.625, images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=80", featured: true, description: "Pasadas 6 unidades aplica descuento por cantidad (10 u. = $12.00).", packs: [{qty:6, price:9.50}, {qty:8, price:10.00}, {qty:10, price:12.00}, {qty:12, price:19.00}] },
-            { id: "prod_bookmarks", name: "Bookmarks Navideños", category: "Atel lab", filament: "PLA", colorCount: 1, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Blanco", "", "", ""], stock: 15, basePrice: 1.00, pack6Price: 4.80, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80", featured: true, description: "Separadores navideños personalizables en impresión 3D.", packs: [{qty:5, price:4.00}, {qty:8, price:6.50}] },
-            { id: "prod_bombillos", name: "Bombillos 3D Personalizados", category: "Atel home", filament: "PLA", colorCount: 2, colorLabels: ["Bombillo color", "Nombre color", "Color 3", "Color 4"], colors: ["Dorado", "Blanco", "", ""], stock: 8, basePrice: 3.00, pack6Price: 15.00, extraUnitPrice: 1.80, images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=500&q=80", featured: true, description: "Esferas navideñas con nombres personalizados en relieve.", packs: [{qty:4, price:10.00}, {qty:6, price:15.00}] },
-            { id: "prod_revolvedores", name: "Revolvedores Navideños", category: "Atel pro", filament: "PLA", colorCount: 2, colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"], colors: ["Rojo", "Blanco", "", ""], stock: 12, basePrice: 1.00, pack6Price: 5.10, extraUnitPrice: 0.60, images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", "", ""], image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80", featured: true, description: "Agitadores navideños ideales para eventos, cafeterías y cenas.", packs: [{qty:8, price:6.75}, {qty:12, price:11.00}] }
+            {
+                id: "prod_servilleteros",
+                name: "Servilleteros Navideños",
+                category: "Atel home",
+                filament: "PLA",
+                colorCount: 2,
+                colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"],
+                colors: ["Rojo", "Blanco", "", ""],
+                stock: 10,
+                basePrice: 2.00,
+                pack6Price: 9.50,
+                extraUnitPrice: 0.625,
+                images: ["https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80", "", ""],
+                image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=600&q=80",
+                featured: true,
+                description: "Diseños navideños en relieve. Pasadas 6 unidades aplica descuento por cantidad (10 u. = $12.00).",
+                packs: [{ qty: 6, price: 9.50 }, { qty: 8, price: 10.00 }, { qty: 10, price: 12.00 }, { qty: 12, price: 19.00 }]
+            },
+            {
+                id: "prod_bookmarks",
+                name: "Bookmarks Navideños",
+                category: "Atel lab",
+                filament: "PLA",
+                colorCount: 1,
+                colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"],
+                colors: ["Blanco", "", "", ""],
+                stock: 15,
+                basePrice: 1.00,
+                pack6Price: 4.80,
+                extraUnitPrice: 0.60,
+                images: ["https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80", "", ""],
+                image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
+                featured: true,
+                description: "Separadores de lectura con acabado nítido, ideales para detalles corporativos o nombres personalizados.",
+                packs: [{ qty: 5, price: 4.00 }, { qty: 8, price: 6.50 }]
+            },
+            {
+                id: "prod_bombillos",
+                name: "Bombillos 3D Personalizados",
+                category: "Atel home",
+                filament: "PLA",
+                colorCount: 2,
+                colorLabels: ["Bombillo color", "Nombre color", "Color 3", "Color 4"],
+                colors: ["Dorado", "Blanco", "", ""],
+                stock: 8,
+                basePrice: 3.00,
+                pack6Price: 15.00,
+                extraUnitPrice: 1.80,
+                images: ["https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=600&q=80", "", ""],
+                image: "https://images.unsplash.com/photo-1545048702-79362596cdc9?auto=format&fit=crop&w=600&q=80",
+                featured: true,
+                description: "Esferas navideñas 3D personalizadas con el nombre de cada integrante de tu familia.",
+                packs: [{ qty: 4, price: 10.00 }, { qty: 6, price: 15.00 }]
+            },
+            {
+                id: "prod_revolvedores",
+                name: "Revolvedores Navideños",
+                category: "Atel pro",
+                filament: "PLA",
+                colorCount: 2,
+                colorLabels: ["Color 1", "Color 2", "Color 3", "Color 4"],
+                colors: ["Rojo", "Blanco", "", ""],
+                stock: 12,
+                basePrice: 1.00,
+                pack6Price: 5.10,
+                extraUnitPrice: 0.60,
+                images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80", "", ""],
+                image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80",
+                featured: true,
+                description: "Agitadores temáticos resistentes y reutilizables para bebidas, cócteles y cafeterías.",
+                packs: [{ qty: 8, price: 6.75 }, { qty: 12, price: 11.00 }]
+            }
         ];
 
         let storeConfig = JSON.parse(localStorage.getItem('atel_store_config')) || defaultStoreConfig;
         let products = JSON.parse(localStorage.getItem('atel_products_v2')) || defaultProducts;
-        let cart = JSON.parse(localStorage.getItem('atel_cart') || '[]');
-        let currentCategory = 'ALL';
+        let availableFilaments = JSON.parse(localStorage.getItem('atel_available_filaments') || 'null') || getFallbackFilamentsFromLocal();
+        let cart = JSON.parse(localStorage.getItem('atel_cart')) || [];
+        let activeCategory = 'ALL';
+        let selectedQtyByProd = {};
+        let selectedColorsByProd = {};
+        let currentDetailProdId = null;
+        let detailQty = 0;
+        let detailSelectedColors = ['', '', '', ''];
         let db = null;
+        let lastConfirmedMessage = '';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('yearNow').textContent = new Date().getFullYear();
-            applyStoreConfig();
-            renderCatalog();
-            updateCartBadge();
-            initStoreFirebase();
-            initCrossTabStoreSync();
-            lucide.createIcons();
-        });
-
-        function initCrossTabStoreSync() {
-            window.addEventListener('storage', (event) => {
-                if (!event.key) return;
-                if (event.key === 'atel_products_v2') {
-                    products = JSON.parse(event.newValue || '[]');
-                    renderCatalog();
-                } else if (event.key === 'atel_available_filaments') {
-                    renderCatalog();
-                } else if (event.key === 'atel_store_config') {
-                    storeConfig = JSON.parse(event.newValue || 'null') || defaultStoreConfig;
-                    applyStoreConfig();
-                } else if (event.key === 'atel_cart') {
-                    cart = JSON.parse(event.newValue || '[]');
-                    updateCartBadge();
-                }
-            });
-        }
-
-        function applyStoreConfig() {
-            document.getElementById('storeHeroBadge').innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>${storeConfig.badge || defaultStoreConfig.badge}</span>`;
-            document.getElementById('storeAboutText').textContent = storeConfig.about || defaultStoreConfig.about;
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-            document.getElementById('storeWhatsappDisplay').textContent = `+${wa}`;
-            lucide.createIcons();
-        }
-
-        function getAvailableColorsForProduct(prod) {
-            const availFilaments = JSON.parse(localStorage.getItem('atel_available_filaments') || 'null');
-            if (Array.isArray(availFilaments) && availFilaments.length > 0) {
-                const prodMat = (prod.filament || 'PLA').toLowerCase().trim();
-                const matchingMat = availFilaments
-                    .filter(f => (f.type || 'PLA').toLowerCase().trim() === prodMat && Number(f.grams) > 0)
-                    .map(f => f.color)
-                    .filter(Boolean);
-                if (matchingMat.length > 0) {
-                    return [...new Set(matchingMat)];
-                }
-                const anyStock = availFilaments.filter(f => Number(f.grams) > 0).map(f => f.color).filter(Boolean);
-                if (anyStock.length > 0) {
-                    return [...new Set(anyStock)];
-                }
+        function getFallbackFilamentsFromLocal() {
+            const rawFils = JSON.parse(localStorage.getItem('atel_filaments') || 'null');
+            if (Array.isArray(rawFils) && rawFils.length) {
+                return rawFils
+                    .filter(f => Number(f.grams) > 0)
+                    .map(f => ({ id: f.id, type: f.type, color: f.color, grams: Number(f.grams) }));
             }
-            const fallbackCols = (prod.colors || []).filter(Boolean);
-            return fallbackCols.length ? [...new Set(fallbackCols)] : ['Rojo', 'Blanco', 'Dorado'];
+            return defaultAvailableFilaments;
         }
 
-        function getProductImages(p) {
-            const arr = Array.isArray(p.images) ? p.images.filter(u => u && u.trim()) : [];
-            if (arr.length) return arr.slice(0, 3);
-            if (p.image && p.image.trim()) return [p.image.trim()];
-            return [FALLBACK_IMG];
-        }
-
-        window.switchProductSlide = function(prodId, delta) {
-            const p = products.find(x => x.id === prodId);
-            if (!p) return;
-            const imgs = getProductImages(p);
-            if (imgs.length <= 1) return;
-            const currentIdx = parseInt(p._slideIdx || 0, 10);
-            const nextIdx = (currentIdx + delta + imgs.length) % imgs.length;
-            p._slideIdx = nextIdx;
-            const imgEl = document.getElementById(`prodSlideImg_${prodId}`);
-            if (imgEl) imgEl.src = imgs[nextIdx];
-            const dots = document.querySelectorAll(`.prod-dot-${prodId}`);
-            dots.forEach((d, i) => {
-                d.className = `prod-dot-${prodId} w-1.5 h-1.5 rounded-full transition ${i === nextIdx ? 'bg-brand-400 scale-125' : 'bg-white/50'}`;
-            });
-        };
-
-        function filterCatalog(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                const isSelected = btn.id === `cat-${cat}`;
-                btn.className = `cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
-                    isSelected ? 'bg-brand-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                }`;
-            });
-            renderCatalog();
-        }
-
-        function computeUnitPrice(prod, qty) {
-            const q = Math.max(1, parseInt(qty) || 1);
-            if (prod.packs && prod.packs.length > 0) {
-                const exactPack = prod.packs.find(pk => parseInt(pk.qty) === q);
-                if (exactPack) {
-                    return parseFloat(exactPack.price) / q;
-                }
-                const sortedPacks = [...prod.packs].sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
-                const lowerPack = sortedPacks.filter(pk => parseInt(pk.qty) < q).pop();
-                if (lowerPack) {
-                    const basePackQty = parseInt(lowerPack.qty);
-                    const basePackPrice = parseFloat(lowerPack.price);
-                    const extraPrice = parseFloat(prod.extraUnitPrice) || (basePackPrice / basePackQty);
-                    return (basePackPrice + ((q - basePackQty) * extraPrice)) / q;
-                }
-            } else {
-                if (q === 6) return Number(prod.pack6Price) / 6;
-                if (q > 6) return (Number(prod.pack6Price) + ((q - 6) * Number(prod.extraUnitPrice))) / q;
+        function getColorsInStockForMaterial(mat) {
+            const cleanMat = (mat || 'PLA').toLowerCase().trim();
+            const inStock = availableFilaments.filter(f => Number(f.grams) > 0);
+            let cols = inStock
+                .filter(f => (f.type || 'PLA').toLowerCase().trim() === cleanMat)
+                .map(f => f.color)
+                .filter(Boolean);
+            if (!cols.length && inStock.length) {
+                cols = inStock.map(f => f.color).filter(Boolean);
             }
-            return Number(prod.basePrice);
+            if (!cols.length) {
+                cols = ['Blanco', 'Rojo', 'Dorado'];
+            }
+            return [...new Set(cols)];
         }
 
-        function renderCatalog() {
-            const grid = document.getElementById('publicCatalogGrid');
-            grid.innerHTML = '';
-            const visibleProducts = products.filter(p => {
-                const isVisible = p.featured !== false;
-                const matchCat = currentCategory === 'ALL' || (p.category || 'Atel home') === currentCategory;
-                return isVisible && matchCat;
-            });
-
-            if (visibleProducts.length === 0) {
-                grid.innerHTML = `<div class="col-span-full bg-dark-900 border border-slate-800 rounded-2xl p-8 text-center text-sm text-slate-400">No hay productos publicados en esta categoría por el momento.</div>`;
-                return;
-            }
-
-            visibleProducts.forEach(p => {
-                const availableColors = getAvailableColorsForProduct(p);
-                const colCount = Math.max(1, Math.min(4, parseInt(p.colorCount) || ((p.colors || []).filter(Boolean).length || 2)));
-                const labels = Array.isArray(p.colorLabels) && p.colorLabels.length ? p.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
-
-                let colorSelectorsHtml = '';
-                for (let i = 0; i < colCount; i++) {
-                    const preferred = (p.colors && p.colors[i]) ? p.colors[i] : (availableColors[i % availableColors.length] || '');
-                    const optionsList = preferred && !availableColors.includes(preferred) ? [preferred, ...availableColors] : availableColors;
-                    const labelText = labels[i] || `Color ${i + 1}`;
-                    colorSelectorsHtml += `
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-0.5">${labelText}</label>
-                            <select id="colorSel_${p.id}_${i}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
-                                ${optionsList.map(c => `<option value="${c}" ${c === preferred ? 'selected' : ''}>${c}</option>`).join('')}
-                            </select>
-                        </div>
-                    `;
-                }
-
-                const packsChips = (p.packs && p.packs.length > 0)
-                    ? p.packs.map(pk => `<button type="button" onclick="selectPackQty('${p.id}', ${parseInt(pk.qty)})" class="text-[11px] bg-brand-500/10 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-md font-semibold transition cursor-pointer">Set ${pk.qty} u.: $${Number(pk.price).toFixed(2)}</button>`).join('')
-                    : `<button type="button" onclick="selectPackQty('${p.id}', 6)" class="text-[11px] bg-brand-500/10 hover:bg-brand-500/25 text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded-md font-semibold transition cursor-pointer">Set 6 u.: $${Number(p.pack6Price).toFixed(2)}</button>`;
-
-                const imgs = getProductImages(p);
-                const slideIdx = parseInt(p._slideIdx || 0, 10) % imgs.length;
-                const carouselHtml = imgs.length > 1
-                    ? `<button type="button" onclick="switchProductSlide('${p.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-950 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs transition">‹</button>
-                       <button type="button" onclick="switchProductSlide('${p.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-950/70 hover:bg-slate-950 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs transition">›</button>
-                       <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-slate-950/60 px-2 py-1 rounded-full">
-                           ${imgs.map((_, idx) => `<span class="prod-dot-${p.id} w-1.5 h-1.5 rounded-full transition ${idx === slideIdx ? 'bg-brand-400 scale-125' : 'bg-white/50'}"></span>`).join('')}
-                       </div>`
-                    : '';
-
-                const card = document.createElement('div');
-                card.className = 'bg-dark-900 border border-slate-800 hover:border-brand-500/50 rounded-2xl overflow-hidden flex flex-col shadow-lg transition';
-                card.innerHTML = `
-                    <div class="h-48 bg-slate-800 relative overflow-hidden">
-                        <img id="prodSlideImg_${p.id}" src="${imgs[slideIdx]}" alt="${p.name}" onerror="this.src='${FALLBACK_IMG}'" class="w-full h-full object-cover">
-                        <span class="absolute top-3 left-3 bg-slate-950/80 text-brand-300 border border-slate-700 text-[10px] font-bold px-2.5 py-1 rounded-full">
-                            ${p.category || 'Atel home'} • ${p.filament || 'PLA'}
-                        </span>
-                        ${carouselHtml}
-                    </div>
-                    <div class="p-4 flex-1 flex flex-col justify-between space-y-4">
-                        <div class="space-y-2">
-                            <div class="flex items-start justify-between gap-2">
-                                <h3 class="font-bold text-white text-base leading-snug">${p.name}</h3>
-                                <span id="unitPriceBadge_${p.id}" class="text-sm font-extrabold text-brand-400 whitespace-nowrap">$${Number(p.basePrice).toFixed(2)} <span class="text-[10px] font-normal text-slate-400">c/u</span></span>
-                            </div>
-                            ${p.description ? `<p class="text-[11px] text-slate-400 leading-relaxed">${p.description}</p>` : ''}
-                            <div class="flex flex-wrap gap-1.5 pt-0.5">${packsChips}</div>
-                        </div>
-
-                        <div class="space-y-2.5 pt-2 border-t border-slate-800 text-xs">
-                            <div class="grid grid-cols-2 gap-2">
-                                ${colorSelectorsHtml}
-                                <div class="${colCount % 2 === 1 ? '' : 'col-span-2'}">
-                                    <label class="block text-[10px] text-slate-400 mb-0.5">Cantidad</label>
-                                    <input type="number" id="qty_${p.id}" value="1" min="1" oninput="updateCardPricePreview('${p.id}')" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" onclick="addToCart('${p.id}')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 px-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-1 shadow-md shadow-brand-600/20">
-                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                    <span>Agregar</span>
-                                </button>
-                                <button type="button" onclick="orderSingleOnWhatsApp('${p.id}')" class="w-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 font-semibold py-2.5 px-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-1">
-                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                                    <span>Pedir ya</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        window.selectPackQty = function(prodId, qty) {
-            const qtyInput = document.getElementById(`qty_${prodId}`);
-            if (qtyInput) {
-                qtyInput.value = qty;
-                updateCardPricePreview(prodId);
-            }
-        };
-
-        window.updateCardPricePreview = function(prodId) {
-            const p = products.find(x => x.id === prodId);
-            const qtyInput = document.getElementById(`qty_${prodId}`);
-            const badge = document.getElementById(`unitPriceBadge_${prodId}`);
-            if (!p || !qtyInput || !badge) return;
-            const q = Math.max(1, parseInt(qtyInput.value) || 1);
-            const unit = computeUnitPrice(p, q);
-            badge.innerHTML = `$${unit.toFixed(2)} <span class="text-[10px] font-normal text-slate-400">c/u</span>`;
-        };
-
-        function getSelectedColorsForProduct(prod) {
-            const colCount = Math.max(1, Math.min(4, parseInt(prod.colorCount) || ((prod.colors || []).filter(Boolean).length || 2)));
-            const chosen = [];
-            for (let i = 0; i < colCount; i++) {
-                const el = document.getElementById(`colorSel_${prod.id}_${i}`);
-                if (el && el.value) chosen.push(el.value);
-            }
-            return chosen;
-        }
-
-        function calculateLineSubtotal(prod, qty) {
+        function calculateDynamicPrice(prod, qty) {
             const q = Math.max(1, parseInt(qty) || 1);
             if (prod.packs && prod.packs.length > 0) {
                 const exactPack = prod.packs.find(pk => parseInt(pk.qty) === q);
                 if (exactPack) return parseFloat(exactPack.price);
-                const sortedPacks = [...prod.packs].sort((a, b) => parseInt(a.qty) - parseInt(b.qty));
-                const lowerPack = sortedPacks.filter(pk => parseInt(pk.qty) < q).pop();
-                if (lowerPack) {
-                    const basePackQty = parseInt(lowerPack.qty);
-                    const basePackPrice = parseFloat(lowerPack.price);
-                    const extraPrice = parseFloat(prod.extraUnitPrice) || (basePackPrice / basePackQty);
-                    return basePackPrice + ((q - basePackQty) * extraPrice);
-                }
-            } else {
-                if (q === 6) return Number(prod.pack6Price);
-                if (q > 6) return Number(prod.pack6Price) + ((q - 6) * Number(prod.extraUnitPrice));
+                if (q === 6) return prod.pack6Price;
+                if (q > 6) return prod.pack6Price + ((q - 6) * prod.extraUnitPrice);
+                return q * prod.basePrice;
             }
-            return q * Number(prod.basePrice);
+            if (q === 6) return prod.pack6Price;
+            if (q > 6) return prod.pack6Price + ((q - 6) * prod.extraUnitPrice);
+            return q * prod.basePrice;
+        }
+
+        function getProductImages(prod) {
+            const arr = Array.isArray(prod.images) ? prod.images.filter(u => u && u.trim()) : [];
+            if (arr.length > 0) return arr.slice(0, 3);
+            if (prod.image && prod.image.trim()) return [prod.image.trim()];
+            return [FALLBACK_IMG];
+        }
+
+        function getProductColorCount(prod) {
+            const explicit = parseInt(prod.colorCount);
+            if (explicit >= 1 && explicit <= 4) return explicit;
+            const nonEmpty = (prod.colors || []).filter(Boolean).length;
+            return nonEmpty > 0 ? Math.min(4, nonEmpty) : 2;
+        }
+
+        function initProductColorSelection(prod) {
+            const count = getProductColorCount(prod);
+            const stockCols = getColorsInStockForMaterial(prod.filament || 'PLA');
+            if (!selectedColorsByProd[prod.id]) {
+                const defaults = Array.isArray(prod.colors) ? prod.colors : [];
+                selectedColorsByProd[prod.id] = [0, 1, 2, 3].map(idx => {
+                    if (idx >= count) return '';
+                    const sug = defaults[idx];
+                    if (sug && stockCols.includes(sug)) return sug;
+                    return stockCols[idx % stockCols.length] || '';
+                });
+            }
+            return selectedColorsByProd[prod.id];
+        }
+
+        function updateCardColor(prodId, slotIdx, value) {
+            if (!selectedColorsByProd[prodId]) selectedColorsByProd[prodId] = ['', '', '', ''];
+            selectedColorsByProd[prodId][slotIdx] = value;
+        }
+
+        function applyStoreConfig() {
+            document.getElementById('heroBadgeText').textContent = storeConfig.badge || defaultStoreConfig.badge;
+            document.getElementById('footerAboutText').textContent = storeConfig.about || defaultStoreConfig.about;
+            const wa = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '') || '593998400131';
+            document.getElementById('footerWhatsappBtn').href = `https://wa.me/${wa}`;
+            document.getElementById('footerWhatsappLabel').textContent = `WhatsApp: +${wa}`;
+        }
+
+        function updateCustomColorOptions() {
+            const sel = document.getElementById('custColors');
+            if (!sel) return;
+            const mat = document.getElementById('custMaterial')?.value || 'PLA';
+            const cols = mat === 'Asesoría'
+                ? [...new Set(availableFilaments.filter(f => Number(f.grams) > 0).map(f => f.color))]
+                : getColorsInStockForMaterial(mat);
+            const list = cols.length ? cols : ['Rojo', 'Blanco', 'Dorado'];
+            sel.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('') + `<option value="Combinación multicolor">Combinación multicolor (indicar en notas)</option>`;
+        }
+
+        function renderCatalog() {
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+
+            const visibleProducts = products.filter(p => p.featured !== false && (activeCategory === 'ALL' || p.category === activeCategory));
+
+            if (visibleProducts.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No hay productos disponibles en esta categoría por el momento.</div>`;
+                return;
+            }
+
+            visibleProducts.forEach(prod => {
+                if (selectedQtyByProd[prod.id] === undefined) selectedQtyByProd[prod.id] = 0;
+                const qty = Math.max(0, parseInt(selectedQtyByProd[prod.id]) || 0);
+                const totalPrice = qty > 0 ? calculateDynamicPrice(prod, qty) : 0;
+                const imgs = getProductImages(prod);
+                const stock = Math.max(0, parseInt(prod.stock) || 0);
+                const colCount = getProductColorCount(prod);
+                const currentCols = initProductColorSelection(prod);
+                const stockColors = getColorsInStockForMaterial(prod.filament || 'PLA');
+                const labels = Array.isArray(prod.colorLabels) ? prod.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+
+                const packsHtml = (prod.packs && prod.packs.length > 0)
+                    ? `<div class="flex flex-wrap gap-1 pt-1">
+                        ${prod.packs.map(pk => `<button type="button" onclick="setProductQty('${prod.id}', ${pk.qty})" class="text-[10px] bg-brand-500/10 hover:bg-brand-500/25 border border-brand-500/25 text-brand-300 px-2 py-0.5 rounded-md transition">${pk.qty}u: $${Number(pk.price).toFixed(2)}</button>`).join('')}
+                       </div>`
+                    : `<p class="text-[11px] text-slate-400">Set 6 u.: <span class="text-slate-200 font-semibold">$${Number(prod.pack6Price).toFixed(2)}</span></p>`;
+
+                let colorSelectorsHtml = '';
+                for (let c = 0; c < colCount; c++) {
+                    const lbl = labels[c] || `Color ${c + 1}`;
+                    const chosen = currentCols[c] || '';
+                    const opts = (chosen && !stockColors.includes(chosen) ? [chosen, ...stockColors] : stockColors)
+                        .map(col => `<option value="${col}" ${col === chosen ? 'selected' : ''}>${col}</option>`).join('');
+                    colorSelectorsHtml += `
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-0.5 truncate">${lbl}</label>
+                            <select onchange="updateCardColor('${prod.id}', ${c}, this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none focus:border-brand-500">
+                                ${opts}
+                            </select>
+                        </div>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-3xl overflow-hidden flex flex-col justify-between group hover:border-brand-500/50 transition duration-300';
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-52 overflow-hidden bg-slate-900 cursor-pointer" onclick="openProductDetail('${prod.id}')">
+                            <img src="${imgs[0]}" alt="${prod.name}" onerror="this.src='${FALLBACK_IMG}'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 bg-brand-600/95 backdrop-blur-md text-[11px] font-bold px-3 py-1 rounded-full text-white shadow">
+                                ${prod.category || 'Atel home'}
+                            </span>
+                            <span class="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full border ${stock > 0 ? 'bg-slate-950/80 text-emerald-300 border-emerald-500/30' : 'bg-rose-950/90 text-rose-300 border-rose-500/40'}">
+                                ${stock > 0 ? `Stock: ${stock} u.` : 'Bajo pedido'}
+                            </span>
+                            ${imgs.length > 1 ? `
+                            <span class="absolute bottom-3 right-3 bg-slate-950/85 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full border border-slate-700 flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3 text-brand-400"></i> ${imgs.length} fotos
+                            </span>` : ''}
+                        </div>
+                        <div class="p-5 space-y-2.5">
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 onclick="openProductDetail('${prod.id}')" class="font-bold text-white text-base leading-snug cursor-pointer hover:text-brand-400 transition">${prod.name}</h3>
+                                <span class="text-brand-400 font-extrabold text-base whitespace-nowrap">$${Number(prod.basePrice).toFixed(2)}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 line-clamp-2">${prod.description || 'Impresión 3D personalizada.'}</p>
+
+                            <div class="bg-slate-900/75 border border-slate-800/90 rounded-xl p-2.5 space-y-1.5">
+                                <div class="flex items-center justify-between text-[10px] text-slate-400">
+                                    <span>Filamento: <b class="text-slate-200">${prod.filament || 'PLA'}</b></span>
+                                    <span>${colCount} color(es)</span>
+                                </div>
+                                <div class="grid ${colCount > 1 ? 'grid-cols-2' : 'grid-cols-1'} gap-2">
+                                    ${colorSelectorsHtml}
+                                </div>
+                            </div>
+
+                            ${packsHtml}
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0 space-y-3">
+                        <div class="flex items-center justify-between bg-slate-900/90 rounded-xl p-2 border border-slate-800">
+                            <span class="text-xs text-slate-400 pl-2">Cantidad:</span>
+                            <div class="flex items-center space-x-2">
+                                <button type="button" onclick="changeCardQty('${prod.id}', -1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center justify-center">−</button>
+                                <span id="qty_${prod.id}" class="text-sm font-bold text-white w-7 text-center">${qty}</span>
+                                <button type="button" onclick="changeCardQty('${prod.id}', 1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center justify-center">+</button>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btnAdd_${prod.id}" onclick="addToCart('${prod.id}')" ${qty === 0 ? 'disabled' : ''} class="w-full ${qty === 0 ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-brand-600 hover:bg-brand-700 text-white'} font-semibold py-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-2">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span id="priceBtn_${prod.id}">${qty === 0 ? 'Elige cantidad (0)' : `Agregar ($${totalPrice.toFixed(2)})`}</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function setProductQty(prodId, newQty) {
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            const q = Math.max(0, parseInt(newQty) || 0);
+            selectedQtyByProd[prodId] = q;
+            const total = q > 0 ? calculateDynamicPrice(prod, q) : 0;
+            const qtyEl = document.getElementById(`qty_${prodId}`);
+            const btnTextEl = document.getElementById(`priceBtn_${prodId}`);
+            const btnEl = document.getElementById(`btnAdd_${prodId}`);
+            if (qtyEl) qtyEl.textContent = q;
+            if (btnTextEl) btnTextEl.textContent = q === 0 ? 'Elige cantidad (0)' : `Agregar ($${total.toFixed(2)})`;
+            if (btnEl) {
+                btnEl.disabled = q === 0;
+                btnEl.className = `w-full ${q === 0 ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-brand-600 hover:bg-brand-700 text-white'} font-semibold py-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-2`;
+            }
+        }
+
+        function changeCardQty(prodId, delta) {
+            const current = selectedQtyByProd[prodId] !== undefined ? selectedQtyByProd[prodId] : 0;
+            const next = Math.max(0, current + delta);
+            setProductQty(prodId, next);
+        }
+
+        function filterCatalog(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = 'cat-btn bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition';
+                } else {
+                    btn.className = 'cat-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl transition';
+                }
+            });
+            renderCatalog();
+        }
+
+        // ================= GALERÍA MODAL DETALLE =================
+        function openProductDetail(prodId) {
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            currentDetailProdId = prodId;
+            detailQty = selectedQtyByProd[prodId] !== undefined ? selectedQtyByProd[prodId] : 0;
+            const imgs = getProductImages(prod);
+            const stock = Math.max(0, parseInt(prod.stock) || 0);
+            const colCount = getProductColorCount(prod);
+            const stockColors = getColorsInStockForMaterial(prod.filament || 'PLA');
+            const labels = Array.isArray(prod.colorLabels) ? prod.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+            const cardCols = initProductColorSelection(prod);
+            detailSelectedColors = [...cardCols];
+
+            document.getElementById('detailMainImg').src = imgs[0];
+            document.getElementById('detailCategoryBadge').textContent = prod.category || 'Atel home';
+            document.getElementById('detailTitle').textContent = prod.name;
+            document.getElementById('detailDesc').textContent = prod.description || '';
+            document.getElementById('detailUnitPrice').textContent = `$${Number(prod.basePrice).toFixed(2)} / u.`;
+            document.getElementById('detailQtyVal').textContent = detailQty;
+
+            const stockBadge = document.getElementById('detailStockBadge');
+            stockBadge.textContent = stock > 0 ? `Disponible en inventario: ${stock} u.` : 'Fabricación bajo pedido';
+            stockBadge.className = `text-[11px] font-semibold mt-0.5 ${stock > 0 ? 'text-emerald-400' : 'text-amber-400'}`;
+
+            const thumbsRow = document.getElementById('detailThumbsRow');
+            thumbsRow.innerHTML = imgs.map((url, idx) => `
+                <button type="button" onclick="selectDetailPhoto('${url.replace(/'/g, "\\'")}', this)" class="detail-thumb w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-brand-500' : 'border-slate-700'} bg-slate-800">
+                    <img src="${url}" onerror="this.src='${FALLBACK_IMG}'" class="w-full h-full object-cover">
+                </button>
+            `).join('');
+
+            const packsBox = document.getElementById('detailPacksBox');
+            if (prod.packs && prod.packs.length > 0) {
+                packsBox.innerHTML = `<p class="font-bold text-slate-200">Precios especiales por set:</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${prod.packs.map(pk => `<button type="button" onclick="setDetailQty(${pk.qty})" class="bg-brand-600/20 hover:bg-brand-600/35 border border-brand-500/30 text-brand-300 px-3 py-1 rounded-lg font-semibold">${pk.qty} unidades → $${Number(pk.price).toFixed(2)}</button>`).join('')}
+                    </div>`;
+            } else {
+                packsBox.innerHTML = `<p class="text-slate-300">Set 6 unidades: <b>$${Number(prod.pack6Price).toFixed(2)}</b> • Unidades extra: <b>$${Number(prod.extraUnitPrice).toFixed(2)} c/u</b></p>`;
+            }
+
+            const colorBox = document.getElementById('detailColorSelectors');
+            let detColHtml = '';
+            for (let c = 0; c < colCount; c++) {
+                const lbl = labels[c] || `Color ${c + 1}`;
+                const chosen = detailSelectedColors[c] || '';
+                const opts = (chosen && !stockColors.includes(chosen) ? [chosen, ...stockColors] : stockColors)
+                    .map(col => `<option value="${col}" ${col === chosen ? 'selected' : ''}>${col}</option>`).join('');
+                detColHtml += `
+                    <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-2.5">
+                        <label class="block text-[11px] text-slate-400 mb-1">${lbl} (${prod.filament || 'PLA'})</label>
+                        <select onchange="detailSelectedColors[${c}] = this.value; updateCardColor('${prod.id}', ${c}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                            ${opts}
+                        </select>
+                    </div>`;
+            }
+            colorBox.innerHTML = detColHtml;
+
+            updateDetailAddButton();
+            document.getElementById('productDetailModal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function selectDetailPhoto(url, btn) {
+            document.getElementById('detailMainImg').src = url;
+            document.querySelectorAll('.detail-thumb').forEach(el => el.classList.replace('border-brand-500', 'border-slate-700'));
+            btn.classList.replace('border-slate-700', 'border-brand-500');
+        }
+
+        function setDetailQty(q) {
+            detailQty = Math.max(0, parseInt(q) || 0);
+            document.getElementById('detailQtyVal').textContent = detailQty;
+            updateDetailAddButton();
+        }
+
+        function changeDetailQty(delta) {
+            setDetailQty(detailQty + delta);
+        }
+
+        function updateDetailAddButton() {
+            const prod = products.find(p => p.id === currentDetailProdId);
+            if (!prod) return;
+            const total = detailQty > 0 ? calculateDynamicPrice(prod, detailQty) : 0;
+            const btn = document.getElementById('detailAddBtn');
+            btn.disabled = detailQty === 0;
+            btn.className = `${detailQty === 0 ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-brand-600 hover:bg-brand-700 text-white'} font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center space-x-2`;
+            btn.innerHTML = `<i data-lucide="shopping-bag" class="w-4 h-4"></i><span>${detailQty === 0 ? 'Elige cantidad (0)' : `Agregar ($${total.toFixed(2)})`}</span>`;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function addDetailProductToCart() {
+            if (!currentDetailProdId || detailQty <= 0) return;
+            selectedQtyByProd[currentDetailProdId] = detailQty;
+            selectedColorsByProd[currentDetailProdId] = [...detailSelectedColors];
+            addToCart(currentDetailProdId);
+            setProductQty(currentDetailProdId, 0);
+            closeProductDetail();
+        }
+
+        function closeProductDetail() {
+            document.getElementById('productDetailModal').classList.add('hidden');
+        }
+
+        // ================= CARRITO DE COMPRAS =================
+        function addToCart(prodId) {
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            const qty = Math.max(0, parseInt(selectedQtyByProd[prodId]) || 0);
+            if (qty <= 0) return;
+            const colCount = getProductColorCount(prod);
+            const cols = (initProductColorSelection(prod)).slice(0, colCount).filter(Boolean);
+            const colorKey = cols.join(' + ') || 'Según inventario';
+            const lineKey = `${prodId}__${colorKey}`;
+
+            const existingIdx = cart.findIndex(item => item.lineKey === lineKey);
+            if (existingIdx >= 0) {
+                cart[existingIdx].qty += qty;
+                cart[existingIdx].subtotal = calculateDynamicPrice(prod, cart[existingIdx].qty);
+            } else {
+                cart.push({
+                    lineKey,
+                    id: prod.id,
+                    name: prod.name,
+                    filament: prod.filament || 'PLA',
+                    colors: cols,
+                    colorSummary: colorKey,
+                    qty: qty,
+                    subtotal: calculateDynamicPrice(prod, qty)
+                });
+            }
+            saveCart();
+            setProductQty(prodId, 0);
+            toggleCart(true);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
         }
 
         function saveCart() {
             localStorage.setItem('atel_cart', JSON.stringify(cart));
-            updateCartBadge();
+            renderCart();
         }
 
-        function updateCartBadge() {
-            const totalItems = cart.reduce((acc, item) => acc + (parseInt(item.qty) || 1), 0);
-            const badge = document.getElementById('cartBadge');
-            if (badge) badge.textContent = totalItems;
-        }
+        function renderCart() {
+            const badge = document.getElementById('cartCountBadge');
+            const list = document.getElementById('cartItemsList');
+            const totalEl = document.getElementById('cartTotalAmount');
 
-        function addToCart(prodId) {
-            const p = products.find(x => x.id === prodId);
-            if (!p) return;
-            const qty = Math.max(1, parseInt(document.getElementById(`qty_${prodId}`).value) || 1);
-            const chosenColors = getSelectedColorsForProduct(p);
-            const subtotal = calculateLineSubtotal(p, qty);
+            const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
+            const totalMoney = cart.reduce((acc, item) => acc + item.subtotal, 0);
 
-            cart.push({
-                cartItemId: 'ci_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                productId: p.id,
-                productName: p.name,
-                filament: p.filament || 'PLA',
-                colors: chosenColors,
-                qty,
-                subtotal
-            });
-            saveCart();
-            openCartModal();
-        }
-
-        function orderSingleOnWhatsApp(prodId) {
-            const p = products.find(x => x.id === prodId);
-            if (!p) return;
-            const qty = Math.max(1, parseInt(document.getElementById(`qty_${prodId}`).value) || 1);
-            const chosenColors = getSelectedColorsForProduct(p);
-            const total = calculateLineSubtotal(p, qty);
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-
-            recordPendingOrderAlert({
-                client: 'Cliente WhatsApp',
-                contact: '',
-                productId: p.id,
-                productName: p.name,
-                filament: p.filament || 'PLA',
-                colors: [chosenColors[0] || '', chosenColors[1] || '', chosenColors[2] || '', chosenColors[3] || ''],
-                qty,
-                total,
-                source: 'WhatsApp directo'
-            });
-
-            const colorText = chosenColors.length ? chosenColors.join(', ') : 'Por definir';
-            const msg = `Hola ATEL 3D! Quisiera pedir:\n• Producto: ${p.name}\n• Cantidad: ${qty} u.\n• Colores: ${colorText} (${p.filament || 'PLA'})\n• Subtotal estimado: $${total.toFixed(2)}`;
-            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function openCartModal() {
-            renderCartItems();
-            document.getElementById('cartModal').classList.remove('hidden');
-            lucide.createIcons();
-        }
-
-        function closeCartModal() {
-            document.getElementById('cartModal').classList.add('hidden');
-        }
-
-        function renderCartItems() {
-            const container = document.getElementById('cartItemsContainer');
-            const checkoutForm = document.getElementById('cartCheckoutForm');
-            const grandTotalEl = document.getElementById('cartGrandTotal');
+            badge.textContent = totalItems;
+            totalEl.textContent = `$${totalMoney.toFixed(2)}`;
 
             if (cart.length === 0) {
-                container.innerHTML = `<div class="bg-slate-800/50 border border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-400">Tu carrito está vacío. Agrega productos desde el catálogo para armar tu pedido.</div>`;
-                checkoutForm.classList.add('hidden');
-                grandTotalEl.textContent = '$0.00';
+                list.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">Tu pedido está vacío. Elige una cantidad mayor a 0 en el catálogo y agrégalo aquí.</div>`;
                 return;
             }
 
-            checkoutForm.classList.remove('hidden');
-            let grandTotal = 0;
-
-            container.innerHTML = cart.map((item, idx) => {
-                grandTotal += Number(item.subtotal || 0);
-                const colStr = (item.colors || []).filter(Boolean).join(', ') || 'Por definir';
-                return `
-                    <div class="bg-slate-800/70 border border-slate-700/70 rounded-xl p-3 flex items-center justify-between gap-3 text-xs">
-                        <div class="space-y-0.5">
-                            <p class="font-bold text-white text-sm">${item.productName}</p>
-                            <p class="text-slate-300">Cantidad: <b>${item.qty} u.</b> • Colores: <b class="text-brand-300">${colStr}</b> (${item.filament})</p>
-                            <p class="text-emerald-400 font-bold">Subtotal: $${Number(item.subtotal || 0).toFixed(2)}</p>
-                        </div>
-                        <button type="button" onclick="removeCartItem(${idx})" class="text-rose-400 hover:text-rose-300 px-2 py-1 rounded-lg bg-slate-900/70">Quitar</button>
+            list.innerHTML = cart.map((item, idx) => `
+                <div class="bg-slate-800/70 border border-slate-700/80 rounded-2xl p-3 flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-bold text-white">${item.name}</p>
+                        <p class="text-[11px] text-slate-400">${item.qty} u. • ${item.filament || 'PLA'} (${item.colorSummary || 'Color estándar'})</p>
+                        <p class="text-xs font-bold text-brand-400 mt-0.5">$${Number(item.subtotal).toFixed(2)}</p>
                     </div>
-                `;
-            }).join('');
-
-            grandTotalEl.textContent = `$${grandTotal.toFixed(2)}`;
+                    <button type="button" onclick="removeFromCart(${idx})" class="text-slate-400 hover:text-rose-400 p-1.5" title="Quitar">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `).join('');
+            if (window.lucide) lucide.createIcons();
         }
 
-        function removeCartItem(idx) {
-            cart.splice(idx, 1);
-            saveCart();
-            renderCartItems();
+        function toggleCart(forceOpen = null) {
+            const drawer = document.getElementById('cartDrawer');
+            if (forceOpen === true) drawer.classList.remove('hidden');
+            else if (forceOpen === false) drawer.classList.add('hidden');
+            else drawer.classList.toggle('hidden');
+            renderCart();
         }
 
-        function clearCart() {
-            cart = [];
-            saveCart();
-            renderCartItems();
-        }
+        // ================= NOTIFICACIONES AL TALLER + CONFIRMACIÓN Y WHATSAPP =================
+        async function pushOrderNotificationToWorkshop(orderAlertObj) {
+            const localPending = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
+            localPending.unshift(orderAlertObj);
+            localStorage.setItem('atel_pending_orders', JSON.stringify(localPending));
 
-        function submitCartOrder() {
-            if (cart.length === 0) return;
-            const clientName = document.getElementById('cartClientName').value.trim();
-            if (!clientName) {
-                alert('Por favor ingresa tu nombre para registrar el pedido.');
-                document.getElementById('cartClientName').focus();
-                return;
+            if (!db) {
+                initFirebaseStore();
             }
-            const clientPhone = document.getElementById('cartClientPhone').value.trim();
-            const generalNotes = document.getElementById('cartGeneralNotes').value.trim();
-
-            const grandTotal = cart.reduce((acc, item) => acc + Number(item.subtotal || 0), 0);
-            const totalQty = cart.reduce((acc, item) => acc + (parseInt(item.qty) || 1), 0);
-            const summaryNames = cart.map(i => `${i.productName} (${i.qty}u)`).join(' + ');
-            const allColors = [...new Set(cart.flatMap(i => i.colors || []).filter(Boolean))];
-            const detailLines = cart.map(i => {
-                const cStr = (i.colors || []).filter(Boolean).join(', ') || 'Por definir';
-                return `• ${i.productName} — ${i.qty} u. | Colores: ${cStr} | $${Number(i.subtotal || 0).toFixed(2)}`;
-            }).join('\n');
-
-            recordPendingOrderAlert({
-                client: clientName,
-                contact: clientPhone,
-                productId: cart[0].productId || '',
-                productName: summaryNames,
-                filament: cart[0].filament || 'PLA',
-                colors: [allColors[0] || '', allColors[1] || '', allColors[2] || '', allColors[3] || ''],
-                qty: totalQty,
-                total: grandTotal,
-                notes: [detailLines, generalNotes ? `Notas: ${generalNotes}` : ''].filter(Boolean).join('\n'),
-                source: 'Carrito Web'
-            });
-
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
-            let msg = `Hola ATEL 3D! Quiero realizar el siguiente pedido:\n\n` +
-                      `Cliente: ${clientName}\n` +
-                      (clientPhone ? `Teléfono: ${clientPhone}\n` : '') +
-                      `\nDetalle:\n${detailLines}\n` +
-                      (generalNotes ? `\nNotas / Personalización: ${generalNotes}\n` : '') +
-                      `\nTotal Estimado: $${grandTotal.toFixed(2)}`;
-
-            cart = [];
-            saveCart();
-            closeCartModal();
-            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+            if (db) {
+                try {
+                    await db.collection('atel3d').doc('workshop').set({
+                        pendingOrders: firebase.firestore.FieldValue.arrayUnion(orderAlertObj),
+                        updatedAt: new Date().toISOString()
+                    }, { merge: true });
+                    return true;
+                } catch (err) {
+                    console.warn('Error enviando notificación a Firebase:', err);
+                    return false;
+                }
+            }
+            return false;
         }
 
-        function sendCustomWhatsApp(e) {
-            e.preventDefault();
-            const name = document.getElementById('custName').value.trim();
-            const item = document.getElementById('custItem').value.trim();
-            const qty = document.getElementById('custQty').value;
-            const color = document.getElementById('custColor').value.trim() || 'Por definir';
-            const notes = document.getElementById('custNotes').value.trim();
-            const wa = storeConfig.whatsapp || defaultStoreConfig.whatsapp;
+        function openOrderConfirmationModal(msg, waUrl, syncedToCloud) {
+            lastConfirmedMessage = msg;
+            document.getElementById('confirmMessagePreview').textContent = msg;
+            document.getElementById('confirmWhatsappDirectLink').href = waUrl;
+            document.getElementById('confirmSyncStatus').textContent = syncedToCloud
+                ? 'Tu pedido quedó guardado en línea en el panel del taller ATEL 3D. Ahora pulsa el botón verde para abrir WhatsApp con el mensaje listo.'
+                : 'Tu pedido fue confirmado localmente. Pulsa el botón verde para enviarlo por WhatsApp al taller ATEL 3D.';
+            document.getElementById('copyConfirmBtnLabel').textContent = 'Copiar mensaje';
+            document.getElementById('orderConfirmationModal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
 
-            recordPendingOrderAlert({
+        function closeOrderConfirmationModal() {
+            document.getElementById('orderConfirmationModal').classList.add('hidden');
+        }
+
+        function copyConfirmedOrderMessage() {
+            if (!lastConfirmedMessage) return;
+            navigator.clipboard?.writeText(lastConfirmedMessage).then(() => {
+                document.getElementById('copyConfirmBtnLabel').textContent = '¡Copiado!';
+            });
+        }
+
+        async function checkoutWhatsApp() {
+            if (cart.length === 0) return alert('Agrega al menos un producto (cantidad > 0) a tu pedido antes de confirmar.');
+            const name = document.getElementById('orderClientName').value.trim();
+            const phone = document.getElementById('orderClientPhone').value.trim();
+            if (!name || !phone) return alert('Por favor ingresa tu nombre y teléfono para coordinar la entrega.');
+
+            const city = document.getElementById('orderDeliveryCity').value.trim() || 'Cuenca';
+            const notes = document.getElementById('orderCustomNotes').value.trim();
+            const total = cart.reduce((acc, item) => acc + item.subtotal, 0);
+
+            const lines = cart.map(i => `• ${i.qty}x ${i.name} [${i.filament || 'PLA'} - ${i.colorSummary || 'Estándar'}] ($${Number(i.subtotal).toFixed(2)})`).join('\n');
+            let msg = `¡Hola ATEL 3D! Quisiera confirmar el siguiente pedido:\n\n${lines}\n\n*Total Estimado:* $${total.toFixed(2)}\n*Cliente:* ${name}\n*Contacto:* ${phone}\n*Entrega:* ${city}`;
+            if (notes) msg += `\n*Personalización / Notas:* ${notes}`;
+
+            const firstItem = cart[0];
+            const summaryName = cart.length === 1
+                ? firstItem.name
+                : cart.map(i => `${i.qty}x ${i.name}`).join(' + ');
+            const totalUnits = cart.reduce((acc, item) => acc + item.qty, 0);
+            const combinedColors = [...new Set(cart.flatMap(i => i.colors || []).filter(Boolean))].slice(0, 4);
+            while (combinedColors.length < 4) combinedColors.push('');
+
+            const newAlert = {
+                id: 'web_' + Date.now(),
+                source: 'Tienda Web',
                 client: name,
-                contact: '',
-                productId: '',
-                productName: `A medida: ${item}`,
-                filament: 'PLA',
-                colors: [color, '', '', ''],
-                qty: parseInt(qty) || 1,
-                total: 0,
-                notes,
-                source: 'Pedido a medida'
-            });
-
-            const msg = `Hola ATEL 3D! Quisiera cotizar un pedido a medida:\n• Nombre: ${name}\n• Proyecto: ${item}\n• Cantidad aprox.: ${qty}\n• Colores: ${color}\n• Detalles: ${notes || 'Sin detalles adicionales'}`;
-            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function recordPendingOrderAlert(alertData) {
-            const pending = JSON.parse(localStorage.getItem('atel_pending_orders') || '[]');
-            const entry = {
-                id: 'al_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                client: alertData.client || 'Cliente Web',
-                contact: alertData.contact || '',
-                productId: alertData.productId || '',
-                productName: alertData.productName || 'Pedido Web',
-                filament: alertData.filament || 'PLA',
-                colors: alertData.colors || ['', '', '', ''],
-                qty: Number(alertData.qty) || 1,
-                total: Number(alertData.total) || 0,
+                contact: phone,
+                productId: cart.length === 1 ? firstItem.id : '',
+                productName: summaryName,
+                filament: firstItem.filament || 'PLA',
+                colors: combinedColors,
+                qty: totalUnits,
+                total: Number(total.toFixed(2)),
                 paid: 0,
                 deliveryDate: new Date().toISOString().split('T')[0],
-                notes: alertData.notes || '',
-                source: alertData.source || 'Web',
+                notes: `${city}${notes ? ' • ' + notes : ''} | Detalle: ${cart.map(i => `${i.qty}x ${i.name} (${i.colorSummary})`).join('; ')}`,
                 createdAt: new Date().toISOString()
             };
-            pending.unshift(entry);
-            localStorage.setItem('atel_pending_orders', JSON.stringify(pending));
 
-            if (db) {
-                db.collection('atel3d').doc('workshop').set({
-                    pendingOrders: pending,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true }).catch(() => {});
-            }
+            const synced = await pushOrderNotificationToWorkshop(newAlert);
+
+            cart = [];
+            saveCart();
+            toggleCart(false);
+
+            const wa = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '') || '593998400131';
+            const waUrl = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+            openOrderConfirmationModal(msg, waUrl, synced);
         }
 
-        function resolveStoreFirebaseConfig() {
+        async function sendCustomRequest(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const mat = document.getElementById('custMaterial').value;
+            const cols = document.getElementById('custColors').value;
+            const qty = Math.max(1, parseInt(document.getElementById('custQty').value) || 1);
+            const notes = document.getElementById('custNotes').value.trim();
+
+            const msg = `¡Hola ATEL 3D! Solicito cotización de un proyecto a medida:\n\n*Cliente:* ${name}\n*Contacto:* ${phone}\n*Material:* ${mat}\n*Colores:* ${cols}\n*Cantidad:* ${qty} u.\n*Detalles:* ${notes}`;
+
+            const newAlert = {
+                id: 'custom_' + Date.now(),
+                source: 'Pedido a Medida',
+                client: name,
+                contact: phone,
+                productId: '',
+                productName: 'Proyecto Personalizado',
+                filament: mat === 'Asesoría' ? 'PLA' : mat,
+                colors: [cols, '', '', ''],
+                qty: qty,
+                total: 0,
+                paid: 0,
+                deliveryDate: new Date().toISOString().split('T')[0],
+                notes: notes,
+                createdAt: new Date().toISOString()
+            };
+
+            const synced = await pushOrderNotificationToWorkshop(newAlert);
+
+            e.target.reset();
+            updateCustomColorOptions();
+
+            const wa = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '') || '593998400131';
+            const waUrl = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+            openOrderConfirmationModal(msg, waUrl, synced);
+        }
+
+        // ================= SINCRONIZACIÓN CON FIREBASE =================
+        function resolveFirebaseConfig() {
             const rawCfg = localStorage.getItem('atel_firebase_cfg');
             if (rawCfg) {
                 const match = rawCfg.match(/\{[\s\S]*\}/);
@@ -749,9 +1034,9 @@
             return ATEL_FIREBASE_CONFIG;
         }
 
-        function initStoreFirebase() {
+        function initFirebaseStore() {
             try {
-                const cfg = resolveStoreFirebaseConfig();
+                const cfg = resolveFirebaseConfig();
                 if (!cfg || !cfg.apiKey) return;
                 if (!firebase.apps.length) firebase.initializeApp(cfg);
                 db = firebase.firestore();
@@ -764,20 +1049,60 @@
                         localStorage.setItem('atel_store_config', JSON.stringify(storeConfig));
                         applyStoreConfig();
                     }
-                    if (Array.isArray(data.products) && data.products.length) {
+                    if (Array.isArray(data.products) && data.products.length > 0) {
                         products = data.products;
                         localStorage.setItem('atel_products_v2', JSON.stringify(products));
-                        renderCatalog();
                     }
-                    if (Array.isArray(data.availableFilaments)) {
-                        localStorage.setItem('atel_available_filaments', JSON.stringify(data.availableFilaments));
+                    if (Array.isArray(data.availableFilaments) && data.availableFilaments.length > 0) {
+                        availableFilaments = data.availableFilaments;
+                        localStorage.setItem('atel_available_filaments', JSON.stringify(availableFilaments));
+                        selectedColorsByProd = {};
+                        updateCustomColorOptions();
+                    }
+                    renderCatalog();
+                });
+
+                db.collection('atel3d').doc('workshop').onSnapshot((doc) => {
+                    if (!doc.exists) return;
+                    const data = doc.data();
+                    if (Array.isArray(data.filaments) && data.filaments.length > 0) {
+                        availableFilaments = data.filaments
+                            .filter(f => Number(f.grams) > 0)
+                            .map(f => ({ id: f.id, type: f.type, color: f.color, grams: Number(f.grams) }));
+                        localStorage.setItem('atel_available_filaments', JSON.stringify(availableFilaments));
+                        selectedColorsByProd = {};
+                        updateCustomColorOptions();
                         renderCatalog();
                     }
                 });
             } catch (err) {
-                console.warn('Tienda operando en modo local/por defecto:', err);
+                console.warn('Modo local activo:', err);
             }
         }
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'atel_available_filaments' || event.key === 'atel_filaments') {
+                availableFilaments = JSON.parse(localStorage.getItem('atel_available_filaments') || 'null') || getFallbackFilamentsFromLocal();
+                selectedColorsByProd = {};
+                updateCustomColorOptions();
+                renderCatalog();
+            } else if (event.key === 'atel_products_v2') {
+                products = JSON.parse(event.newValue || '[]');
+                renderCatalog();
+            } else if (event.key === 'atel_store_config') {
+                storeConfig = JSON.parse(event.newValue || '{}');
+                applyStoreConfig();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applyStoreConfig();
+            updateCustomColorOptions();
+            renderCatalog();
+            renderCart();
+            initFirebaseStore();
+            if (window.lucide) lucide.createIcons();
+        });
     </script>
 </body>
 </html>
