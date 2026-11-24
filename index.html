@@ -108,12 +108,12 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3 text-xs">
                         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3.5">
-                            <p class="text-brand-400 font-bold text-sm mb-1">Multicolor Real</p>
-                            <p class="text-slate-400">Combinaciones en rojo, blanco, dorado, negro y más colores en stock.</p>
+                            <p class="text-brand-400 font-bold text-sm mb-1">Multicolor y por Set</p>
+                            <p class="text-slate-400">Elige colores en stock o asigna un color distinto a cada set.</p>
                         </div>
                         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3.5">
                             <p class="text-brand-400 font-bold text-sm mb-1">Descuentos por Set</p>
-                            <p class="text-slate-400">Precios especiales por packs y pedidos corporativos o de eventos.</p>
+                            <p class="text-slate-400">Toca un pack varias veces para sumar 2 o más sets al instante.</p>
                         </div>
                     </div>
                     <div class="bg-brand-500/10 border border-brand-500/20 rounded-2xl p-4 flex items-center justify-between">
@@ -134,7 +134,7 @@
             <div>
                 <span class="text-brand-400 text-xs font-bold uppercase tracking-wider">Colección Disponible</span>
                 <h2 class="text-3xl font-extrabold text-white mt-1">Catálogo de Productos 3D</h2>
-                <p class="text-slate-400 text-sm mt-1">Selecciona el producto, ajusta los colores disponibles en inventario y elige la cantidad.</p>
+                <p class="text-slate-400 text-sm mt-1">Selecciona el producto, ajusta los colores o elige varios sets para asignar un color por cada set.</p>
             </div>
             <div class="flex flex-wrap gap-2" id="categoryFilters">
                 <button type="button" onclick="filterCatalog('ALL')" data-cat="ALL" class="cat-btn bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">Todos</button>
@@ -361,7 +361,6 @@
 
     <!-- ASISTENTE VIRTUAL INTERACTIVO DE LA TIENDA -->
     <div id="atelAssistantWidget" class="fixed bottom-5 right-5 z-40 flex flex-col items-end">
-        <!-- Ventana de chat del asistente -->
         <div id="assistantChatPanel" class="hidden mb-3 w-[calc(100vw-2.5rem)] sm:w-96 bg-dark-900/95 backdrop-blur-xl border border-slate-700/90 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
             <div class="bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-3.5 flex items-center justify-between">
                 <div class="flex items-center space-x-2.5">
@@ -378,10 +377,8 @@
                 </button>
             </div>
 
-            <!-- Historial de mensajes -->
             <div id="assistantMessages" class="p-4 space-y-3 max-h-80 overflow-y-auto text-xs bg-slate-950/60"></div>
 
-            <!-- Botones rápidos contextuales -->
             <div id="assistantQuickChips" class="px-3 py-2 bg-slate-900 border-t border-slate-800 flex flex-wrap gap-1.5">
                 <button type="button" onclick="askAssistantPreset('Ver productos disponibles')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Ver catálogo</button>
                 <button type="button" onclick="askAssistantPreset('¿Qué colores hay disponibles?')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Colores en stock</button>
@@ -389,7 +386,6 @@
                 <button type="button" onclick="askAssistantPreset('Quiero un diseño personalizado')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Pedido a medida</button>
             </div>
 
-            <!-- Entrada de texto -->
             <form onsubmit="handleAssistantSubmit(event)" class="p-2.5 bg-dark-900 border-t border-slate-800 flex items-center gap-2">
                 <input type="text" id="assistantInput" placeholder="Ej: Muéstrame los bombillos o precios..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
                 <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white p-2 rounded-xl transition" title="Enviar">
@@ -398,14 +394,12 @@
             </form>
         </div>
 
-        <!-- Burbuja de aviso proactivo (carrito pendiente / bienvenida) -->
         <div id="assistantProactiveBubble" onclick="toggleAssistant(true)" class="hidden cursor-pointer mb-2 max-w-xs bg-dark-900 border border-brand-500/50 text-white px-3.5 py-2.5 rounded-2xl shadow-xl text-xs flex items-center gap-2.5">
             <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
             <span id="assistantBubbleText" class="leading-snug">¿Te ayudo a elegir o ver fotos ampliadas?</span>
             <button type="button" onclick="event.stopPropagation(); dismissAssistantBubble();" class="text-slate-400 hover:text-white ml-1">✕</button>
         </div>
 
-        <!-- Botón flotante principal -->
         <button type="button" onclick="toggleAssistant()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-full shadow-xl shadow-brand-600/30 border border-brand-400/30 flex items-center space-x-2 transition">
             <i data-lucide="message-square-text" class="w-5 h-5"></i>
             <span class="text-xs font-bold">Asistente 3D</span>
@@ -520,9 +514,11 @@
         let activeCategory = 'ALL';
         let selectedQtyByProd = {};
         let selectedColorsByProd = {};
+        let selectedSetColorsByProd = {};
         let currentDetailProdId = null;
         let detailQty = 0;
         let detailSelectedColors = ['', '', '', ''];
+        let detailSetColors = [];
         let db = null;
         let lastConfirmedMessage = '';
         let assistantInitialized = false;
@@ -554,8 +550,50 @@
             return [...new Set(cols)];
         }
 
+        function getPrimaryPackSize(prod) {
+            if (prod.packs && prod.packs.length > 0) {
+                const sorted = [...prod.packs]
+                    .map(pk => parseInt(pk.qty) || 0)
+                    .filter(q => q > 0)
+                    .sort((a, b) => a - b);
+                const sixPack = sorted.find(q => q === 6);
+                if (sixPack) return 6;
+                return sorted[0] || 6;
+            }
+            return 6;
+        }
+
+        function getSetCountForQty(prod, qty) {
+            const q = Math.max(0, parseInt(qty) || 0);
+            if (q <= 0) return 0;
+            const packSize = getPrimaryPackSize(prod);
+            if (packSize > 0 && q >= packSize * 2 && q % packSize === 0) {
+                return q / packSize;
+            }
+            if (prod.packs && prod.packs.length > 0) {
+                const matchingPack = prod.packs.find(pk => (parseInt(pk.qty) || 0) === q);
+                if (matchingPack) return 1;
+            }
+            return 0;
+        }
+
+        function usesPerSetSingleColor(prod, qty) {
+            if (prod.colorPerSetMode === 'multi') return false;
+            return getSetCountForQty(prod, qty) >= 2;
+        }
+
         function calculateDynamicPrice(prod, qty) {
             const q = Math.max(1, parseInt(qty) || 1);
+            const packSize = getPrimaryPackSize(prod);
+            const setCount = getSetCountForQty(prod, q);
+
+            if (setCount >= 2 && prod.packs && prod.packs.length > 0) {
+                const basePack = prod.packs.find(pk => (parseInt(pk.qty) || 0) === packSize);
+                if (basePack) {
+                    return setCount * parseFloat(basePack.price);
+                }
+            }
+
             if (prod.packs && prod.packs.length > 0) {
                 const exactPack = prod.packs.find(pk => parseInt(pk.qty) === q);
                 if (exactPack) return parseFloat(exactPack.price);
@@ -597,9 +635,109 @@
             return selectedColorsByProd[prod.id];
         }
 
+        function initProductSetColors(prod, setCount) {
+            const stockCols = getColorsInStockForMaterial(prod.filament || 'PLA');
+            const defaults = Array.isArray(prod.colors) ? prod.colors.filter(Boolean) : [];
+            if (!selectedSetColorsByProd[prod.id]) {
+                selectedSetColorsByProd[prod.id] = [];
+            }
+            const arr = selectedSetColorsByProd[prod.id];
+            for (let s = 0; s < setCount; s++) {
+                if (!arr[s]) {
+                    const sug = defaults[s];
+                    arr[s] = (sug && stockCols.includes(sug)) ? sug : (stockCols[s % stockCols.length] || '');
+                }
+            }
+            return arr.slice(0, setCount);
+        }
+
         function updateCardColor(prodId, slotIdx, value) {
             if (!selectedColorsByProd[prodId]) selectedColorsByProd[prodId] = ['', '', '', ''];
             selectedColorsByProd[prodId][slotIdx] = value;
+        }
+
+        function updateCardSetColor(prodId, setIdx, value) {
+            if (!selectedSetColorsByProd[prodId]) selectedSetColorsByProd[prodId] = [];
+            selectedSetColorsByProd[prodId][setIdx] = value;
+        }
+
+        function buildColorSelectorsHtml(prod, qty, targetContext) {
+            const stockColors = getColorsInStockForMaterial(prod.filament || 'PLA');
+            const setCount = getSetCountForQty(prod, qty);
+            const perSetMode = usesPerSetSingleColor(prod, qty);
+
+            if (perSetMode && setCount >= 2) {
+                const setCols = targetContext === 'detail'
+                    ? [...detailSetColors]
+                    : initProductSetColors(prod, setCount);
+
+                let html = `<div class="col-span-full flex items-center justify-between text-[10px] text-amber-300 font-semibold pb-0.5">
+                    <span>${setCount} sets detectados (${getPrimaryPackSize(prod)} u. c/u) • 1 color por set</span>
+                </div>`;
+
+                for (let s = 0; s < setCount; s++) {
+                    const chosen = setCols[s] || stockColors[s % stockColors.length] || '';
+                    if (targetContext === 'detail') {
+                        detailSetColors[s] = chosen;
+                    } else {
+                        if (!selectedSetColorsByProd[prod.id]) selectedSetColorsByProd[prod.id] = [];
+                        selectedSetColorsByProd[prod.id][s] = chosen;
+                    }
+                    const opts = (chosen && !stockColors.includes(chosen) ? [chosen, ...stockColors] : stockColors)
+                        .map(col => `<option value="${col}" ${col === chosen ? 'selected' : ''}>${col}</option>`).join('');
+
+                    const changeHandler = targetContext === 'detail'
+                        ? `detailSetColors[${s}] = this.value; updateCardSetColor('${prod.id}', ${s}, this.value);`
+                        : `updateCardSetColor('${prod.id}', ${s}, this.value);`;
+
+                    html += `
+                        <div class="${targetContext === 'detail' ? 'bg-slate-800/70 border border-slate-700 rounded-xl p-2.5' : ''}">
+                            <label class="block text-[10px] text-slate-300 mb-0.5 truncate">Set ${s + 1} (${getPrimaryPackSize(prod)} u.)</label>
+                            <select onchange="${changeHandler}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none focus:border-brand-500">
+                                ${opts}
+                            </select>
+                        </div>`;
+                }
+                return html;
+            }
+
+            const colCount = getProductColorCount(prod);
+            const currentCols = targetContext === 'detail'
+                ? [...detailSelectedColors]
+                : initProductColorSelection(prod);
+            const labels = Array.isArray(prod.colorLabels) ? prod.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
+
+            let html = '';
+            for (let c = 0; c < colCount; c++) {
+                const lbl = labels[c] || `Color ${c + 1}`;
+                const chosen = currentCols[c] || '';
+                const opts = (chosen && !stockColors.includes(chosen) ? [chosen, ...stockColors] : stockColors)
+                    .map(col => `<option value="${col}" ${col === chosen ? 'selected' : ''}>${col}</option>`).join('');
+
+                const changeHandler = targetContext === 'detail'
+                    ? `detailSelectedColors[${c}] = this.value; updateCardColor('${prod.id}', ${c}, this.value);`
+                    : `updateCardColor('${prod.id}', ${c}, this.value);`;
+
+                html += `
+                    <div class="${targetContext === 'detail' ? 'bg-slate-800/70 border border-slate-700 rounded-xl p-2.5' : ''}">
+                        <label class="block text-[10px] text-slate-400 mb-0.5 truncate">${lbl}</label>
+                        <select onchange="${changeHandler}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none focus:border-brand-500">
+                            ${opts}
+                        </select>
+                    </div>`;
+            }
+            return html;
+        }
+
+        function refreshCardColorBox(prodId, qty) {
+            const prod = products.find(p => p.id === prodId);
+            const box = document.getElementById(`colorGrid_${prodId}`);
+            if (!prod || !box) return;
+            const setCount = getSetCountForQty(prod, qty);
+            const perSetMode = usesPerSetSingleColor(prod, qty);
+            const colCount = getProductColorCount(prod);
+            box.className = `grid ${(perSetMode && setCount >= 2) ? 'grid-cols-2' : (colCount > 1 ? 'grid-cols-2' : 'grid-cols-1')} gap-2`;
+            box.innerHTML = buildColorSelectorsHtml(prod, qty, 'card');
         }
 
         function applyStoreConfig() {
@@ -638,31 +776,15 @@
                 const totalPrice = qty > 0 ? calculateDynamicPrice(prod, qty) : 0;
                 const imgs = getProductImages(prod);
                 const stock = Math.max(0, parseInt(prod.stock) || 0);
+                const setCount = getSetCountForQty(prod, qty);
+                const perSetMode = usesPerSetSingleColor(prod, qty);
                 const colCount = getProductColorCount(prod);
-                const currentCols = initProductColorSelection(prod);
-                const stockColors = getColorsInStockForMaterial(prod.filament || 'PLA');
-                const labels = Array.isArray(prod.colorLabels) ? prod.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
 
                 const packsHtml = (prod.packs && prod.packs.length > 0)
-                    ? `<div class="flex flex-wrap gap-1 pt-1">
-                        ${prod.packs.map(pk => `<button type="button" onclick="setProductQty('${prod.id}', ${pk.qty})" class="text-[10px] bg-brand-500/10 hover:bg-brand-500/25 border border-brand-500/25 text-brand-300 px-2 py-0.5 rounded-md transition">${pk.qty}u: $${Number(pk.price).toFixed(2)}</button>`).join('')}
+                    ? `<div class="flex flex-wrap gap-1 pt-1" title="Toca un pack varias veces para sumar sets">
+                        ${prod.packs.map(pk => `<button type="button" onclick="incrementProductPack('${prod.id}', ${pk.qty})" class="text-[10px] bg-brand-500/10 hover:bg-brand-500/25 border border-brand-500/25 text-brand-300 px-2 py-0.5 rounded-md transition">${pk.qty}u: $${Number(pk.price).toFixed(2)}</button>`).join('')}
                        </div>`
                     : `<p class="text-[11px] text-slate-400">Set 6 u.: <span class="text-slate-200 font-semibold">$${Number(prod.pack6Price).toFixed(2)}</span></p>`;
-
-                let colorSelectorsHtml = '';
-                for (let c = 0; c < colCount; c++) {
-                    const lbl = labels[c] || `Color ${c + 1}`;
-                    const chosen = currentCols[c] || '';
-                    const opts = (chosen && !stockColors.includes(chosen) ? [chosen, ...stockColors] : stockColors)
-                        .map(col => `<option value="${col}" ${col === chosen ? 'selected' : ''}>${col}</option>`).join('');
-                    colorSelectorsHtml += `
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-0.5 truncate">${lbl}</label>
-                            <select onchange="updateCardColor('${prod.id}', ${c}, this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none focus:border-brand-500">
-                                ${opts}
-                            </select>
-                        </div>`;
-                }
 
                 const card = document.createElement('div');
                 card.className = 'glass-card rounded-3xl overflow-hidden flex flex-col justify-between group hover:border-brand-500/50 transition duration-300';
@@ -691,10 +813,10 @@
                             <div class="bg-slate-900/75 border border-slate-800/90 rounded-xl p-2.5 space-y-1.5">
                                 <div class="flex items-center justify-between text-[10px] text-slate-400">
                                     <span>Filamento: <b class="text-slate-200">${prod.filament || 'PLA'}</b></span>
-                                    <span>${colCount} color(es)</span>
+                                    <span>${perSetMode && setCount >= 2 ? `${setCount} sets` : `${colCount} color(es)`}</span>
                                 </div>
-                                <div class="grid ${colCount > 1 ? 'grid-cols-2' : 'grid-cols-1'} gap-2">
-                                    ${colorSelectorsHtml}
+                                <div id="colorGrid_${prod.id}" class="grid ${(perSetMode && setCount >= 2) ? 'grid-cols-2' : (colCount > 1 ? 'grid-cols-2' : 'grid-cols-1')} gap-2">
+                                    ${buildColorSelectorsHtml(prod, qty, 'card')}
                                 </div>
                             </div>
 
@@ -738,6 +860,14 @@
                 btnEl.disabled = q === 0;
                 btnEl.className = `w-full ${q === 0 ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-brand-600 hover:bg-brand-700 text-white'} font-semibold py-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-2`;
             }
+            refreshCardColorBox(prodId, q);
+        }
+
+        function incrementProductPack(prodId, packQty) {
+            const pQty = Math.max(1, parseInt(packQty) || 1);
+            const current = selectedQtyByProd[prodId] || 0;
+            const next = (current > 0 && current % pQty === 0) ? current + pQty : pQty;
+            setProductQty(prodId, next);
         }
 
         function changeCardQty(prodId, delta) {
@@ -766,11 +896,10 @@
             detailQty = selectedQtyByProd[prodId] !== undefined ? selectedQtyByProd[prodId] : 0;
             const imgs = getProductImages(prod);
             const stock = Math.max(0, parseInt(prod.stock) || 0);
-            const colCount = getProductColorCount(prod);
-            const stockColors = getColorsInStockForMaterial(prod.filament || 'PLA');
-            const labels = Array.isArray(prod.colorLabels) ? prod.colorLabels : ['Color 1', 'Color 2', 'Color 3', 'Color 4'];
             const cardCols = initProductColorSelection(prod);
             detailSelectedColors = [...cardCols];
+            const setCount = getSetCountForQty(prod, detailQty);
+            detailSetColors = setCount >= 2 ? [...initProductSetColors(prod, setCount)] : [];
 
             document.getElementById('detailMainImg').src = imgs[0];
             document.getElementById('detailCategoryBadge').textContent = prod.category || 'Atel home';
@@ -792,34 +921,33 @@
 
             const packsBox = document.getElementById('detailPacksBox');
             if (prod.packs && prod.packs.length > 0) {
-                packsBox.innerHTML = `<p class="font-bold text-slate-200">Precios especiales por set:</p>
+                packsBox.innerHTML = `<p class="font-bold text-slate-200">Precios especiales por set (toca varias veces para sumar sets):</p>
                     <div class="flex flex-wrap gap-2">
-                        ${prod.packs.map(pk => `<button type="button" onclick="setDetailQty(${pk.qty})" class="bg-brand-600/20 hover:bg-brand-600/35 border border-brand-500/30 text-brand-300 px-3 py-1 rounded-lg font-semibold">${pk.qty} unidades → $${Number(pk.price).toFixed(2)}</button>`).join('')}
+                        ${prod.packs.map(pk => `<button type="button" onclick="incrementDetailPack(${pk.qty})" class="bg-brand-600/20 hover:bg-brand-600/35 border border-brand-500/30 text-brand-300 px-3 py-1 rounded-lg font-semibold">${pk.qty} unidades → $${Number(pk.price).toFixed(2)}</button>`).join('')}
                     </div>`;
             } else {
                 packsBox.innerHTML = `<p class="text-slate-300">Set 6 unidades: <b>$${Number(prod.pack6Price).toFixed(2)}</b> • Unidades extra: <b>$${Number(prod.extraUnitPrice).toFixed(2)} c/u</b></p>`;
             }
 
-            const colorBox = document.getElementById('detailColorSelectors');
-            let detColHtml = '';
-            for (let c = 0; c < colCount; c++) {
-                const lbl = labels[c] || `Color ${c + 1}`;
-                const chosen = detailSelectedColors[c] || '';
-                const opts = (chosen && !stockColors.includes(chosen) ? [chosen, ...stockColors] : stockColors)
-                    .map(col => `<option value="${col}" ${col === chosen ? 'selected' : ''}>${col}</option>`).join('');
-                detColHtml += `
-                    <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-2.5">
-                        <label class="block text-[11px] text-slate-400 mb-1">${lbl} (${prod.filament || 'PLA'})</label>
-                        <select onchange="detailSelectedColors[${c}] = this.value; updateCardColor('${prod.id}', ${c}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                            ${opts}
-                        </select>
-                    </div>`;
-            }
-            colorBox.innerHTML = detColHtml;
-
+            renderDetailColorBox();
             updateDetailAddButton();
             document.getElementById('productDetailModal').classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+        }
+
+        function renderDetailColorBox() {
+            const prod = products.find(p => p.id === currentDetailProdId);
+            const colorBox = document.getElementById('detailColorSelectors');
+            if (!prod || !colorBox) return;
+            const setCount = getSetCountForQty(prod, detailQty);
+            const perSetMode = usesPerSetSingleColor(prod, detailQty);
+            if (perSetMode && setCount >= 2) {
+                const initCols = initProductSetColors(prod, setCount);
+                for (let s = 0; s < setCount; s++) {
+                    if (!detailSetColors[s]) detailSetColors[s] = initCols[s] || '';
+                }
+            }
+            colorBox.innerHTML = buildColorSelectorsHtml(prod, detailQty, 'detail');
         }
 
         function selectDetailPhoto(url, btn) {
@@ -831,7 +959,14 @@
         function setDetailQty(q) {
             detailQty = Math.max(0, parseInt(q) || 0);
             document.getElementById('detailQtyVal').textContent = detailQty;
+            renderDetailColorBox();
             updateDetailAddButton();
+        }
+
+        function incrementDetailPack(packQty) {
+            const pQty = Math.max(1, parseInt(packQty) || 1);
+            const next = (detailQty > 0 && detailQty % pQty === 0) ? detailQty + pQty : pQty;
+            setDetailQty(next);
         }
 
         function changeDetailQty(delta) {
@@ -853,6 +988,10 @@
             if (!currentDetailProdId || detailQty <= 0) return;
             selectedQtyByProd[currentDetailProdId] = detailQty;
             selectedColorsByProd[currentDetailProdId] = [...detailSelectedColors];
+            const setCount = getSetCountForQty(products.find(p => p.id === currentDetailProdId), detailQty);
+            if (setCount >= 2) {
+                selectedSetColorsByProd[currentDetailProdId] = detailSetColors.slice(0, setCount);
+            }
             addToCart(currentDetailProdId);
             setProductQty(currentDetailProdId, 0);
             closeProductDetail();
@@ -863,15 +1002,34 @@
         }
 
         // ================= CARRITO DE COMPRAS =================
+        function getSelectionSummaryForCart(prod, qty) {
+            const setCount = getSetCountForQty(prod, qty);
+            const perSetMode = usesPerSetSingleColor(prod, qty);
+            if (perSetMode && setCount >= 2) {
+                const sCols = initProductSetColors(prod, setCount);
+                const labels = sCols.map((c, idx) => `Set ${idx + 1}: ${c || 'Estándar'}`);
+                return {
+                    colorSummary: labels.join(' | '),
+                    setColors: sCols,
+                    colors: [...new Set(sCols.filter(Boolean))].slice(0, 4)
+                };
+            }
+            const colCount = getProductColorCount(prod);
+            const cols = (initProductColorSelection(prod)).slice(0, colCount).filter(Boolean);
+            return {
+                colorSummary: cols.join(' + ') || 'Según inventario',
+                setColors: [],
+                colors: cols
+            };
+        }
+
         function addToCart(prodId) {
             const prod = products.find(p => p.id === prodId);
             if (!prod) return;
             const qty = Math.max(0, parseInt(selectedQtyByProd[prodId]) || 0);
             if (qty <= 0) return;
-            const colCount = getProductColorCount(prod);
-            const cols = (initProductColorSelection(prod)).slice(0, colCount).filter(Boolean);
-            const colorKey = cols.join(' + ') || 'Según inventario';
-            const lineKey = `${prodId}__${colorKey}`;
+            const sel = getSelectionSummaryForCart(prod, qty);
+            const lineKey = `${prodId}__${sel.colorSummary}`;
 
             const existingIdx = cart.findIndex(item => item.lineKey === lineKey);
             if (existingIdx >= 0) {
@@ -883,8 +1041,9 @@
                     id: prod.id,
                     name: prod.name,
                     filament: prod.filament || 'PLA',
-                    colors: cols,
-                    colorSummary: colorKey,
+                    colors: sel.colors,
+                    setColors: sel.setColors,
+                    colorSummary: sel.colorSummary,
                     qty: qty,
                     subtotal: calculateDynamicPrice(prod, qty)
                 });
@@ -986,7 +1145,7 @@
                 bubbleText.innerHTML = `Tienes <b>${totalUnits} u.</b> ($${totalMoney.toFixed(2)}) pendientes en tu carrito.`;
                 bubble.classList.remove('hidden');
             } else if (bubble && !assistantBubbleDismissed) {
-                bubbleText.textContent = '¿Te ayudo a ver fotos ampliadas o cotizar?';
+                bubbleText.textContent = '¿Te ayudo a elegir o ver fotos ampliadas?';
             }
         }
 
@@ -1059,7 +1218,6 @@
             const q = normalizeText(rawQuery);
             const visibleProducts = products.filter(p => p.featured !== false);
 
-            // 1. Revisar carrito pendiente
             if (q.includes('carrito') || q.includes('pendiente') || q.includes('mi pedido') || q.includes('resumen')) {
                 const totalUnits = cart.reduce((acc, i) => acc + i.qty, 0);
                 const totalMoney = cart.reduce((acc, i) => acc + i.subtotal, 0);
@@ -1076,7 +1234,6 @@
                 return;
             }
 
-            // 2. Buscar si menciona algún producto del catálogo
             const matchedProd = visibleProducts.find(p => {
                 const pName = normalizeText(p.name);
                 const words = pName.split(/\s+/).filter(w => w.length > 3);
@@ -1108,7 +1265,6 @@
                 return;
             }
 
-            // 3. Colores disponibles en inventario
             if (q.includes('color') || q.includes('filamento') || q.includes('material')) {
                 const inStock = availableFilaments.filter(f => Number(f.grams) > 0);
                 const byMat = {};
@@ -1120,11 +1276,10 @@
                 const lines = Object.keys(byMat).length
                     ? Object.entries(byMat).map(([m, cols]) => `• **${m}:** ${cols.join(', ')}`).join('\n')
                     : '• **PLA:** Rojo, Blanco, Dorado';
-                appendAssistantMessage('bot', `Estos son los colores disponibles actualmente en el taller:\n${lines}\n\nPuedes combinarlos directamente en cada tarjeta del catálogo.`);
+                appendAssistantMessage('bot', `Estos son los colores disponibles actualmente en el taller:\n${lines}\n\nSi eliges 2 o más sets, podrás asignar 1 color por cada set.`);
                 return;
             }
 
-            // 4. Categorías / líneas de productos
             if (q.includes('home')) {
                 runAssistantAction('filter_cat', 'Atel home');
                 appendAssistantMessage('bot', 'Te muestro la línea **Atel home** con accesorios decorativos y personalizados para el hogar.');
@@ -1141,7 +1296,6 @@
                 return;
             }
 
-            // 5. Pedido personalizado / a medida
             if (q.includes('medida') || q.includes('personaliz') || q.includes('stl') || q.includes('cotiz') || q.includes('idea')) {
                 appendAssistantMessage('bot', 'Podemos diseñar e imprimir tu idea a medida con nombres, logos o medidas exactas.', [
                     { label: 'Ir al formulario a medida →', action: 'go_custom' }
@@ -1149,14 +1303,12 @@
                 return;
             }
 
-            // 6. Envíos / ubicación / WhatsApp
             if (q.includes('envio') || q.includes('cuenca') || q.includes('entrega') || q.includes('whatsapp') || q.includes('ubicacion')) {
                 const wa = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '') || '593998400131';
                 appendAssistantMessage('bot', `Estamos en **Cuenca, Ecuador**, con entregas locales y envíos a todo el país. También puedes escribirnos directo al **+${wa}**.`);
                 return;
             }
 
-            // 7. Respuesta general con lista de productos
             const prodList = visibleProducts.map(p => `• **${p.name}** ($${Number(p.basePrice).toFixed(2)} c/u)`).join('\n');
             const quickActions = visibleProducts.slice(0, 3).map(p => ({
                 label: `Ver ${p.name}`,
@@ -1179,6 +1331,7 @@
                 try {
                     await db.collection('atel3d').doc('workshop').set({
                         pendingOrders: firebase.firestore.FieldValue.arrayUnion(orderAlertObj),
+                        lastNotificationAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString()
                     }, { merge: true });
                     return true;
@@ -1336,6 +1489,7 @@
                         availableFilaments = data.availableFilaments;
                         localStorage.setItem('atel_available_filaments', JSON.stringify(availableFilaments));
                         selectedColorsByProd = {};
+                        selectedSetColorsByProd = {};
                         updateCustomColorOptions();
                     }
                     renderCatalog();
@@ -1350,6 +1504,7 @@
                             .map(f => ({ id: f.id, type: f.type, color: f.color, grams: Number(f.grams) }));
                         localStorage.setItem('atel_available_filaments', JSON.stringify(availableFilaments));
                         selectedColorsByProd = {};
+                        selectedSetColorsByProd = {};
                         updateCustomColorOptions();
                         renderCatalog();
                     }
@@ -1363,6 +1518,7 @@
             if (event.key === 'atel_available_filaments' || event.key === 'atel_filaments') {
                 availableFilaments = JSON.parse(localStorage.getItem('atel_available_filaments') || 'null') || getFallbackFilamentsFromLocal();
                 selectedColorsByProd = {};
+                selectedSetColorsByProd = {};
                 updateCustomColorOptions();
                 renderCatalog();
             } else if (event.key === 'atel_products_v2') {
