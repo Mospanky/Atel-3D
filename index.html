@@ -134,7 +134,7 @@
             <div>
                 <span class="text-brand-400 text-xs font-bold uppercase tracking-wider">Colección Disponible</span>
                 <h2 class="text-3xl font-extrabold text-white mt-1">Catálogo de Productos 3D</h2>
-                <p class="text-slate-400 text-sm mt-1">Selecciona el producto, ajusta los colores disponibles en inventario y elige la cantidad (arranca en 0 para evitar errores).</p>
+                <p class="text-slate-400 text-sm mt-1">Selecciona el producto, ajusta los colores disponibles en inventario y elige la cantidad.</p>
             </div>
             <div class="flex flex-wrap gap-2" id="categoryFilters">
                 <button type="button" onclick="filterCatalog('ALL')" data-cat="ALL" class="cat-btn bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">Todos</button>
@@ -359,6 +359,60 @@
         </div>
     </div>
 
+    <!-- ASISTENTE VIRTUAL INTERACTIVO DE LA TIENDA -->
+    <div id="atelAssistantWidget" class="fixed bottom-5 right-5 z-40 flex flex-col items-end">
+        <!-- Ventana de chat del asistente -->
+        <div id="assistantChatPanel" class="hidden mb-3 w-[calc(100vw-2.5rem)] sm:w-96 bg-dark-900/95 backdrop-blur-xl border border-slate-700/90 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-3.5 flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-white">
+                        <i data-lucide="bot" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-extrabold text-white leading-tight">Guía ATEL 3D</h4>
+                        <p class="text-[10px] text-brand-100">Asistente interactivo del catálogo</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleAssistant(false)" class="text-white/80 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Historial de mensajes -->
+            <div id="assistantMessages" class="p-4 space-y-3 max-h-80 overflow-y-auto text-xs bg-slate-950/60"></div>
+
+            <!-- Botones rápidos contextuales -->
+            <div id="assistantQuickChips" class="px-3 py-2 bg-slate-900 border-t border-slate-800 flex flex-wrap gap-1.5">
+                <button type="button" onclick="askAssistantPreset('Ver productos disponibles')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Ver catálogo</button>
+                <button type="button" onclick="askAssistantPreset('¿Qué colores hay disponibles?')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Colores en stock</button>
+                <button type="button" onclick="askAssistantPreset('Revisar mi carrito')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Mi carrito</button>
+                <button type="button" onclick="askAssistantPreset('Quiero un diseño personalizado')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-full border border-slate-700 transition">Pedido a medida</button>
+            </div>
+
+            <!-- Entrada de texto -->
+            <form onsubmit="handleAssistantSubmit(event)" class="p-2.5 bg-dark-900 border-t border-slate-800 flex items-center gap-2">
+                <input type="text" id="assistantInput" placeholder="Ej: Muéstrame los bombillos o precios..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+                <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white p-2 rounded-xl transition" title="Enviar">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Burbuja de aviso proactivo (carrito pendiente / bienvenida) -->
+        <div id="assistantProactiveBubble" onclick="toggleAssistant(true)" class="hidden cursor-pointer mb-2 max-w-xs bg-dark-900 border border-brand-500/50 text-white px-3.5 py-2.5 rounded-2xl shadow-xl text-xs flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+            <span id="assistantBubbleText" class="leading-snug">¿Te ayudo a elegir o ver fotos ampliadas?</span>
+            <button type="button" onclick="event.stopPropagation(); dismissAssistantBubble();" class="text-slate-400 hover:text-white ml-1">✕</button>
+        </div>
+
+        <!-- Botón flotante principal -->
+        <button type="button" onclick="toggleAssistant()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-full shadow-xl shadow-brand-600/30 border border-brand-400/30 flex items-center space-x-2 transition">
+            <i data-lucide="message-square-text" class="w-5 h-5"></i>
+            <span class="text-xs font-bold">Asistente 3D</span>
+            <span id="assistantCartDot" class="hidden w-2.5 h-2.5 rounded-full bg-amber-300"></span>
+        </button>
+    </div>
+
     <script>
         const ATEL_FIREBASE_CONFIG = {
             apiKey: "AIzaSyBope-yAmZD75AV-2sxDzEAIKvyKTetZEc",
@@ -471,6 +525,8 @@
         let detailSelectedColors = ['', '', '', ''];
         let db = null;
         let lastConfirmedMessage = '';
+        let assistantInitialized = false;
+        let assistantBubbleDismissed = false;
 
         function getFallbackFilamentsFromLocal() {
             const rawFils = JSON.parse(localStorage.getItem('atel_filaments') || 'null');
@@ -846,6 +902,7 @@
         function saveCart() {
             localStorage.setItem('atel_cart', JSON.stringify(cart));
             renderCart();
+            updateAssistantCartAlert();
         }
 
         function renderCart() {
@@ -885,6 +942,228 @@
             else if (forceOpen === false) drawer.classList.add('hidden');
             else drawer.classList.toggle('hidden');
             renderCart();
+        }
+
+        // ================= ASISTENTE VIRTUAL INTERACTIVO =================
+        function toggleAssistant(forceOpen = null) {
+            const panel = document.getElementById('assistantChatPanel');
+            if (!panel) return;
+            const willOpen = forceOpen !== null ? forceOpen : panel.classList.contains('hidden');
+            panel.classList.toggle('hidden', !willOpen);
+
+            if (willOpen) {
+                dismissAssistantBubble();
+                if (!assistantInitialized) {
+                    assistantInitialized = true;
+                    const pendingCount = cart.reduce((acc, i) => acc + i.qty, 0);
+                    let welcome = `¡Hola! Soy tu guía de **ATEL 3D**.\n\nPuedo mostrarte los productos disponibles, **agrandar fotos del catálogo**, calcular precios por set o avisarte si tienes algo pendiente en tu carrito.`;
+                    if (pendingCount > 0) {
+                        const pendingTotal = cart.reduce((acc, i) => acc + i.subtotal, 0).toFixed(2);
+                        welcome += `\n\n🛍️ **Aviso:** Tienes **${pendingCount} unidad(es)** pendientes en tu carrito por **$${pendingTotal}**.`;
+                    }
+                    appendAssistantMessage('bot', welcome, pendingCount > 0 ? [{ label: 'Abrir mi carrito →', action: 'open_cart' }] : []);
+                }
+                setTimeout(() => document.getElementById('assistantInput')?.focus(), 100);
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function dismissAssistantBubble() {
+            assistantBubbleDismissed = true;
+            document.getElementById('assistantProactiveBubble')?.classList.add('hidden');
+        }
+
+        function updateAssistantCartAlert() {
+            const dot = document.getElementById('assistantCartDot');
+            const bubble = document.getElementById('assistantProactiveBubble');
+            const bubbleText = document.getElementById('assistantBubbleText');
+            const totalUnits = cart.reduce((acc, item) => acc + item.qty, 0);
+            const totalMoney = cart.reduce((acc, item) => acc + item.subtotal, 0);
+
+            if (dot) dot.classList.toggle('hidden', totalUnits === 0);
+
+            if (totalUnits > 0 && bubble && bubbleText) {
+                bubbleText.innerHTML = `Tienes <b>${totalUnits} u.</b> ($${totalMoney.toFixed(2)}) pendientes en tu carrito.`;
+                bubble.classList.remove('hidden');
+            } else if (bubble && !assistantBubbleDismissed) {
+                bubbleText.textContent = '¿Te ayudo a ver fotos ampliadas o cotizar?';
+            }
+        }
+
+        function appendAssistantMessage(sender, text, actions = []) {
+            const container = document.getElementById('assistantMessages');
+            if (!container) return;
+
+            const formatted = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                .replace(/\n/g, '<br>');
+
+            const wrapper = document.createElement('div');
+            wrapper.className = sender === 'user' ? 'flex justify-end' : 'flex flex-col items-start space-y-1.5';
+
+            if (sender === 'user') {
+                wrapper.innerHTML = `<div class="bg-brand-600 text-white px-3.5 py-2 rounded-2xl rounded-br-sm max-w-[85%] leading-relaxed">${formatted}</div>`;
+            } else {
+                const actionButtonsHtml = actions.length
+                    ? `<div class="flex flex-wrap gap-1.5 pt-1">
+                        ${actions.map(act => `<button type="button" onclick="runAssistantAction('${act.action}', '${(act.param || '').replace(/'/g, "\\'")}')" class="bg-brand-600/20 hover:bg-brand-600/35 border border-brand-500/40 text-brand-300 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition">${act.label}</button>`).join('')}
+                       </div>`
+                    : '';
+                wrapper.innerHTML = `
+                    <div class="bg-slate-800/90 border border-slate-700/80 text-slate-200 px-3.5 py-2.5 rounded-2xl rounded-bl-sm max-w-[92%] leading-relaxed">
+                        ${formatted}
+                        ${actionButtonsHtml}
+                    </div>`;
+            }
+
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function runAssistantAction(action, param) {
+            if (action === 'open_detail' && param) {
+                openProductDetail(param);
+            } else if (action === 'filter_cat' && param) {
+                filterCatalog(param);
+                document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+            } else if (action === 'open_cart') {
+                toggleCart(true);
+            } else if (action === 'go_custom') {
+                toggleAssistant(false);
+                document.getElementById('personalizado')?.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function askAssistantPreset(question) {
+            const input = document.getElementById('assistantInput');
+            if (input) input.value = question;
+            processAssistantQuery(question);
+            if (input) input.value = '';
+        }
+
+        function handleAssistantSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('assistantInput');
+            const q = (input?.value || '').trim();
+            if (!q) return;
+            input.value = '';
+            processAssistantQuery(q);
+        }
+
+        function normalizeText(str) {
+            return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function processAssistantQuery(rawQuery) {
+            appendAssistantMessage('user', rawQuery);
+            const q = normalizeText(rawQuery);
+            const visibleProducts = products.filter(p => p.featured !== false);
+
+            // 1. Revisar carrito pendiente
+            if (q.includes('carrito') || q.includes('pendiente') || q.includes('mi pedido') || q.includes('resumen')) {
+                const totalUnits = cart.reduce((acc, i) => acc + i.qty, 0);
+                const totalMoney = cart.reduce((acc, i) => acc + i.subtotal, 0);
+                if (totalUnits === 0) {
+                    appendAssistantMessage('bot', 'Tu carrito está vacío por ahora. Puedes elegir un producto del catálogo y sumar las unidades que necesites.', [
+                        { label: 'Ir al catálogo', action: 'filter_cat', param: 'ALL' }
+                    ]);
+                } else {
+                    const summary = cart.map(i => `• ${i.qty}x ${i.name} ($${Number(i.subtotal).toFixed(2)})`).join('\n');
+                    appendAssistantMessage('bot', `Tienes **${totalUnits} unidad(es)** pendientes en tu carrito:\n${summary}\n\n**Total estimado:** $${totalMoney.toFixed(2)}`, [
+                        { label: 'Completar pedido ahora →', action: 'open_cart' }
+                    ]);
+                }
+                return;
+            }
+
+            // 2. Buscar si menciona algún producto del catálogo
+            const matchedProd = visibleProducts.find(p => {
+                const pName = normalizeText(p.name);
+                const words = pName.split(/\s+/).filter(w => w.length > 3);
+                return q.includes(pName) || words.some(w => q.includes(w));
+            });
+
+            if (matchedProd) {
+                const wantsZoom = q.includes('foto') || q.includes('imagen') || q.includes('agrand') || q.includes('ver') || q.includes('muestra') || q.includes('detalle');
+                const numMatch = q.match(/\b(\d+)\b/);
+                const requestedQty = numMatch ? parseInt(numMatch[1]) : 0;
+
+                let reply = `**${matchedProd.name}** (${matchedProd.category || 'Atel home'})\n• Precio unitario: **$${Number(matchedProd.basePrice).toFixed(2)}**`;
+                if (matchedProd.packs && matchedProd.packs.length) {
+                    reply += `\n• Sets promocionales: ` + matchedProd.packs.map(pk => `${pk.qty}u por $${Number(pk.price).toFixed(2)}`).join(', ');
+                }
+                if (requestedQty > 0) {
+                    const calc = calculateDynamicPrice(matchedProd, requestedQty);
+                    reply += `\n• Cotización para **${requestedQty} unidades**: **$${calc.toFixed(2)}**`;
+                }
+
+                if (wantsZoom) {
+                    openProductDetail(matchedProd.id);
+                    reply += `\n\n🔍 He abierto la **vista ampliada** con sus fotos y selector de colores.`;
+                }
+
+                appendAssistantMessage('bot', reply, [
+                    { label: `Ampliar fotos de ${matchedProd.name}`, action: 'open_detail', param: matchedProd.id }
+                ]);
+                return;
+            }
+
+            // 3. Colores disponibles en inventario
+            if (q.includes('color') || q.includes('filamento') || q.includes('material')) {
+                const inStock = availableFilaments.filter(f => Number(f.grams) > 0);
+                const byMat = {};
+                inStock.forEach(f => {
+                    const m = f.type || 'PLA';
+                    if (!byMat[m]) byMat[m] = [];
+                    if (!byMat[m].includes(f.color)) byMat[m].push(f.color);
+                });
+                const lines = Object.keys(byMat).length
+                    ? Object.entries(byMat).map(([m, cols]) => `• **${m}:** ${cols.join(', ')}`).join('\n')
+                    : '• **PLA:** Rojo, Blanco, Dorado';
+                appendAssistantMessage('bot', `Estos son los colores disponibles actualmente en el taller:\n${lines}\n\nPuedes combinarlos directamente en cada tarjeta del catálogo.`);
+                return;
+            }
+
+            // 4. Categorías / líneas de productos
+            if (q.includes('home')) {
+                runAssistantAction('filter_cat', 'Atel home');
+                appendAssistantMessage('bot', 'Te muestro la línea **Atel home** con accesorios decorativos y personalizados para el hogar.');
+                return;
+            }
+            if (q.includes('pro')) {
+                runAssistantAction('filter_cat', 'Atel pro');
+                appendAssistantMessage('bot', 'Te muestro la línea **Atel pro** ideal para eventos, cafeterías y presentaciones.');
+                return;
+            }
+            if (q.includes('lab')) {
+                runAssistantAction('filter_cat', 'Atel lab');
+                appendAssistantMessage('bot', 'Te muestro la línea **Atel lab** con diseños creativos y piezas especiales.');
+                return;
+            }
+
+            // 5. Pedido personalizado / a medida
+            if (q.includes('medida') || q.includes('personaliz') || q.includes('stl') || q.includes('cotiz') || q.includes('idea')) {
+                appendAssistantMessage('bot', 'Podemos diseñar e imprimir tu idea a medida con nombres, logos o medidas exactas.', [
+                    { label: 'Ir al formulario a medida →', action: 'go_custom' }
+                ]);
+                return;
+            }
+
+            // 6. Envíos / ubicación / WhatsApp
+            if (q.includes('envio') || q.includes('cuenca') || q.includes('entrega') || q.includes('whatsapp') || q.includes('ubicacion')) {
+                const wa = (storeConfig.whatsapp || defaultStoreConfig.whatsapp).replace(/\D/g, '') || '593998400131';
+                appendAssistantMessage('bot', `Estamos en **Cuenca, Ecuador**, con entregas locales y envíos a todo el país. También puedes escribirnos directo al **+${wa}**.`);
+                return;
+            }
+
+            // 7. Respuesta general con lista de productos
+            const prodList = visibleProducts.map(p => `• **${p.name}** ($${Number(p.basePrice).toFixed(2)} c/u)`).join('\n');
+            const quickActions = visibleProducts.slice(0, 3).map(p => ({
+                label: `Ver ${p.name}`,
+                action: 'open_detail',
+                param: p.id
+            }));
+            appendAssistantMessage('bot', `Actualmente tenemos disponibles en catálogo:\n${prodList}\n\nToca cualquiera para **agrandar sus fotos** o dime qué producto te interesa.`, quickActions);
         }
 
         // ================= NOTIFICACIONES AL TALLER + CONFIRMACIÓN Y WHATSAPP =================
@@ -1100,6 +1379,12 @@
             updateCustomColorOptions();
             renderCatalog();
             renderCart();
+            updateAssistantCartAlert();
+            setTimeout(() => {
+                if (!assistantBubbleDismissed && document.getElementById('assistantChatPanel')?.classList.contains('hidden')) {
+                    document.getElementById('assistantProactiveBubble')?.classList.remove('hidden');
+                }
+            }, 3500);
             initFirebaseStore();
             if (window.lucide) lucide.createIcons();
         });
